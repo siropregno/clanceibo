@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './banner.css';
-import DiscordButton from '../component-discordbtn/discordbtn';
 import { FaArrowRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import img6 from '@assets/images/box/img6.png';

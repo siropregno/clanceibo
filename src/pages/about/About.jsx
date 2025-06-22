@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import Photogallery from '../../components/component-photogallery/photogallery';
+import Photogallery from '@components/component-photogallery/photogallery';
 import './about.css'; // Assuming you have a CSS file for styling
 
 const About = () => {

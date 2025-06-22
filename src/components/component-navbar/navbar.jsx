@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import './navbar.css'
-import DiscordButton from '../component-discordbtn/discordbtn';
+import DiscordButton from '@components/component-discordbtn/discordbtn';
 import logo from '@assets/images/logo.png';
 
 const Navbar = () => {
@@ -53,7 +53,7 @@ const Navbar = () => {
           </div>
           <ul>
             <li>
-              <NavLink className="nav-link" to="/Home">Inicio</NavLink>
+              <NavLink className="nav-link" to="/">Inicio</NavLink>
             </li>
             <li>
               <NavLink className="nav-link" to="/About">Sobre nosotros</NavLink>
