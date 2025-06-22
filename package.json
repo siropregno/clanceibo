@@ -32,5 +32,6 @@
     "gh-pages": "^6.3.0",
     "globals": "^16.0.0",
     "vite": "^6.3.5"
-  }
+  },
+  "homepage": "https://siropregno.github.io/clanceibo/Home"
 }
