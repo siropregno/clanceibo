@@ -4,15 +4,15 @@ import { FaTimes } from 'react-icons/fa'; // Add this import
 import './photogallery.css';
 
 const images = [
-  { src: "src/assets/images/box/img1.png", alt: "Proto 1" },
-  { src: "src/assets/images/box/img2.png", alt: "Proto 2" },
-  { src: "src/assets/images/box/img3.png", alt: "Proto 3" },
-  { src: "src/assets/images/box/img4.png", alt: "Proto 4" },
-  { src: "src/assets/images/box/img5.png", alt: "Proto 5" },
-  { src: "src/assets/images/box/img6.png", alt: "Proto 6" },
-  { src: "src/assets/images/box/img7.png", alt: "Proto 7" },
-  { src: "src/assets/images/box/img9.png", alt: "Proto 9" },
-  { src: "src/assets/images/box/img11.png", alt: "Proto 11" }
+  { src: "/clanceibo/src/assets/images/box/img1.png", alt: "Proto 1" },
+  { src: "/clanceibo/src/assets/images/box/img2.png", alt: "Proto 2" },
+  { src: "/clanceibo/src/assets/images/box/img3.png", alt: "Proto 3" },
+  { src: "/clanceibo/src/assets/images/box/img4.png", alt: "Proto 4" },
+  { src: "/clanceibo/src/assets/images/box/img5.png", alt: "Proto 5" },
+  { src: "/clanceibo/src/assets/images/box/img6.png", alt: "Proto 6" },
+  { src: "/clanceibo/src/assets/images/box/img7.png", alt: "Proto 7" },
+  { src: "/clanceibo/src/assets/images/box/img9.png", alt: "Proto 9" },
+  { src: "/clanceibo/src/assets/images/box/img11.png", alt: "Proto 11" }
 ];
 
 const Photogallery = () => {

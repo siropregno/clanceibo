@@ -5,9 +5,9 @@ import { FaArrowRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const images = [
-  'src/assets/images/box/img6.png',
-  'src/assets/images/box/img9.png',
-  'src/assets/images/box/img3.png'
+  '/clanceibo/src/assets/images/box/img6.png',
+  '/clanceibo/src/assets/images/box/img9.png',
+  '/clanceibo/src/assets/images/box/img3.png'
 ];
 
 const Banner = () => {
