@@ -45,7 +45,7 @@ const Navbar = () => {
         <div className='nav-content'>
           <div className='logo-container'>
             <NavLink to="/Home">
-              <img className='nav-logo' src="/clanceibo/src/assets/images/logo.png" alt="" />
+              <img className='nav-logo' src="./src/assets/images/logo.png" alt="" />
               <h2>CLAN CEIBO</h2>
             </NavLink>
             
