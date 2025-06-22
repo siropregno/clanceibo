@@ -8,7 +8,7 @@ import Armory from './pages/armory/Armory';
 
 function App() {
   return (
-    <BrowserRouter basename="/">
+    <BrowserRouter basename="/clanceibo">
       <>
         <Navbar />
         <main>
