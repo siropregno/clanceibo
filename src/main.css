@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Days+One&display=swap');
+
+
+:root {
+    --font-title: "Poppins", sans-serif;
+    --font-title2: "Days One", sans-serif;
+    --font-body: "Inter", sans-serif;
+    --font-button: "Inter", sans-serif;
+
+    --wht: #f2f2f2;
+    --blk: #090909;
+    --cel: #74ACDF;
+    --grn: rgb(31, 32, 28);
+    --yel: #F6B40E;
+    --null: #9999AA;
+
+    --titulo-1: 35px;
+    --subtitulo-1: 25px;
+    --subtitulo-2: 22px;
+    --subtitulo-3: 20px;
+    --texto-1: 16px;
+    --texto-btn: 14px;
+    --titulo-mobile: 30px;
+    --texto-mobile: 13px;
+
+    --thin: 100;
+    --extralight: 200;
+    --light: 300;
+    --regular: 400;
+    --medium: 500;
+    --semibold: 600;
+    --bold: 700;
+    --extrabold: 800;
+    --black: 900;
+}
+
+body {
+    margin: 0;
+    background-color: var(--wht);
+    overflow-x: hidden;
+}
+
+h1 {
+    font-family: var(--font-title);
+    font-size: var(--titulo-1);
+    margin-block: 0;
+}
+
+h2 {
+    font-family: var(--font-title2);
+    font-size: var(--subtitulo-1);
+    margin-block: 0;
+}
+
+p {
+    font-family: var(--font-body);
+    font-size: var(--texto-1);
+    font-weight: var(--light);
+    margin-block: 1em;
+    margin-block: 1lh;
+}
+
+b {
+    font-weight: var(--bold);
+}
+
+a {
+    font-family: var(--font-body);
+    font-size: var(--texto-btn);
+    
+}
+
+li {
+    font-family: var(--font-body);
+    font-size: var(--texto-1);
+}
+
+button {
+    font-family: var(--font-button);
+    font-size: var(--texto-btn);
+    font-weight: var(--semibold);
+    color: var(--blk);
+    background-color: var(--yel);
+    padding: 12px 28px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+button:hover {
+    filter: brightness(1.1);
+}
+
+@media screen and (max-width: 768px) {
+    h1 {
+        font-size: var(--titulo-mobile);
+    }
+
+    p {
+        font-size: var(--texto-mobile);
+    }
+
+    a {
+        font-size: var(--subtitulo-3);
+    }
+
+    li {
+        font-size: var(--texto-mobile);
+    }
+    
+}

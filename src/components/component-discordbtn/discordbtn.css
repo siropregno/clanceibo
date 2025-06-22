@@ -1,0 +1,23 @@
+.discord-button {
+  background: #5865F2;
+  color: #fff;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 25px;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(88,101,242,0.15);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.discord-button:hover {
+  filter: brightness(1.1);
+}
+
+.discord-icon {
+  font-size: 1.5em;
+}

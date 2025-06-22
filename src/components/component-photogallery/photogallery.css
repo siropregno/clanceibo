@@ -1,0 +1,82 @@
+.proto-gallery-carousel {
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--grn);
+  transition: background 0.3s;
+}
+
+.proto-gallery-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 70%;
+  height: 100%;
+}
+.carousel-images {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 0 30px;
+}
+.proto-img {
+  width: 33%;
+  height: auto;
+  border-radius: 8px;
+}
+.carousel-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+  border: none;
+  cursor: pointer;
+  border-radius: 30px;
+  background-color: var(--yel);
+  padding: 15px 15px;
+  color: var(--grn);
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  position: relative;
+  border-radius: 20px;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.modal-img {
+  max-width: 80vw;
+  max-height: 70vh;
+  margin: 0 auto;
+  display: block;
+}
+.modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 50px;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 1rem;
+  color: #333;
+}

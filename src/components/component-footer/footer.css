@@ -1,0 +1,44 @@
+#footer {
+    width: 100%;
+    height: 80px;
+    background-color: var(--blk);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#footer div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+    
+}
+
+#footer div a{
+    color: var(--yel);
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+#footer div a:hover {
+    color: var(--cel);
+    transition: color 0.2s ease-in-out;
+}
+
+#footer p {
+    margin-right: 10px;
+    color: var(--wht);
+    font-size: 12px;
+}
+
+.social-icons {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin: 10px 10px;
+}
