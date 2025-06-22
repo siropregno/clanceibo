@@ -3,12 +3,11 @@ import './banner.css';
 import DiscordButton from '../component-discordbtn/discordbtn';
 import { FaArrowRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import img6 from '@assets/images/box/img6.png';
+import img9 from '@assets/images/box/img9.png';
+import img3 from '@assets/images/box/img3.png';
 
-const images = [
-  './src/assets/images/box/img6.png',
-  './src/assets/images/box/img9.png',
-  './src/assets/images/box/img3.png'
-];
+const images = [img6, img9, img3];
 
 const Banner = () => {
   const navigate = useNavigate();

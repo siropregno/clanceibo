@@ -2,17 +2,26 @@ import React, { useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { FaTimes } from 'react-icons/fa'; // Add this import
 import './photogallery.css';
+import img1 from '@assets/images/box/img1.png';
+import img2 from '@assets/images/box/img2.png';
+import img3 from '@assets/images/box/img3.png';
+import img4 from '@assets/images/box/img4.png';
+import img5 from '@assets/images/box/img5.png';
+import img6 from '@assets/images/box/img6.png';
+import img7 from '@assets/images/box/img7.png';
+import img9 from '@assets/images/box/img9.png';
+import img11 from '@assets/images/box/img11.png';
 
 const images = [
-  { src: "./src/assets/images/box/img1.png", alt: "Proto 1" },
-  { src: "./src/assets/images/box/img2.png", alt: "Proto 2" },
-  { src: "./src/assets/images/box/img3.png", alt: "Proto 3" },
-  { src: "./src/assets/images/box/img4.png", alt: "Proto 4" },
-  { src: "./src/assets/images/box/img5.png", alt: "Proto 5" },
-  { src: "./src/assets/images/box/img6.png", alt: "Proto 6" },
-  { src: "./src/assets/images/box/img7.png", alt: "Proto 7" },
-  { src: "./src/assets/images/box/img9.png", alt: "Proto 9" },
-  { src: "./src/assets/images/box/img11.png", alt: "Proto 11" }
+  { src: img1, alt: "Proto 1" },
+  { src: img2, alt: "Proto 2" },
+  { src: img3, alt: "Proto 3" },
+  { src: img4, alt: "Proto 4" },
+  { src: img5, alt: "Proto 5" },
+  { src: img6, alt: "Proto 6" },
+  { src: img7, alt: "Proto 7" },
+  { src: img9, alt: "Proto 9" },
+  { src: img11, alt: "Proto 11" }
 ];
 
 const Photogallery = () => {

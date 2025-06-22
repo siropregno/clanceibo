@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import './navbar.css'
 import DiscordButton from '../component-discordbtn/discordbtn';
+import logo from '@assets/images/logo.png';
 
 const Navbar = () => {
   const [hideOnScroll, setHideOnScroll] = useState(false);
@@ -45,7 +46,7 @@ const Navbar = () => {
         <div className='nav-content'>
           <div className='logo-container'>
             <NavLink to="/Home">
-              <img className='nav-logo' src="./src/assets/images/logo.png" alt="" />
+              <img className='nav-logo' src={logo} alt="Logo" />
               <h2>CLAN CEIBO</h2>
             </NavLink>
             
