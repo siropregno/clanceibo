@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-  base: '/', // Cambia esto al nombre de tu repositorio
+  base: '/clanceibo/', // Cambia esto al nombre de tu repositorio
   plugins: [react()],
   resolve: {
     alias: {
