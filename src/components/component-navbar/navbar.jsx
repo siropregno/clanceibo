@@ -62,9 +62,6 @@ const Navbar = () => {
               <NavLink className="nav-link" to="/Armory">Equipamiento</NavLink>
             </li>
             <li>
-              <a className='nav-link' href="" target="_blank" rel="noopener noreferrer">Quiero sumarme</a>
-            </li>
-            <li>
               <DiscordButton />
             </li>
           </ul>

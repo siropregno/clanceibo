@@ -47,7 +47,7 @@ const Banner = () => {
           <h1 style={{ lineHeight: '1.1', fontSize: '45px', color: 'var(--cel)'}}>ENLISTATE HOY</h1>
           <p>
             Operaciones dinámicas y una forma de jugar que mezcla táctica con diversión. <br />
-            conoce mas sobre quienes somos y como unirte a nosotros.
+            Conocé mas sobre quienes somos y como unirte a nosotros.
           </p>
           <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
             <button

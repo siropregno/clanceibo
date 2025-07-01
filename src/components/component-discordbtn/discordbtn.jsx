@@ -4,7 +4,7 @@ import { FaDiscord } from 'react-icons/fa';
 
 const DiscordButton = () => {
   return (
-    <a href="https://discord.gg/tu-enlace-de-discord" className="discord-button">
+    <a href="https://discord.gg/MaTQ4da9w7" className="discord-button" target="_blank" rel="noopener noreferrer">
       <FaDiscord className="discord-icon" />
       Discord
     </a>
