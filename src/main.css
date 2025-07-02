@@ -43,6 +43,10 @@ body {
     overflow-x: hidden;
 }
 
+main {
+    width: 100vw;
+}
+
 h1 {
     font-family: var(--font-title);
     font-size: var(--titulo-1);
@@ -101,10 +105,6 @@ button:hover {
 
     p {
         font-size: var(--texto-mobile);
-    }
-
-    a {
-        font-size: var(--subtitulo-3);
     }
 
     li {

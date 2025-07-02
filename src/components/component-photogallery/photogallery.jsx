@@ -38,7 +38,8 @@ const Photogallery = () => {
 
   const getVisibleImages = () => {
     const visible = [];
-    for (let i = 0; i < 3; i++) {
+    const numVisible = window.innerWidth < 900 ? 1 : 3; // Show 1 image if width < 900, otherwise 3
+    for (let i = 0; i < numVisible; i++) {
       visible.push(images[(current + i) % images.length]);
     }
     return visible;

@@ -7,19 +7,20 @@ const Footer = () => {
     <>
       
       <footer id='footer'>
+          
         <div>
-          <div>
-            <p>© 2025 CLAN CEIBO. All rights reserved.</p>
-          </div>
-          <div>
+          <div className='footer-links'>
             <p>Developed by </p>
             <a href=''>MAS Design</a>
           </div>
-          <div>
+          <div className='footer-links'>
             <p>Powered by </p>
             <a href=''>React + Vita</a>
           </div>
         </div>
+        <div>
+            <p>© 2025 CLAN CEIBO. All rights reserved.</p>
+          </div>
         <div className="social-icons">
           <p>Seguinos en:</p>
           <a href='https://www.facebook.com/ClanCeibo' target='_blank' rel='noopener noreferrer'>
