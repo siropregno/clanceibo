@@ -17,9 +17,10 @@ import AsaltoAereo601MG from '@assets/images/loadouts/asaltoaereo601-mg.png';
 const Armory = () => {
   const [password, setPassword] = useState('');
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const [selectedOrg, setSelectedOrg] = useState(''); // State for org filter
-  const [selectedRole, setSelectedRole] = useState(''); // State for role filter
-  const [selectedBranch, setSelectedBranch] = useState(''); // State for branch filter
+  const [selectedOrg, setSelectedOrg] = useState('');
+  const [selectedRole, setSelectedRole] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState('');
+  const [showPopup, setShowPopup] = useState(false); // State for popup visibility
 
   const validPasswords = ['13248'];
 
@@ -31,7 +32,11 @@ const Armory = () => {
     }
   };
 
-  // Loadout data
+  const handleCopy = () => {
+    setShowPopup(true); // Show the popup
+    setTimeout(() => setShowPopup(false), 3000); // Hide the popup after 3 seconds
+  };
+
   const loadouts = [
     {
       branch: 'Ejercito',
@@ -41,7 +46,7 @@ const Armory = () => {
       primary: 'FN FAL 7.62mm',
       secondary: 'Hi-Power 9mm',
     },
-    { 
+    {
       branch: 'Ejercito',
       org: 'Infantería',
       role: 'Médico',
@@ -125,12 +130,10 @@ const Armory = () => {
     },
   ];
 
-  // Get unique orgs, roles, and branches for dropdowns
   const uniqueOrgs = [...new Set(loadouts.map((loadout) => loadout.org))];
   const uniqueRoles = [...new Set(loadouts.map((loadout) => loadout.role))];
   const uniqueBranches = [...new Set(loadouts.map((loadout) => loadout.branch))];
 
-  // Filtered loadouts based on selected org, role, and branch
   const filteredLoadouts = loadouts.filter(
     (loadout) =>
       (selectedOrg === '' || loadout.org === selectedOrg) &&
@@ -161,7 +164,6 @@ const Armory = () => {
         <div className="authorized-content">
           <h1>Loadouts</h1>
 
-          {/* Filter Dropdowns */}
           <div className="filter-container">
             <select
               value={selectedBranch}
@@ -199,7 +201,6 @@ const Armory = () => {
               ))}
             </select>
 
-            {/* Botón para limpiar los filtros */}
             <button
               className="clear-filters-button"
               onClick={() => {
@@ -212,7 +213,6 @@ const Armory = () => {
             </button>
           </div>
 
-          {/* Loadout Cards */}
           <div className="loadout-cards-container">
             {filteredLoadouts.map((loadout, index) => (
               <LoadoutCard
@@ -224,9 +224,17 @@ const Armory = () => {
                 primary={loadout.primary}
                 launcher={loadout.launcher}
                 secondary={loadout.secondary}
+                onCopy={handleCopy} // Pass the copy handler to the card
               />
             ))}
           </div>
+
+          {/* Popup Notification */}
+          {showPopup && (
+            <div className="popup-notification">
+              <p>¡Loadout copiado al portapapeles!</p>
+            </div>
+          )}
         </div>
       )}
     </>

@@ -6,7 +6,7 @@ import IconLauncher from '@assets/images/icons/launcher.png';
 import { IoMdMale, IoMdFemale } from 'react-icons/io';
 import { FaShieldAlt, FaMedkit } from 'react-icons/fa'; // Example icons
 
-const LoadoutCard = ({branch, org, role, image, primary, launcher, secondary }) => {
+const LoadoutCard = ({ branch, org, role, image, primary, launcher, secondary, onCopy }) => {
   return (
     <div className="loadout-card">
       <div className="loadout-card-image">
@@ -32,19 +32,23 @@ const LoadoutCard = ({branch, org, role, image, primary, launcher, secondary }) 
             <p>{secondary}</p>
           </div>
         </div>
-        <div className="loadout-card-icons">
-        <div className={`circle-icon`}>
-          <p>{branch}</p>
-        </div>
-      </div>
-        <p className="texto-copiar">Copia este loadout:</p>
-        <div className="loadout-card-details-copy">
-          <button>
-            <IoMdMale />
-          </button>
-          <button>
-            <IoMdFemale />
-          </button>
+        <div className="loadout-card-lower-container">
+          <div className="circle-icon">
+            <p>{branch}</p>
+          </div>
+          <div className="card-container-hidden">
+            <p>Copiar:</p>
+            <div className="loadout-card-details-copy">
+              <button className="tooltip" onClick={onCopy}>
+                <IoMdMale />
+                <span className="tooltip-text">Masculino</span>
+              </button>
+              <button className="tooltip" onClick={onCopy}>
+                <IoMdFemale />
+                <span className="tooltip-text">Femenino</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

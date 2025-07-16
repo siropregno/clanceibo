@@ -7,13 +7,14 @@
     overflow: hidden;
     width: 320px;
     box-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
+    transition: transform 0.3s ease-in-out;
 }
 
 .loadout-card:hover {
     transform: scale(1.02);
-    transition: transform 0.3s ease-in-out;
 }
 
+/* Card image styles */
 .loadout-card-image {
     background-color: black;
     height: 300px;
@@ -22,11 +23,12 @@
 }
 
 .loadout-card-image img {
-    height: auto;
-    width: auto;
     object-fit: cover;
+    width: auto;
+    height: auto;
 }
 
+/* Card details container */
 .loadout-card-details {
     width: 100%;
     display: flex;
@@ -40,20 +42,22 @@
     font-family: var(--font-title);
     margin: 0;
     font-size: 16px;
-    color:var(--wht);
+    color: var(--wht);
 }
 
 .loadout-card-details p {
-    color:var(--wht);
+    color: var(--wht);
     font-size: var(--texto-btn);
 }
 
+/* Weapon icons */
 .loadout-card-icon {
     height: 20px;
     width: auto;
     filter: brightness(110%);
 }
 
+/* Weapon details container */
 .loadout-card-details-container {
     display: flex;
     flex-wrap: wrap;
@@ -81,67 +85,89 @@
     margin-right: 3px;
 }
 
-.loadout-card-details-copy {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
+/* Copy button styles */
 .loadout-card-details-copy button {
     border: none;
-    border-radius: 0px;
-    background-color: transparent;
-    padding: 10px 20px;
-    margin: 0 5px;
-    color: var(--wht);
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-left: 10px;
+    color: var(--blk);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .loadout-card-details-copy button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: var(--wht);
+    filter: brightness(120%);
+    color: var(--blk);
 }
 
-/* Ocultar el texto por defecto */
-.texto-copiar {
-    display: none;
-    transition: opacity 0.3s ease-in-out;
-}
-
-.loadout-card-details-copy {
+/* Hidden content on hover */
+.card-container-hidden {
     display: none;
 }
 
-/* Mostrar el texto al hacer hover en la tarjeta */
 .loadout-card:hover .texto-copiar,
-.loadout-card:hover .loadout-card-details-copy {
-    display: block;
+.loadout-card:hover .card-container-hidden {
+    display: flex;
+    align-items: center;
 }
 
-/* Container for the icons */
-.loadout-card-icons {
-  top: 10px;
-  left: 10px;
-  display: flex;
-  gap: 10px;
-  z-index: 1; /* Ensure the icons are above other elements */
-  /* Always visible, no hover dependency */
+.loadout-card:hover .circle-icon {
+    display: none;
 }
 
-/* Circle style */
+/* Lower container for icons */
+.loadout-card-lower-container {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    height: 25px;
+    gap: 10px;
+    z-index: 1;
+}
+
+/* Circle icon styles */
 .circle-icon {
-  padding: 5px 10px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  background-color: var(--yel);
+    padding: 0 15px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    background-color: var(--yel);
 }
 
 .circle-icon p {
-  margin: 0;
-  color: var(--blk);
+    margin: 0;
+    color: var(--blk);
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Tooltip text */
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 80px;
+  background-color: var(--blk);
+  color: var(--wht);
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  bottom: 125%; /* Position above the button */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Show tooltip on hover */
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
