@@ -94,6 +94,15 @@ button {
     cursor: pointer;
 }
 
+input {
+    font-family: var(--font-body);
+    font-size: var(--texto-1);
+    padding: 10px;
+    border: 1px solid var(--null);
+    border-radius: 25px;
+    box-sizing: border-box;
+}
+
 button:hover {
     filter: brightness(1.1);
 }

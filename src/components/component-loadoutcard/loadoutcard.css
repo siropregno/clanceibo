@@ -1,0 +1,147 @@
+.loadout-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 320px;
+    box-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
+}
+
+.loadout-card:hover {
+    transform: scale(1.02);
+    transition: transform 0.3s ease-in-out;
+}
+
+.loadout-card-image {
+    background-color: black;
+    height: 300px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.loadout-card-image img {
+    height: auto;
+    width: auto;
+    object-fit: cover;
+}
+
+.loadout-card-details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: var(--grn);
+}
+
+.loadout-card-details h3 {
+    font-family: var(--font-title);
+    margin: 0;
+    font-size: 16px;
+    color:var(--wht);
+}
+
+.loadout-card-details p {
+    color:var(--wht);
+    font-size: var(--texto-btn);
+}
+
+.loadout-card-icon {
+    height: 20px;
+    width: auto;
+    filter: brightness(110%);
+}
+
+.loadout-card-details-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 10px;
+    height: 60px;
+    overflow: hidden;
+}
+
+.loadout-card-details-weapon {
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+}
+
+.loadout-card-details-weapon p {
+    margin: 0;
+    color: var(--wht);
+    font-size: var(--texto-btn);
+}
+
+.loadout-card-details-weapon img {
+    margin-right: 3px;
+}
+
+.loadout-card-details-copy {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.loadout-card-details-copy button {
+    border: none;
+    border-radius: 0px;
+    background-color: transparent;
+    padding: 10px 20px;
+    margin: 0 5px;
+    color: var(--wht);
+}
+
+.loadout-card-details-copy button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--wht);
+}
+
+/* Ocultar el texto por defecto */
+.texto-copiar {
+    display: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.loadout-card-details-copy {
+    display: none;
+}
+
+/* Mostrar el texto al hacer hover en la tarjeta */
+.loadout-card:hover .texto-copiar,
+.loadout-card:hover .loadout-card-details-copy {
+    display: block;
+}
+
+/* Container for the icons */
+.loadout-card-icons {
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 10px;
+  z-index: 1; /* Ensure the icons are above other elements */
+  /* Always visible, no hover dependency */
+}
+
+/* Circle style */
+.circle-icon {
+  padding: 5px 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  background-color: var(--yel);
+}
+
+.circle-icon p {
+  margin: 0;
+  color: var(--blk);
+}

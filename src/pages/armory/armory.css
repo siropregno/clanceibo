@@ -2,4 +2,93 @@ main {
     background: 
         linear-gradient(rgba(11,11,11,0.8), rgba(11,11,11,0.8)),
         url(/src/assets/images/box/img7.png);
+    min-height: 100vh;
+    background-attachment: fixed;
+}
+
+.password-container {
+    height: 100vh;
+    width: 100vw;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.password-container p {
+    color: var(--wht);
+}
+
+.password-container-input {
+    margin: 10px;
+}
+
+.password-container-input input {
+    margin-right: 20px;
+    padding-left: 20px;
+}
+
+.authorized-content h1 {
+    padding-top: 150px;
+    font-size: 2rem;
+    text-align: center;
+    color: var(--wht);
+}
+
+.loadout-cards-container {
+    margin-top: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: center;
+    height: auto;
+    width: 80vw;
+    margin-left: 10vw;
+}
+
+.filter-container {
+    margin: 20px 0;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.filter-container select {
+  padding: 10px;
+  margin-right: 20px;
+  width: 150px;
+  max-width: 200px;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  background-color: var(--wht);
+  color: var(--blk);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.filter-container select::after {
+  content: '▼';
+  font-size: 12px;
+  color: var(--blk);
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+@media screen and (max-width: 768px) {
+    .password-container-input input {
+        width: 50%;
+        margin-right: 10px;
+    }
 }
