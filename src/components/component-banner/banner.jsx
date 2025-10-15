@@ -43,13 +43,13 @@ const Banner = () => {
           }}
         />
         <div className="banner-content" style={{ position: 'relative', zIndex: 2 }}>
-          <h1 style={{ lineHeight: '1.1', fontSize: '45px'}}>CEIBO TE ESTA BUSCANDO</h1>
-          <h1 style={{ lineHeight: '1.1', fontSize: '45px', color: 'var(--cel)'}}>ENLISTATE HOY</h1>
+          <h1>CEIBO TE ESTA BUSCANDO</h1>
+          <h1 style={{ color: 'var(--cel)' }}>ENLISTATE HOY</h1>
           <p>
             Operaciones dinámicas y una forma de jugar que mezcla táctica con diversión. <br />
             Conocé mas sobre quienes somos y como unirte a nosotros.
           </p>
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+          <div className="botones-div">
             <button style={{ background: 'var(--grn2)', color: 'white' }} className="anotate-btn" onClick={() => navigate('/orbat')}>
               Conoce nuestro ORBAT acá
             </button>

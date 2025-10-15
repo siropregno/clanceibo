@@ -1,5 +1,5 @@
 .about-container {
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
     margin: 0 auto;
     display: flex;
@@ -27,19 +27,25 @@
     font-family: var(--font-body);
     font-size: var(--texto-1);
 }
-
-.about-banner{
-    left:0;
-    width: 100%;
-    height: auto;
-    padding: 50px 0;
+.about-header {
+    font-family: var(--font-title);
+    color: var(--wht);
+    font-size: 32px;
+    margin: 30px;
+    padding-top: 100px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
 }
 
-.about-banner p {
+.about-header p {
     width: 40%;
     height: auto;
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .about-header p {
+        width: 80%;
+    }
 }

@@ -10,7 +10,7 @@ const About = () => {
         <title>CLAN CEIBO | Sobre nosotros</title>
       </Helmet>
       <div className="about-container">
-        <div className='about-banner'>
+          <div className="about-header">
           <h1>¿Quienes somos?</h1>
           <p>
             Somos un grupo chico, con pasión por Arma 3. Jugamos a nuestra manera. No hacemos roleplay ni nos vestimos de general en el living, pero nos tomamos en serio lo que importa: el trabajo en equipo, el uso realista del equipo argentino y pasarla bien entre amigos.
