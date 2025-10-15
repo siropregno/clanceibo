@@ -5,6 +5,7 @@ import Footer from './components/component-footer/footer'
 import Inicio from './pages/inicio/Inicio';
 import About from './pages/about/About';
 import Armory from './pages/armory/Armory';
+import Orbat from './pages/orbat/Orbat';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element={<Inicio />} />
             <Route path="/about" element={<About />} />
             <Route path="/armory" element={<Armory />} />
+            <Route path="/orbat" element={<Orbat/>} />
           </Routes>
         </main>
         <Footer />

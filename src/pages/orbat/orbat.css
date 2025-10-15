@@ -1,0 +1,154 @@
+.orbat-container {
+    width: 100vw;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.orbat-header {
+    font-family: var(--font-title);
+    color: var(--wht);
+    font-size: 32px;
+    margin: 2rem 0 1rem 0;
+    margin-top: 150px;
+}
+
+.orbat-subtitle {
+    font-family: var(--font-body);
+    color: var(--wht);
+    font-size: 14px;
+    margin: 0 0 2rem 0;
+}
+
+.orbat-content {
+    padding: 30px;
+    font-family: var(--font-body);
+    width: 100%;
+    background-color: rgba(0.9, 0.9, 0.9, 0.5);
+}
+
+
+
+.orbat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.brigade-column {
+  background: var(--blk);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 10px rgba(0.9, 0.9, 0.9, 0.5);
+}
+
+.brigade-column:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.brigade-column:hover .brigade-header {
+  background-color: var(--yel);
+  transition: background-color 0.3s ease;
+}
+
+.brigade-column:hover .brigade-name,.brigade-column:hover .brigade-description {
+  color: var(--blk);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.brigade-column:hover .member-item {
+  color: var(--blk);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.brigade-header {
+    padding:  0 15px;
+    background-color:var(--grn);
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+}
+
+.brigade-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.brigade-description {
+    font-family: var(--font-body);
+    color: var(--wht);
+    font-weight: var(--light);
+    margin: 0;
+    font-size: 11px;
+    text-align: left;
+    filter: opacity(50%);
+}
+
+.brigade-photo {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  padding-bottom: 10px;
+}
+
+.member-photo {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  padding-bottom: 10px;
+}
+
+.brigade-name {
+    font-family: var(--font-title);
+    color: var(--yel);
+    font-weight: bold;
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 12px;
+    text-align: left;
+}
+
+.member-name {
+    font-family: var(--font-body);
+    color: var(--wht);
+    font-weight: var(--light);
+    margin: 0;
+    font-size: 12px;
+    text-align: left;
+}
+
+.brigade-members {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  gap: 10px;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  height: 60px;
+}
+
+.member-item:hover {
+  filter: brightness(120%);
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.05);
+}

@@ -71,6 +71,9 @@ const Navbar = () => {
               <NavLink className="nav-link" to="/Armory" onClick={() => setMenuOpen(false)}>Loadouts</NavLink>
             </li>
             <li>
+              <NavLink className="nav-link" to="/Orbat" onClick={() => setMenuOpen(false)}>Orbat</NavLink>
+            </li>
+            <li>
               <DiscordButton />
             </li>
           </ul>
