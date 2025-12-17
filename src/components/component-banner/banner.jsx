@@ -50,10 +50,10 @@ const Banner = () => {
             Conocé mas sobre quienes somos y como unirte a nosotros.
           </p>
           <div className="botones-div">
-            <button style={{ background: 'var(--grn2)', color: 'white' }} className="anotate-btn" onClick={() => navigate('/orbat')}>
+            <button className="btn-amarillo" onClick={() => navigate('/orbat')}>
               Conoce nuestro ORBAT acá
             </button>
-            <button className="anotate-btn" onClick={() => navigate('/about')}>
+            <button className='btn-blanco' onClick={() => navigate('/about')}>
               Saber más
               <FaArrowRight style={{ marginLeft: '8px', verticalAlign: 'middle' }} />
             </button>

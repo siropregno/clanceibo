@@ -101,6 +101,31 @@ button {
     cursor: pointer;
 }
 
+.btn-amarillo {
+    background-color: var(--yel);
+    color: var(--blk);
+}
+
+.btn-blanco {
+    background-color: var(--wht);
+    color: var(--blk);
+}
+
+.btn-green {
+    background-color: var(--grn2);
+    color: var(--wht);
+}
+
+.btn-celeste {
+    background-color: var(--cel);
+    color: var(--wht);
+}
+
+.btn-transparente {
+    background-color: transparent;
+    color: var(--wht);
+}
+
 input {
     font-family: var(--font-body);
     font-size: var(--texto-1);

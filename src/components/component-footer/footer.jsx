@@ -26,7 +26,7 @@ const Footer = () => {
           <a href='https://www.facebook.com/ClanCeibo' target='_blank' rel='noopener noreferrer'>
             <FaYoutube size={24} />
           </a>
-          <a href='https://www.instagram.com/clanceibo' target='_blank' rel='noopener noreferrer'>
+          <a href='https://www.instagram.com/arma3argentina/' target='_blank' rel='noopener noreferrer'>
             <FaInstagram size={24} />
           </a>
           <a href='https://www.twitter.com/clanceibo' target='_blank' rel='noopener noreferrer'>

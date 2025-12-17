@@ -74,7 +74,11 @@ const Navbar = () => {
               <NavLink className="nav-link" to="/Orbat" onClick={() => setMenuOpen(false)}>Orbat</NavLink>
             </li>
             <li>
-              <DiscordButton />
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvd7Ihf_6Y4rFKhjS_HiYJhiJP4CBkZTG-TxurcNSoevpQ2g/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">
+                  <button className='btn-green'>
+                    ¡Quiero unirme!
+                  </button>
+              </a>
             </li>
           </ul>
         </div>

@@ -17,6 +17,11 @@ const About = () => {
             Nos gusta que las cosas tengan sentido, sin perder la onda. Si te cabe la idea de sumarte a un grupo que encara las misiones con seriedad pero sin perder el humor, este es tu lugar.
           </p>
           <p>Nos movemos con un conjunto de mods privados hechos a medida para nuestro estilo de juego. Alternamos entre partidas dinámicas como Dynamic Recon Ops y misiones personalizadas que armamos sobre la marcha con Zeus.</p>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvd7Ihf_6Y4rFKhjS_HiYJhiJP4CBkZTG-TxurcNSoevpQ2g/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">
+            <button className="btn-green">
+              ¡Quiero unirme!
+            </button>
+          </a>
         </div>  
         <Photogallery />  
       </div>
