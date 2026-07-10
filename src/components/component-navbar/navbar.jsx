@@ -1,21 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import './navbar.css';
 import DiscordButton from '@components/component-discordbtn/discordbtn';
 import logo from '@assets/images/logo.png';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '@lib/supabaseClient';
+import PlayerAvatar from '@components/component-playeravatar/playeravatar';
 
 const Navbar = () => {
   const [hideOnScroll, setHideOnScroll] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false); // State for hamburger menu
-  const { session } = useAuth();
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
+  const { session, profile } = useAuth();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    setProfileMenuOpen(false);
     setMenuOpen(false);
   };
+
+  useEffect(() => {
+    if (!profileMenuOpen) return;
+    const handleClickOutside = (e) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
+        setProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [profileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -87,14 +102,31 @@ const Navbar = () => {
               <NavLink className="nav-link" to="/Roster" onClick={() => setMenuOpen(false)}>Roster</NavLink>
             </li>
             {session ? (
-              <>
-                <li>
-                  <NavLink className="nav-link" to="/mi-perfil" onClick={() => setMenuOpen(false)}>Mi perfil</NavLink>
-                </li>
-                <li>
-                  <button className="btn-transparente" onClick={handleSignOut}>Cerrar sesión</button>
-                </li>
-              </>
+              <li className="navbar-profile-menu" ref={profileMenuRef}>
+                <button
+                  type="button"
+                  className="navbar-profile-trigger"
+                  onClick={() => setProfileMenuOpen((open) => !open)}
+                  aria-expanded={profileMenuOpen}
+                >
+                  <PlayerAvatar url={profile?.avatar_url} size={32} alt="" />
+                  <span className="navbar-profile-name">{profile?.nombre || 'Mi cuenta'}</span>
+                </button>
+                {profileMenuOpen && (
+                  <div className="navbar-profile-dropdown">
+                    <NavLink
+                      className="navbar-profile-dropdown-link"
+                      to="/mi-perfil"
+                      onClick={() => { setProfileMenuOpen(false); setMenuOpen(false); }}
+                    >
+                      Mi perfil
+                    </NavLink>
+                    <button className="navbar-profile-dropdown-link" onClick={handleSignOut}>
+                      Cerrar sesión
+                    </button>
+                  </div>
+                )}
+              </li>
             ) : (
               <li>
                 <NavLink className="nav-link" to="/ingresar" onClick={() => setMenuOpen(false)}>Iniciar sesión</NavLink>

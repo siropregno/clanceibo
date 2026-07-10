@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import './roster.css';
 import { supabase } from '@lib/supabaseClient';
 import PlayerCard from '@components/component-playercard/playercard';
+import PlayerAvatar from '@components/component-playeravatar/playeravatar';
 import { GiCrosshair, GiMedicalPack, GiMortar } from 'react-icons/gi';
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
@@ -66,6 +67,11 @@ const Roster = () => {
           ) : selectedPlayer ? (
             <div className="player-detail-container">
               <div className="player-detail-card">
+                <PlayerAvatar
+                  url={selectedPlayer.avatar_url}
+                  size={100}
+                  alt={`Foto de perfil de ${selectedPlayer.nombre}`}
+                />
                 <h2 className="player-detail-name">{selectedPlayer.nombre}</h2>
                 <p className="player-detail-role">{selectedPlayer.rol_favorito || 'Sin rol favorito'}</p>
                 <p className="player-detail-since">{formatMiembroDesde(selectedPlayer.miembro_desde)}</p>

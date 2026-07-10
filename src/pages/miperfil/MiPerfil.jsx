@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import './miperfil.css';
 import { supabase } from '@lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 import PlayerForm from '@components/component-playerform/playerform';
+import PlayerAvatar from '@components/component-playeravatar/playeravatar';
+import AvatarUploader from '@components/component-avatarupload/avatarupload';
 import { GiCrosshair, GiMedicalPack, GiMortar } from 'react-icons/gi';
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
@@ -23,26 +25,11 @@ const BADGES = [
 ];
 
 const MiPerfil = () => {
-  const { session, loading: authLoading } = useAuth();
-  const [player, setPlayer] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { session, loading: authLoading, profile, profileLoading, refreshProfile } = useAuth();
   const [editing, setEditing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-
-  const fetchMyProfile = async (userId) => {
-    setLoading(true);
-    setError(null);
-    const { data, error: fetchError } = await supabase
-      .from('players').select('*').eq('id', userId).single();
-    if (fetchError) setError('No se pudo cargar tu perfil.');
-    else setPlayer(data);
-    setLoading(false);
-  };
-
-  useEffect(() => { if (session) fetchMyProfile(session.user.id); }, [session]);
 
   const handleSubmit = async (values) => {
     setSubmitting(true);
@@ -55,7 +42,7 @@ const MiPerfil = () => {
     if (updateError) { setFormError('No se pudo guardar. ' + updateError.message); return; }
     setSuccessMessage('Perfil actualizado.');
     setEditing(false);
-    fetchMyProfile(values.id);
+    refreshProfile();
   };
 
   if (authLoading) return <div className="miperfil-page"><p className="miperfil-status">Cargando...</p></div>;
@@ -80,19 +67,19 @@ const MiPerfil = () => {
       <div className="miperfil-page">
         <div className="miperfil-container">
           <h1>Mi perfil</h1>
-          {loading && <p className="miperfil-status">Cargando tu perfil...</p>}
-          {error && <p className="form-error">{error}</p>}
+          {profileLoading && <p className="miperfil-status">Cargando tu perfil...</p>}
           {successMessage && <p className="form-info">{successMessage}</p>}
-          {player && !editing && (
+          {profile && !editing && (
             <div className="miperfil-card">
-              <h2>{player.nombre}</h2>
-              <p className="miperfil-role">{player.rol_favorito || 'Sin rol favorito'}</p>
-              <p className="miperfil-since">{formatMiembroDesde(player.miembro_desde)}</p>
+              <PlayerAvatar url={profile.avatar_url} size={90} alt={`Foto de perfil de ${profile.nombre}`} />
+              <h2>{profile.nombre}</h2>
+              <p className="miperfil-role">{profile.rol_favorito || 'Sin rol favorito'}</p>
+              <p className="miperfil-since">{formatMiembroDesde(profile.miembro_desde)}</p>
               <h3>Aptitudes (otorgadas por administradores)</h3>
               <div className="miperfil-badges">
                 {BADGES.map(({ key, label, Icon }) => (
-                  <div key={key} className={`miperfil-badge${player[key] ? ' earned' : ''}`}>
-                    <span className={`badge-chip${player[key] ? ' earned' : ''}`}><Icon /></span>
+                  <div key={key} className={`miperfil-badge${profile[key] ? ' earned' : ''}`}>
+                    <span className={`badge-chip${profile[key] ? ' earned' : ''}`}><Icon /></span>
                     <span>{label}</span>
                   </div>
                 ))}
@@ -100,15 +87,18 @@ const MiPerfil = () => {
               <button className="btn-amarillo" onClick={() => setEditing(true)}>Editar mi perfil</button>
             </div>
           )}
-          {player && editing && (
-            <PlayerForm
-              initialValues={player}
-              fields={['nombre', 'rol_favorito']}
-              onSubmit={handleSubmit}
-              onCancel={() => setEditing(false)}
-              submitting={submitting}
-              error={formError}
-            />
+          {profile && editing && (
+            <div className="miperfil-card">
+              <AvatarUploader userId={profile.id} currentUrl={profile.avatar_url} onUploaded={refreshProfile} />
+              <PlayerForm
+                initialValues={profile}
+                fields={['nombre', 'rol_favorito']}
+                onSubmit={handleSubmit}
+                onCancel={() => setEditing(false)}
+                submitting={submitting}
+                error={formError}
+              />
+            </div>
           )}
         </div>
       </div>

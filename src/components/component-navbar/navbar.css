@@ -115,6 +115,65 @@
     height: 40px;
 }
 
+.navbar-profile-menu {
+    position: relative;
+}
+
+.navbar-profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    padding: 6px 10px;
+    border-radius: 25px;
+    color: var(--wht);
+}
+
+.navbar-profile-trigger:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-profile-name {
+    font-family: var(--font-body);
+    font-size: var(--texto-btn);
+    text-transform: none;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.navbar-profile-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--grn);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    min-width: 160px;
+    overflow: hidden;
+    z-index: 200;
+}
+
+.navbar-profile-dropdown-link {
+    background: transparent;
+    color: var(--wht);
+    text-decoration: none;
+    text-align: left;
+    padding: 12px 18px;
+    border-radius: 0;
+    font-size: var(--texto-btn);
+    text-transform: none;
+    cursor: pointer;
+}
+
+.navbar-profile-dropdown-link:hover {
+    background: var(--yel);
+    color: var(--blk);
+}
+
 h2:hover {
     color: var(--yel);
     transition: color 0.2s ease-in-out;

@@ -72,6 +72,11 @@
     text-align: left;
 }
 
+.player-detail-card .player-avatar,
+.player-detail-card .player-avatar-fallback {
+    margin-bottom: 16px;
+}
+
 .player-detail-name {
     font-family: var(--font-title);
     color: var(--yel);

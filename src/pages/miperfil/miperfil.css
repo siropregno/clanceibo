@@ -33,6 +33,12 @@
     text-align: left;
 }
 
+.miperfil-card > .player-avatar,
+.miperfil-card > .player-avatar-fallback {
+    display: block;
+    margin: 0 auto 16px;
+}
+
 .miperfil-card h2 {
     color: var(--yel);
     font-family: var(--font-title);

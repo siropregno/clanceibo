@@ -1,11 +1,13 @@
 import React from 'react';
 import './playercard.css';
 import { GiCrosshair, GiMedicalPack, GiMortar } from 'react-icons/gi';
+import PlayerAvatar from '@components/component-playeravatar/playeravatar';
 
 const PlayerCard = ({ player, onSelect }) => {
-  const { nombre, rol_favorito, apt_tirador, apt_medico, apt_mortero } = player;
+  const { nombre, rol_favorito, avatar_url, apt_tirador, apt_medico, apt_mortero } = player;
   return (
     <div className="player-card" onClick={() => onSelect(player)}>
+      <PlayerAvatar url={avatar_url} size={72} alt={`Foto de perfil de ${nombre}`} />
       <div className="player-card-header">
         <h3 className="player-card-name">{nombre}</h3>
         <p className="player-card-role">{rol_favorito || 'Sin rol favorito'}</p>

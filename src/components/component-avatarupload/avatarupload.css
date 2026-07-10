@@ -1,0 +1,12 @@
+.avatar-uploader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.avatar-uploader-label {
+    cursor: pointer;
+    display: inline-block;
+}

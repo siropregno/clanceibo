@@ -5,13 +5,13 @@ import { supabase } from '@lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 import AdminLoginForm from './AdminLoginForm';
 import PlayerForm from '@components/component-playerform/playerform';
+import PlayerAvatar from '@components/component-playeravatar/playeravatar';
 
 const EDIT_FIELDS = ['nombre', 'rol_favorito', 'miembro_desde', 'apt_tirador', 'apt_medico', 'apt_mortero'];
 
 const Admin = () => {
-  const { session, loading: authLoading } = useAuth();
-  const [adminCheckLoading, setAdminCheckLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { session, loading: authLoading, profile, profileLoading } = useAuth();
+  const isAdmin = Boolean(profile?.is_admin);
   const [players, setPlayers] = useState([]);
   const [playersLoading, setPlayersLoading] = useState(false);
   const [playersError, setPlayersError] = useState(null);
@@ -20,19 +20,6 @@ const Admin = () => {
   const [formError, setFormError] = useState(null);
   const [actionMessage, setActionMessage] = useState(null);
   const [togglingId, setTogglingId] = useState(null);
-
-  useEffect(() => {
-    if (!session) { setAdminCheckLoading(false); setIsAdmin(false); return; }
-    let isMounted = true;
-    setAdminCheckLoading(true);
-    supabase.from('players').select('is_admin').eq('id', session.user.id).single()
-      .then(({ data, error }) => {
-        if (!isMounted) return;
-        setIsAdmin(!error && Boolean(data?.is_admin));
-        setAdminCheckLoading(false);
-      });
-    return () => { isMounted = false; };
-  }, [session]);
 
   const fetchPlayers = async () => {
     setPlayersLoading(true);
@@ -87,7 +74,7 @@ const Admin = () => {
 
   if (authLoading) return (<>{helmet}<p className="admin-status">Cargando...</p></>);
   if (!session) return (<>{helmet}<div className="admin-login-container"><AdminLoginForm /></div></>);
-  if (adminCheckLoading) return (<>{helmet}<p className="admin-status">Verificando permisos...</p></>);
+  if (profileLoading) return (<>{helmet}<p className="admin-status">Verificando permisos...</p></>);
   if (!isAdmin) return (<>{helmet}<p className="admin-status">No tenés permisos de administrador.</p></>);
 
   return (
@@ -118,13 +105,14 @@ const Admin = () => {
           <table className="admin-players-table">
             <thead>
               <tr>
-                <th>Nombre</th><th>Rol favorito</th><th>Miembro desde</th>
+                <th></th><th>Nombre</th><th>Rol favorito</th><th>Miembro desde</th>
                 <th>Tirador</th><th>Médico</th><th>Mortero</th><th>Estado</th><th></th>
               </tr>
             </thead>
             <tbody>
               {players.map((p) => (
                 <tr key={p.id} className={p.is_active ? '' : 'admin-row-inactive'}>
+                  <td><PlayerAvatar url={p.avatar_url} size={32} alt={`Foto de perfil de ${p.nombre}`} /></td>
                   <td>{p.nombre}</td>
                   <td>{p.rol_favorito}</td>
                   <td>{p.miembro_desde}</td>
