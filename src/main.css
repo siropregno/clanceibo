@@ -139,6 +139,33 @@ button:hover {
     filter: brightness(1.1);
 }
 
+.form-error {
+    color: #ff6b6b;
+}
+
+.form-info {
+    color: var(--yel);
+}
+
+.badge-chip {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--null);
+    color: var(--null);
+    background: transparent;
+    font-size: 18px;
+}
+
+.badge-chip.earned {
+    border-color: var(--yel);
+    background: var(--yel);
+    color: var(--blk);
+}
+
 @media screen and (max-width: 768px) {
     h1 {
         font-size: var(--titulo-mobile);

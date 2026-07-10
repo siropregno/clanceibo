@@ -1,0 +1,65 @@
+.admin-login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--blk);
+}
+
+.admin-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 320px;
+    background: var(--grn);
+    padding: 40px;
+    border-radius: 16px;
+}
+
+.admin-login-form h2 {
+    color: var(--wht);
+    text-align: center;
+}
+
+.admin-status {
+    color: var(--blk);
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.admin-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 100px 20px 60px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.admin-players-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--blk);
+    background: var(--wht);
+}
+
+.admin-players-table th,
+.admin-players-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--null);
+    text-align: left;
+    font-size: 14px;
+}
+
+.admin-row-inactive {
+    opacity: 0.5;
+}
+
+.admin-inactive-tag {
+    color: #ff6b6b;
+    font-weight: bold;
+}

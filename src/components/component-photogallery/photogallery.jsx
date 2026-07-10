@@ -9,7 +9,7 @@ import img4 from '@assets/images/box/img4.png';
 import img5 from '@assets/images/box/img5.png';
 import img6 from '@assets/images/box/img6.png';
 import img7 from '@assets/images/box/img7.png';
-import img9 from '@assets/images/box/img9.png';
+import img8 from '@assets/images/box/img8.png';
 import img11 from '@assets/images/box/img11.png';
 
 const images = [
@@ -20,7 +20,7 @@ const images = [
   { src: img5, alt: "Proto 5" },
   { src: img6, alt: "Proto 6" },
   { src: img7, alt: "Proto 7" },
-  { src: img9, alt: "Proto 9" },
+  { src: img8, alt: "Proto 8" },
   { src: img11, alt: "Proto 11" }
 ];
 

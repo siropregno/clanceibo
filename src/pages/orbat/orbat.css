@@ -7,6 +7,12 @@
     justify-content: center;
     align-items: center;
     text-align: center;
+    background: 
+        linear-gradient(rgba(11,11,11,0.8), rgba(11,11,11,0.8)),
+        url(/src/assets/images/box/img7.png);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
 }
 
 .orbat-header {
@@ -59,19 +65,10 @@
 }
 
 .brigade-column:hover .brigade-header {
-  background-color: var(--yel);
-  transition: background-color 0.3s ease;
+  filter: brightness(120%);
+  transition: filter 0.3s ease;
 }
 
-.brigade-column:hover .brigade-name,.brigade-column:hover .brigade-description {
-  color: var(--blk);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.brigade-column:hover .member-item {
-  color: var(--blk);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
 
 .brigade-header {
     padding:  0 15px;
@@ -104,14 +101,14 @@
   width: 38px;
   height: 38px;
   object-fit: cover;
-  padding-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .member-photo {
   width: 38px;
   height: 38px;
   object-fit: cover;
-  padding-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .brigade-name {
@@ -129,7 +126,7 @@
     color: var(--wht);
     font-weight: var(--light);
     margin: 0;
-    font-size: 12px;
+    font-size: 11px;
     text-align: left;
 }
 
@@ -144,14 +141,156 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 0 10px;
+  padding: 0 40px 0 10px;
   border-radius: 8px;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   height: 60px;
+  position: relative;
+}
+
+.member-item::after {
+  content: '→';
+  position: absolute;
+  right: 15px;
+  opacity: 0;
+  color: var(--blk);
+  font-size: 18px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateX(-5px);
+}
+
+.member-item:hover::after {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .member-item:hover {
-  filter: brightness(120%);
+  background-color: var(--yel);
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.member-item:hover .member-name {
+  color: var(--blk);
+  font-weight: var(--medium);
+}
+
+/* Member Detail View */
+.member-detail-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.member-detail-card {
+  
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: row;
+  background: var(--blk);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.member-detail-image {
+  width: 300px;
+  min-height: 350px;
+  background: var(--grn);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.member-detail-image img {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+}
+
+.member-detail-info {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-around;
+  text-align: left;
+}
+
+.member-detail-title {
+  font-family: var(--font-title);
+  color: var(--yel);
+  font-size: 15px;
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+}
+
+.member-detail-description {
+  font-family: var(--font-body);
+  color: var(--wht);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 30px 0;
+  opacity: 0.9;
+}
+
+.member-detail-roles h3 {
+  font-family: var(--font-title);
+  color: var(--wht);
+  font-size: 14px;
+  margin: 0 0 15px 0;
+  text-transform: uppercase;
+}
+
+.roles-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.role-tag {
+  background: var(--grn);
+  color: var(--wht);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+.role-tag:hover {
+  background: var(--yel);
+  color: var(--blk);
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .member-detail-card {
+    flex-direction: column;
+  }
+
+  .member-detail-image {
+    width: 100%;
+    min-height: 200px;
+    padding: 30px;
+  }
+
+  .member-detail-image img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .member-detail-info {
+    padding: 25px;
+  }
+
+  .member-detail-title {
+    font-size: 18px;
+  }
+
+  .member-detail-description {
+    font-size: 14px;
+  }
 }

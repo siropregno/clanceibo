@@ -48,6 +48,21 @@ main {
     height: auto;
     width: 80vw;
     margin-left: 10vw;
+    min-height: 300px;
+}
+
+.select-unit-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 40px;
+}
+
+.select-unit-message p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.2rem;
+    text-align: center;
 }
 
 .filter-container {
@@ -115,9 +130,59 @@ main {
   }
 }
 
+/* Password Modal Styles */
+.password-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.password-modal {
+  background-color: var(--blk);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.password-modal p {
+  color: var(--wht);
+  margin: 0;
+}
+
+.password-modal .cancel-button {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--wht);
+  padding: 8px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.password-modal .cancel-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 @media screen and (max-width: 768px) {
     .password-container-input input {
         width: 50%;
         margin-right: 10px;
+    }
+
+    .password-modal {
+        width: 90%;
+        padding: 20px;
     }
 }

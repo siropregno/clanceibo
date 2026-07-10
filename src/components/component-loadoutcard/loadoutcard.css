@@ -1,4 +1,5 @@
 .loadout-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -60,6 +61,8 @@
 /* Weapon details container */
 .loadout-card-details-container {
     display: flex;
+    flex-direction: column;
+    gap: 10px;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
@@ -170,4 +173,57 @@
 .tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+
+/* Coming Soon Overlay */
+.loadout-card.coming-soon {
+  position: relative;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.coming-soon-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.coming-soon-overlay span {
+  color: var(--wht);
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+/* SpecOps Badge */
+.spec-ops-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--yel);
+  color: var(--blk);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  z-index: 5;
+}
+
+/* Multi-unit note */
+.multi-unit-note {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 5px 0 0 0;
+  font-style: italic;
 }
