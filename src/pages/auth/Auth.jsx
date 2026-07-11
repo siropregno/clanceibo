@@ -74,7 +74,7 @@ const Auth = () => {
       <div className="auth-page page-container">
         <div className="auth-intro">
           <h1>¡Te damos la bienvenida!</h1>
-          <p>Comunidad de Arma 3 - Soft milsim argentino. Iniciá sesión o creá tu cuenta para acceder a tu perfil de jugador.</p>
+          <p>Iniciá sesión o creá tu cuenta para acceder a tu perfil.</p>
         </div>
         <div className="auth-card">
           <div className="auth-toggle">
