@@ -19,7 +19,7 @@ const Footer = () => {
           </div>
         </div>
         <div>
-            <p>© 2025 CLAN CEIBO. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} CLAN CEIBO. All rights reserved.</p>
           </div>
         <div className="social-icons">
           <p>Seguinos en:</p>
