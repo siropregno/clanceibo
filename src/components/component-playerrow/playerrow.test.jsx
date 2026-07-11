@@ -21,14 +21,14 @@ describe('PlayerRow', () => {
   it('renders no badges when none are earned', () => {
     renderRow(basePlayer);
     expect(screen.queryByAltText('Tirador especial')).not.toBeInTheDocument();
-    expect(screen.queryByAltText('Medico especialista')).not.toBeInTheDocument();
+    expect(screen.queryByAltText('Médico especialista')).not.toBeInTheDocument();
     expect(screen.queryByAltText('Game master')).not.toBeInTheDocument();
   });
 
   it('renders only earned badges', () => {
     renderRow({ ...basePlayer, apt_tirador: true, apt_medico: false, apt_game_master: true });
     expect(screen.getByAltText('Tirador especial')).toBeInTheDocument();
-    expect(screen.queryByAltText('Medico especialista')).not.toBeInTheDocument();
+    expect(screen.queryByAltText('Médico especialista')).not.toBeInTheDocument();
     expect(screen.getByAltText('Game master')).toBeInTheDocument();
   });
 
@@ -39,12 +39,12 @@ describe('PlayerRow', () => {
 
   it('shows the aptitude description in a tooltip on hover, hidden otherwise', async () => {
     renderRow({ ...basePlayer, apt_tirador: true });
-    expect(screen.queryByText(/Completo desafios de tiro avanzados/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Completó desafíos de tiro avanzados/)).not.toBeInTheDocument();
 
     await userEvent.hover(screen.getByAltText('Tirador especial'));
-    expect(screen.getByText(/Tirador especial: Completo desafios de tiro avanzados/)).toBeInTheDocument();
+    expect(screen.getByText(/Tirador especial: Completó desafíos de tiro avanzados/)).toBeInTheDocument();
 
     await userEvent.unhover(screen.getByAltText('Tirador especial'));
-    expect(screen.queryByText(/Completo desafios de tiro avanzados/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Completó desafíos de tiro avanzados/)).not.toBeInTheDocument();
   });
 });

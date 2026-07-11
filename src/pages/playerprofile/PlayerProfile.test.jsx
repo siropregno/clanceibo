@@ -85,7 +85,7 @@ describe('PlayerProfile', () => {
     mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
     renderAt('/roster/u1');
     await waitFor(() => expect(screen.getByText('Tirador especial')).toBeInTheDocument());
-    expect(screen.queryByText('Medico especialista')).not.toBeInTheDocument();
+    expect(screen.queryByText('Médico especialista')).not.toBeInTheDocument();
     expect(screen.queryByText('Game master')).not.toBeInTheDocument();
   });
 
@@ -95,13 +95,13 @@ describe('PlayerProfile', () => {
     mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
     renderAt('/roster/u1');
     await waitFor(() => expect(screen.getByText('Tirador especial')).toBeInTheDocument());
-    expect(screen.queryByText(/Completo desafios de tiro avanzados/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Completó desafíos de tiro avanzados/)).not.toBeInTheDocument();
 
     await userEvent.hover(screen.getByAltText('Tirador especial'));
-    expect(screen.getByText(/Completo desafios de tiro avanzados/)).toBeInTheDocument();
+    expect(screen.getByText(/Completó desafíos de tiro avanzados/)).toBeInTheDocument();
 
     await userEvent.unhover(screen.getByAltText('Tirador especial'));
-    expect(screen.queryByText(/Completo desafios de tiro avanzados/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Completó desafíos de tiro avanzados/)).not.toBeInTheDocument();
   });
 
   it('shows an empty-state message when no aptitudes are earned', async () => {
