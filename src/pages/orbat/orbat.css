@@ -98,16 +98,16 @@
 }
 
 .brigade-photo {
-  width: 38px;
-  height: 38px;
-  object-fit: cover;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
   margin-bottom: 10px;
 }
 
 .member-photo {
-  width: 38px;
-  height: 38px;
-  object-fit: cover;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
   margin-bottom: 10px;
 }
 
