@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mockSignInWithPassword = vi.fn();
@@ -15,7 +16,7 @@ vi.mock('../../context/AuthContext', () => ({ useAuth: () => ({ session: null, l
 
 import Auth from './Auth';
 
-const renderAuth = () => render(<MemoryRouter><Auth /></MemoryRouter>);
+const renderAuth = () => render(<HelmetProvider><MemoryRouter><Auth /></MemoryRouter></HelmetProvider>);
 
 describe('Auth', () => {
   beforeEach(() => { mockSignInWithPassword.mockReset(); mockSignUp.mockReset(); });

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import './auth.css';
 import { supabase } from '@lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';

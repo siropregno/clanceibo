@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mockPlayerSingle = vi.fn();
@@ -31,9 +32,11 @@ vi.mock('../../context/AuthContext', () => ({ useAuth: () => mockAuthValue }));
 import PlayerProfile from './PlayerProfile';
 
 const renderAt = (path) => render(
-  <MemoryRouter initialEntries={[path]}>
-    <Routes><Route path="/roster/:id" element={<PlayerProfile />} /></Routes>
-  </MemoryRouter>
+  <HelmetProvider>
+    <MemoryRouter initialEntries={[path]}>
+      <Routes><Route path="/roster/:id" element={<PlayerProfile />} /></Routes>
+    </MemoryRouter>
+  </HelmetProvider>
 );
 
 const basePlayer = {

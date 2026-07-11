@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import './playerprofile.css';
 import { supabase } from '@lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';

@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route, useParams } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { describe, it, expect, vi } from 'vitest';
 
 let mockAuthValue = { session: null, loading: false };
@@ -13,12 +14,14 @@ const ProfileStub = () => {
 };
 
 const renderMiPerfil = () => render(
-  <MemoryRouter initialEntries={['/mi-perfil']}>
-    <Routes>
-      <Route path="/mi-perfil" element={<MiPerfil />} />
-      <Route path="/roster/:id" element={<ProfileStub />} />
-    </Routes>
-  </MemoryRouter>
+  <HelmetProvider>
+    <MemoryRouter initialEntries={['/mi-perfil']}>
+      <Routes>
+        <Route path="/mi-perfil" element={<MiPerfil />} />
+        <Route path="/roster/:id" element={<ProfileStub />} />
+      </Routes>
+    </MemoryRouter>
+  </HelmetProvider>
 );
 
 describe('MiPerfil', () => {

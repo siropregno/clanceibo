@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import './armory.css';
 import LoadoutCard from '@components/component-loadoutcard/loadoutcard';
 import InfRifleman from '@assets/images/loadouts/infanteria-rifleman.png';

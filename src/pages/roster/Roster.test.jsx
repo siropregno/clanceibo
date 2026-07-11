@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mockOrder = vi.fn();
@@ -9,7 +10,7 @@ vi.mock('@lib/supabaseClient', () => ({
 
 import Roster from './Roster';
 
-const renderRoster = () => render(<MemoryRouter><Roster /></MemoryRouter>);
+const renderRoster = () => render(<HelmetProvider><MemoryRouter><Roster /></MemoryRouter></HelmetProvider>);
 
 describe('Roster', () => {
   beforeEach(() => mockOrder.mockReset());

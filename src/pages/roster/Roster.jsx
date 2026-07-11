@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import './roster.css';
 import { supabase } from '@lib/supabaseClient';
 import PlayerRow from '@components/component-playerrow/playerrow';
