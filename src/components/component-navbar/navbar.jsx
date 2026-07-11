@@ -91,13 +91,6 @@ const Navbar = () => {
           </div>
           <ul className={menuOpen ? 'active' : ''}>
             <li>
-              <NavLink to="/about" onClick={() => setMenuOpen(false)}>
-                  <button className='btn-green'>
-                    ¡Quiero unirme!
-                  </button>
-              </NavLink>
-            </li>
-            <li>
               <NavLink className="nav-link" to="/" onClick={() => setMenuOpen(false)}>Inicio</NavLink>
             </li>
             <li>
