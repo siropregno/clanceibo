@@ -6,7 +6,7 @@ import Footer from './components/component-footer/footer'
 import Inicio from './pages/inicio/Inicio';
 import About from './pages/about/About';
 // import Armory from './pages/armory/Armory'; // Oculto temporalmente
-import Orbat from './pages/orbat/Orbat';
+import Orbat from './pages/orbat/orbat';
 import Roster from './pages/roster/Roster';
 import PlayerProfile from './pages/playerprofile/PlayerProfile';
 import Auth from './pages/auth/Auth';

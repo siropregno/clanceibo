@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import './armory.css';
-import LoadoutCard from '@components/component-loadoutcard/LoadoutCard';
+import LoadoutCard from '@components/component-loadoutcard/loadoutcard';
 import InfRifleman from '@assets/images/loadouts/infanteria-rifleman.png';
 import InfMedic from '@assets/images/loadouts/infanteria-medic.png';
 import InfSniper from '@assets/images/loadouts/infanteria-sniper.png';

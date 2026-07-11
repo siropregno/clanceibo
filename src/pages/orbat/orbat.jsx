@@ -16,8 +16,8 @@ import RegInfanteriaMontanaMonte from '@assets/images/icons/reg-infanteria-monta
 
 import aviacionApoyo from '@assets/images/icons/aviacion-apoyo.png';
 import Heli1 from '@assets/images/icons/heli1.png';
-import Heli2 from '@assets/images/icons/heli2.png';
-import Heli3 from '@assets/images/icons/heli3.png';
+import Heli2 from '@assets/images/icons/Heli2.png';
+import Heli3 from '@assets/images/icons/Heli3.png';
 
 
 import CoComandos from '@assets/images/icons/co-comandos.png';
