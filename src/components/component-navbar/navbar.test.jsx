@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mockSignOut = vi.fn();
@@ -15,14 +15,45 @@ import Navbar from './navbar';
 
 const renderNavbar = () => render(<MemoryRouter><Navbar /></MemoryRouter>);
 
+const AuthStub = () => {
+  const location = useLocation();
+  return <div>Auth mode: {location.state?.mode || 'none'}</div>;
+};
+
+const renderNavbarWithAuthRoute = () => render(
+  <MemoryRouter initialEntries={['/']}>
+    <Navbar />
+    <Routes>
+      <Route path="/" element={<div>Home</div>} />
+      <Route path="/ingresar" element={<AuthStub />} />
+    </Routes>
+  </MemoryRouter>
+);
+
 describe('Navbar', () => {
   beforeEach(() => mockSignOut.mockReset());
 
-  it('shows an "Iniciar sesión" link when logged out', () => {
+  it('shows Registrarse and iniciar sesión buttons when logged out', () => {
     mockAuthValue = { session: null, profile: null };
     renderNavbar();
-    expect(screen.getByText('Iniciar sesión')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Registrarse' })).toBeInTheDocument();
+    expect(screen.getByText('o')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /iniciar sesión/i })).toBeInTheDocument();
     expect(screen.queryByText('Mi cuenta')).not.toBeInTheDocument();
+  });
+
+  it('navigates to /ingresar with signup mode when Registrarse is clicked', async () => {
+    mockAuthValue = { session: null, profile: null };
+    renderNavbarWithAuthRoute();
+    await userEvent.click(screen.getByRole('button', { name: 'Registrarse' }));
+    expect(screen.getByText('Auth mode: signup')).toBeInTheDocument();
+  });
+
+  it('navigates to /ingresar with login mode when iniciar sesión is clicked', async () => {
+    mockAuthValue = { session: null, profile: null };
+    renderNavbarWithAuthRoute();
+    await userEvent.click(screen.getByRole('button', { name: /iniciar sesión/i }));
+    expect(screen.getByText('Auth mode: login')).toBeInTheDocument();
   });
 
   it('shows the profile name as a closed dropdown trigger when logged in', () => {

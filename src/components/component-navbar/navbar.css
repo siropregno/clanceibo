@@ -96,7 +96,6 @@
     text-decoration: none;
     color: var(--wht);
     font-weight: 300;
-    text-transform: uppercase;
 }
 
 .nav-link.active {
@@ -113,6 +112,35 @@
 
 .nav-logo {
     height: 40px;
+}
+
+.navbar-auth-cta {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.navbar-auth-o {
+    color: var(--wht);
+    font-family: var(--font-body);
+    font-size: var(--texto-btn);
+}
+
+.navbar-auth-login {
+    background: none;
+    border: none;
+    color: var(--yel);
+    font-family: var(--font-body);
+    font-size: var(--texto-btn);
+    cursor: pointer;
+    padding: 2px;
+    white-space: nowrap;
+}
+
+.navbar-auth-login:hover {
+    text-decoration: underline;
 }
 
 .navbar-profile-menu {

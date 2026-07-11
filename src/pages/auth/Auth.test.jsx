@@ -29,6 +29,25 @@ describe('Auth', () => {
     await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(/incorrectos/i));
   });
 
+  it('rejects an invalid email without calling the API', async () => {
+    renderAuth();
+    await userEvent.type(screen.getByPlaceholderText('Email'), 'not-an-email');
+    await userEvent.type(screen.getByPlaceholderText('Contraseña'), 'somepassword');
+    await userEvent.click(screen.getByRole('button', { name: /^ingresar$/i }));
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(/email válido/i));
+    expect(mockSignInWithPassword).not.toHaveBeenCalled();
+  });
+
+  it('toggles password visibility when the eye icon is clicked', async () => {
+    renderAuth();
+    const passwordInput = screen.getByPlaceholderText('Contraseña');
+    expect(passwordInput).toHaveAttribute('type', 'password');
+    await userEvent.click(screen.getByLabelText(/mostrar contraseña/i));
+    expect(passwordInput).toHaveAttribute('type', 'text');
+    await userEvent.click(screen.getByLabelText(/ocultar contraseña/i));
+    expect(passwordInput).toHaveAttribute('type', 'password');
+  });
+
   it('shows an email-confirmation message on signup when no session is returned', async () => {
     mockSignUp.mockResolvedValue({ data: { session: null }, error: null });
     renderAuth();

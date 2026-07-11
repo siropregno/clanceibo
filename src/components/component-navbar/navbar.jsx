@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import './navbar.css';
 import DiscordButton from '@components/component-discordbtn/discordbtn';
 import logo from '@assets/images/logo.png';
@@ -14,6 +14,12 @@ const Navbar = () => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null);
   const { session, profile } = useAuth();
+  const navigate = useNavigate();
+
+  const goToAuth = (mode) => {
+    setMenuOpen(false);
+    navigate('/ingresar', { state: { mode } });
+  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -85,6 +91,13 @@ const Navbar = () => {
           </div>
           <ul className={menuOpen ? 'active' : ''}>
             <li>
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvd7Ihf_6Y4rFKhjS_HiYJhiJP4CBkZTG-TxurcNSoevpQ2g/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">
+                  <button className='btn-green'>
+                    ¡Quiero unirme!
+                  </button>
+              </a>
+            </li>
+            <li>
               <NavLink className="nav-link" to="/" onClick={() => setMenuOpen(false)}>Inicio</NavLink>
             </li>
             <li>
@@ -128,17 +141,16 @@ const Navbar = () => {
                 )}
               </li>
             ) : (
-              <li>
-                <NavLink className="nav-link" to="/ingresar" onClick={() => setMenuOpen(false)}>Iniciar sesión</NavLink>
+              <li className="navbar-auth-cta">
+                <button type="button" className="btn-amarillo navbar-auth-signup" onClick={() => goToAuth('signup')}>
+                  Registrarse
+                </button>
+                <span className="navbar-auth-o">o</span>
+                <button type="button" className="navbar-auth-login" onClick={() => goToAuth('login')}>
+                  iniciar sesión
+                </button>
               </li>
             )}
-            <li>
-              <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvd7Ihf_6Y4rFKhjS_HiYJhiJP4CBkZTG-TxurcNSoevpQ2g/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">
-                  <button className='btn-green'>
-                    ¡Quiero unirme!
-                  </button>
-              </a>
-            </li>
           </ul>
         </div>
       </nav>

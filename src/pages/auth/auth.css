@@ -1,31 +1,106 @@
-.auth-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
+.auth-page {
+    background:
+        linear-gradient(rgba(11, 11, 11, 0.82), rgba(11, 11, 11, 0.82)),
+        url(/src/assets/images/box/img4.png);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    padding: 130px 20px 60px;
     justify-content: center;
-    background: var(--blk);
-    padding: 100px 20px 60px;
+}
+
+.auth-intro {
+    text-align: center;
+    max-width: 420px;
+    margin-bottom: 30px;
+}
+
+.auth-intro-logo {
+    width: 56px;
+    margin-bottom: 16px;
+}
+
+.auth-intro h1 {
+    color: var(--wht);
+    font-size: 28px;
+    margin: 0 0 12px 0;
+}
+
+.auth-intro p {
+    color: var(--wht);
+    opacity: 0.85;
+    font-size: 14px;
+    margin: 0;
 }
 
 .auth-card {
-    width: 360px;
+    width: 100%;
+    max-width: 360px;
     background: var(--grn);
     border-radius: 16px;
     padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 .auth-toggle {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    background: var(--blk);
+    border-radius: 25px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 28px;
 }
 
 .auth-toggle button {
     flex: 1;
+    border-radius: 21px;
+    padding: 12px 10px;
+    white-space: nowrap;
 }
 
 .auth-form {
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+.auth-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.auth-input-group input {
+    width: 100%;
+    padding-left: 40px;
+    font-size: 14px;
+}
+
+.auth-input-group.has-toggle input {
+    padding-right: 40px;
+}
+
+.auth-input-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--null);
+    font-size: 15px;
+    pointer-events: none;
+}
+
+.auth-input-toggle {
+    position: absolute;
+    right: 4px;
+    background: transparent;
+    border: none;
+    padding: 8px;
+    color: var(--null);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-input-toggle:hover {
+    color: var(--wht);
 }
