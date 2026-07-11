@@ -19,20 +19,25 @@ describe('PlayerRow', () => {
 
   it('renders no badges when none are earned', () => {
     renderRow(basePlayer);
-    expect(screen.queryByTitle('Tirador especial')).not.toBeInTheDocument();
-    expect(screen.queryByTitle('Medico especialista')).not.toBeInTheDocument();
-    expect(screen.queryByTitle('Game master')).not.toBeInTheDocument();
+    expect(screen.queryByTitle(/^Tirador especial:/)).not.toBeInTheDocument();
+    expect(screen.queryByTitle(/^Medico especialista:/)).not.toBeInTheDocument();
+    expect(screen.queryByTitle(/^Game master:/)).not.toBeInTheDocument();
   });
 
   it('renders only earned badges', () => {
     renderRow({ ...basePlayer, apt_tirador: true, apt_medico: false, apt_game_master: true });
-    expect(screen.getByTitle('Tirador especial')).toBeInTheDocument();
-    expect(screen.queryByTitle('Medico especialista')).not.toBeInTheDocument();
-    expect(screen.getByTitle('Game master')).toBeInTheDocument();
+    expect(screen.getByTitle(/^Tirador especial:/)).toBeInTheDocument();
+    expect(screen.queryByTitle(/^Medico especialista:/)).not.toBeInTheDocument();
+    expect(screen.getByTitle(/^Game master:/)).toBeInTheDocument();
   });
 
   it('links to the player profile page', () => {
     renderRow(basePlayer);
     expect(screen.getByRole('link')).toHaveAttribute('href', '/roster/1');
+  });
+
+  it('shows the aptitude description in the badge tooltip', () => {
+    renderRow({ ...basePlayer, apt_tirador: true });
+    expect(screen.getByTitle(/Completo desafios de tiro avanzados/)).toBeInTheDocument();
   });
 });

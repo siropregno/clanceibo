@@ -88,6 +88,15 @@ describe('PlayerProfile', () => {
     expect(screen.queryByText('Game master')).not.toBeInTheDocument();
   });
 
+  it('shows the aptitude description as a hover tooltip', async () => {
+    mockAuthValue = { session: null, refreshProfile: vi.fn() };
+    mockPlayerSingle.mockResolvedValue({ data: basePlayer, error: null });
+    mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
+    renderAt('/roster/u1');
+    await waitFor(() => expect(screen.getByText('Tirador especial')).toBeInTheDocument());
+    expect(screen.getByTitle(/Completo desafios de tiro avanzados/)).toBeInTheDocument();
+  });
+
   it('shows an empty-state message when no aptitudes are earned', async () => {
     mockAuthValue = { session: null, refreshProfile: vi.fn() };
     mockPlayerSingle.mockResolvedValue({

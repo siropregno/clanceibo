@@ -16,8 +16,14 @@ const PlayerRow = ({ player }) => {
       </div>
       {earnedBadges.length > 0 && (
         <div className="player-row-badges">
-          {earnedBadges.map(({ key, label, image }) => (
-            <img key={key} src={image} alt={label} title={label} className="player-row-badge-img" />
+          {earnedBadges.map(({ key, label, image, description }) => (
+            <img
+              key={key}
+              src={image}
+              alt={label}
+              title={`${label}: ${description}`}
+              className="player-row-badge-img"
+            />
           ))}
         </div>
       )}

@@ -151,8 +151,8 @@ const PlayerProfile = () => {
               <p className="playerprofile-badges-empty">No hay aptitudes aún.</p>
             ) : (
               <div className="playerprofile-badges">
-                {earnedBadges.map(({ key, label, image }) => (
-                  <div key={key} className="playerprofile-badge">
+                {earnedBadges.map(({ key, label, image, description }) => (
+                  <div key={key} className="playerprofile-badge" title={description}>
                     <img src={image} alt={label} className="playerprofile-badge-img" />
                     <span>{label}</span>
                   </div>
