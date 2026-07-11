@@ -58,6 +58,11 @@
     flex-shrink: 0;
 }
 
+.player-row-badge-img {
+    width: 32px;
+    height: 32px;
+}
+
 .player-row-arrow {
     color: var(--null);
     font-size: 16px;

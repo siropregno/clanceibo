@@ -7,8 +7,9 @@ import { useAuth } from '../../context/AuthContext';
 import AdminLoginForm from './AdminLoginForm';
 import PlayerForm from '@components/component-playerform/playerform';
 import PlayerAvatar from '@components/component-playeravatar/playeravatar';
+import { APTITUDES } from '@lib/aptitudes';
 
-const EDIT_FIELDS = ['nombre', 'rol_favorito', 'miembro_desde', 'apt_tirador', 'apt_medico', 'apt_mortero'];
+const EDIT_FIELDS = ['nombre', 'rol_favorito', 'miembro_desde', ...APTITUDES.map(({ key }) => key)];
 
 const Admin = () => {
   const { session, loading: authLoading, profile, profileLoading } = useAuth();
@@ -44,9 +45,7 @@ const Admin = () => {
       nombre: values.nombre.trim(),
       rol_favorito: values.rol_favorito.trim() || null,
       miembro_desde: values.miembro_desde || null,
-      apt_tirador: values.apt_tirador,
-      apt_medico: values.apt_medico,
-      apt_mortero: values.apt_mortero,
+      ...Object.fromEntries(APTITUDES.map(({ key }) => [key, values[key]])),
     };
     const { error } = await supabase.from('players').update(payload).eq('id', values.id);
     setFormSubmitting(false);
@@ -107,7 +106,8 @@ const Admin = () => {
             <thead>
               <tr>
                 <th></th><th>Nombre</th><th>Rol favorito</th><th>Miembro desde</th>
-                <th>Tirador</th><th>Médico</th><th>Mortero</th><th>Estado</th><th></th>
+                {APTITUDES.map(({ key, label }) => <th key={key}>{label}</th>)}
+                <th>Estado</th><th></th>
               </tr>
             </thead>
             <tbody>
@@ -117,9 +117,7 @@ const Admin = () => {
                   <td>{p.nombre}</td>
                   <td>{p.rol_favorito}</td>
                   <td>{p.miembro_desde}</td>
-                  <td>{p.apt_tirador ? 'Sí' : 'No'}</td>
-                  <td>{p.apt_medico ? 'Sí' : 'No'}</td>
-                  <td>{p.apt_mortero ? 'Sí' : 'No'}</td>
+                  {APTITUDES.map(({ key }) => <td key={key}>{p[key] ? 'Sí' : 'No'}</td>)}
                   <td>{p.is_active ? 'Activo' : <span className="admin-inactive-tag">Inactivo</span>}</td>
                   <td>
                     <Link to={`/roster/${p.id}`}><button type="button" className="btn-transparente">Ver perfil</button></Link>

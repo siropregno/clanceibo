@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './playerform.css';
+import { APTITUDES } from '@lib/aptitudes';
 
 export const ROLES = [
   'Fusilero',
@@ -17,9 +18,7 @@ const FIELD_CONFIG = {
   nombre: { label: 'Nombre', type: 'text' },
   rol_favorito: { label: 'Rol favorito', type: 'select', options: ROLES },
   miembro_desde: { label: 'Miembro desde', type: 'date' },
-  apt_tirador: { label: 'Tirador especial', type: 'checkbox' },
-  apt_medico: { label: 'Medicina de combate', type: 'checkbox' },
-  apt_mortero: { label: 'Morterista', type: 'checkbox' },
+  ...Object.fromEntries(APTITUDES.map(({ key, label }) => [key, { label, type: 'checkbox' }])),
 };
 
 const buildValues = (source, fields) => {

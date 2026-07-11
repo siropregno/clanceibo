@@ -9,7 +9,7 @@ import PlayerAvatar from '@components/component-playeravatar/playeravatar';
 import AvatarUploader from '@components/component-avatarupload/avatarupload';
 import ScreenshotGallery from '@components/component-screenshotgallery/screenshotgallery';
 import ScreenshotUpload from '@components/component-screenshotupload/screenshotupload';
-import { GiCrosshair, GiMedicalPack, GiMortar } from 'react-icons/gi';
+import { APTITUDES } from '@lib/aptitudes';
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
   'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -19,12 +19,6 @@ const formatMiembroDesde = (dateStr) => {
   const [year, month] = dateStr.split('-');
   return `Miembro desde ${MESES[parseInt(month, 10) - 1]} ${year}`;
 };
-
-const BADGES = [
-  { key: 'apt_tirador', label: 'Tirador especial', Icon: GiCrosshair },
-  { key: 'apt_medico', label: 'Medicina de combate', Icon: GiMedicalPack },
-  { key: 'apt_mortero', label: 'Morterista', Icon: GiMortar },
-];
 
 const PlayerProfile = () => {
   const { id } = useParams();
@@ -114,7 +108,7 @@ const PlayerProfile = () => {
     );
   }
 
-  const earnedBadges = BADGES.filter(({ key }) => player[key]);
+  const earnedBadges = APTITUDES.filter(({ key }) => player[key]);
 
   return (
     <>
@@ -157,9 +151,9 @@ const PlayerProfile = () => {
               <p className="playerprofile-badges-empty">No hay aptitudes aún.</p>
             ) : (
               <div className="playerprofile-badges">
-                {earnedBadges.map(({ key, label, Icon }) => (
+                {earnedBadges.map(({ key, label, image }) => (
                   <div key={key} className="playerprofile-badge">
-                    <span className="badge-chip earned"><Icon /></span>
+                    <img src={image} alt={label} className="playerprofile-badge-img" />
                     <span>{label}</span>
                   </div>
                 ))}

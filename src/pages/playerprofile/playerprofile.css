@@ -111,13 +111,20 @@
 
 .playerprofile-badge {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     gap: 8px;
     color: var(--wht);
     font-size: 12px;
     max-width: 90px;
     text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 4px 8px;
+}
+
+.playerprofile-badge-img {
+    width: 38px;
 }
 
 .playerprofile-screenshots {

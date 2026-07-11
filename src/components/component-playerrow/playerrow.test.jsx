@@ -5,7 +5,7 @@ import PlayerRow from './playerrow';
 
 const basePlayer = {
   id: '1', nombre: 'Juan Perez', rol_favorito: 'Rifleman', avatar_url: null,
-  apt_tirador: false, apt_medico: false, apt_mortero: false,
+  apt_tirador: false, apt_medico: false, apt_game_master: false,
 };
 
 const renderRow = (player) => render(<MemoryRouter><PlayerRow player={player} /></MemoryRouter>);
@@ -20,15 +20,15 @@ describe('PlayerRow', () => {
   it('renders no badges when none are earned', () => {
     renderRow(basePlayer);
     expect(screen.queryByTitle('Tirador especial')).not.toBeInTheDocument();
-    expect(screen.queryByTitle('Medicina de combate')).not.toBeInTheDocument();
-    expect(screen.queryByTitle('Morterista')).not.toBeInTheDocument();
+    expect(screen.queryByTitle('Medico especialista')).not.toBeInTheDocument();
+    expect(screen.queryByTitle('Game master')).not.toBeInTheDocument();
   });
 
   it('renders only earned badges', () => {
-    renderRow({ ...basePlayer, apt_tirador: true, apt_medico: false, apt_mortero: true });
-    expect(screen.getByTitle('Tirador especial')).toHaveClass('earned');
-    expect(screen.queryByTitle('Medicina de combate')).not.toBeInTheDocument();
-    expect(screen.getByTitle('Morterista')).toHaveClass('earned');
+    renderRow({ ...basePlayer, apt_tirador: true, apt_medico: false, apt_game_master: true });
+    expect(screen.getByTitle('Tirador especial')).toBeInTheDocument();
+    expect(screen.queryByTitle('Medico especialista')).not.toBeInTheDocument();
+    expect(screen.getByTitle('Game master')).toBeInTheDocument();
   });
 
   it('links to the player profile page', () => {

@@ -158,31 +158,6 @@ button:hover {
     color: var(--yel);
 }
 
-.badge-chip {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid var(--null);
-    color: var(--null);
-    background: transparent;
-    font-size: 18px;
-}
-
-.badge-chip.earned {
-    border-color: var(--yel);
-    background: var(--yel);
-    color: var(--blk);
-}
-
-.badge-chip.sm {
-    width: 26px;
-    height: 26px;
-    font-size: 12px;
-}
-
 /*
  * Shared "fills the page" container: content-driven height that never
  * leaves a gap before the footer on short content, but never caps growth

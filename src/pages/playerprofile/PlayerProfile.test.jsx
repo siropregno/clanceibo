@@ -41,7 +41,7 @@ const renderAt = (path) => render(
 
 const basePlayer = {
   id: 'u1', nombre: 'Juan Perez', rol_favorito: 'Rifleman', miembro_desde: '2024-03-01',
-  apt_tirador: true, apt_medico: false, apt_mortero: false, avatar_url: null,
+  apt_tirador: true, apt_medico: false, apt_game_master: false, avatar_url: null,
 };
 
 describe('PlayerProfile', () => {
@@ -84,8 +84,8 @@ describe('PlayerProfile', () => {
     mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
     renderAt('/roster/u1');
     await waitFor(() => expect(screen.getByText('Tirador especial')).toBeInTheDocument());
-    expect(screen.queryByText('Medicina de combate')).not.toBeInTheDocument();
-    expect(screen.queryByText('Morterista')).not.toBeInTheDocument();
+    expect(screen.queryByText('Medico especialista')).not.toBeInTheDocument();
+    expect(screen.queryByText('Game master')).not.toBeInTheDocument();
   });
 
   it('shows an empty-state message when no aptitudes are earned', async () => {
