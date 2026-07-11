@@ -59,8 +59,8 @@
 }
 
 .player-row-badge-img {
-    width: 32px;
-    height: 32px;
+    height: 20px;
+    width: auto;
 }
 
 .player-row-arrow {
