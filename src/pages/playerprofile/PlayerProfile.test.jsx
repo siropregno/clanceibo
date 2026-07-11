@@ -67,7 +67,7 @@ describe('PlayerProfile', () => {
     renderAt('/roster/u1');
     await waitFor(() => expect(screen.getByText('Juan Perez')).toBeInTheDocument());
     expect(screen.getByText('Editar mi perfil')).toBeInTheDocument();
-    expect(screen.getByText('+ Agregar screenshot')).toBeInTheDocument();
+    expect(screen.getByText(/agregar screenshot/i)).toBeInTheDocument();
   });
 
   it('shows an error state when the player cannot be loaded', async () => {

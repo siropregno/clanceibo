@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './screenshotupload.css';
 import { supabase } from '@lib/supabaseClient';
+import { FaCloudUploadAlt, FaSpinner } from 'react-icons/fa';
 
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
@@ -54,8 +55,16 @@ const ScreenshotUpload = ({ userId, onUploaded }) => {
 
   return (
     <div className="screenshot-upload">
-      <label className="btn-blanco screenshot-upload-label">
-        {uploading ? 'Subiendo...' : '+ Agregar screenshot'}
+      <label className={`btn-amarillo screenshot-upload-label${uploading ? ' uploading' : ''}`}>
+        {uploading ? (
+          <>
+            <FaSpinner className="screenshot-upload-spinner" /> Subiendo...
+          </>
+        ) : (
+          <>
+            <FaCloudUploadAlt /> Agregar screenshot
+          </>
+        )}
         <input
           type="file"
           accept="image/png,image/jpeg,image/webp"

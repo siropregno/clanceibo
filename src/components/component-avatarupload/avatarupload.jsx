@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './avatarupload.css';
 import { supabase } from '@lib/supabaseClient';
 import PlayerAvatar from '@components/component-playeravatar/playeravatar';
+import { FaCamera, FaSpinner } from 'react-icons/fa';
 
 const MAX_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
 const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
@@ -53,17 +54,23 @@ const AvatarUploader = ({ userId, currentUrl, onUploaded }) => {
 
   return (
     <div className="avatar-uploader">
-      <PlayerAvatar url={currentUrl} size={72} />
-      <label className="btn-blanco avatar-uploader-label">
-        {uploading ? 'Subiendo...' : 'Cambiar foto'}
-        <input
-          type="file"
-          accept="image/png,image/jpeg,image/webp"
-          onChange={handleFileChange}
-          disabled={uploading}
-          hidden
-        />
-      </label>
+      <div className="avatar-uploader-frame">
+        <PlayerAvatar url={currentUrl} size={72} />
+        <label
+          className={`avatar-uploader-badge${uploading ? ' uploading' : ''}`}
+          aria-label="Cambiar foto de perfil"
+          title="Cambiar foto de perfil"
+        >
+          {uploading ? <FaSpinner className="avatar-uploader-spinner" /> : <FaCamera />}
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={handleFileChange}
+            disabled={uploading}
+            hidden
+          />
+        </label>
+      </div>
       {error && <p role="alert" className="form-error">{error}</p>}
     </div>
   );

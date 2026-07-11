@@ -32,6 +32,11 @@ describe('AvatarUploader', () => {
     mockUpdateEq.mockReset();
   });
 
+  it('exposes an accessible label for the camera upload badge', () => {
+    render(<AvatarUploader userId="u1" currentUrl={null} onUploaded={vi.fn()} />);
+    expect(screen.getByLabelText(/cambiar foto de perfil/i)).toBeInTheDocument();
+  });
+
   it('rejects a disallowed file type without uploading', async () => {
     // userEvent.upload mimics the browser's native accept-attribute file
     // picker filtering, so a mismatched file never reaches onChange via it.

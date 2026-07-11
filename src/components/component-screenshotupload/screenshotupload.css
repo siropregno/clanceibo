@@ -4,5 +4,30 @@
 
 .screenshot-upload-label {
     cursor: pointer;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-button);
+    font-size: var(--texto-btn);
+    font-weight: var(--semibold);
+    padding: 12px 28px;
+    border-radius: 25px;
+}
+
+.screenshot-upload-label:hover {
+    filter: brightness(1.1);
+}
+
+.screenshot-upload-label.uploading {
+    cursor: default;
+    opacity: 0.75;
+}
+
+.screenshot-upload-spinner {
+    animation: screenshot-upload-spin 0.8s linear infinite;
+}
+
+@keyframes screenshot-upload-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }

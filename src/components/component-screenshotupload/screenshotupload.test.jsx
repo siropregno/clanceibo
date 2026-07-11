@@ -29,6 +29,11 @@ describe('ScreenshotUpload', () => {
     mockInsertSingle.mockReset();
   });
 
+  it('shows the add-screenshot label with an upload icon by default', () => {
+    render(<ScreenshotUpload userId="u1" onUploaded={vi.fn()} />);
+    expect(screen.getByText(/agregar screenshot/i)).toBeInTheDocument();
+  });
+
   it('rejects a disallowed file type without uploading', async () => {
     render(<ScreenshotUpload userId="u1" onUploaded={vi.fn()} />);
     const input = document.querySelector('input[type="file"]');

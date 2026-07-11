@@ -6,7 +6,46 @@
     margin-bottom: 20px;
 }
 
-.avatar-uploader-label {
+.avatar-uploader-frame {
+    position: relative;
+    width: 72px;
+    height: 72px;
+}
+
+.avatar-uploader-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid var(--grn);
+    background: var(--yel);
+    color: var(--blk);
+    font-size: 12px;
     cursor: pointer;
-    display: inline-block;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.avatar-uploader-badge:hover {
+    transform: scale(1.1);
+    filter: brightness(1.1);
+}
+
+.avatar-uploader-badge.uploading {
+    cursor: default;
+    pointer-events: none;
+}
+
+.avatar-uploader-spinner {
+    animation: avatar-uploader-spin 0.8s linear infinite;
+}
+
+@keyframes avatar-uploader-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
