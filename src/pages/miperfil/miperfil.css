@@ -14,68 +14,7 @@
     color: var(--wht);
 }
 
-.miperfil-container h1 {
-    color: var(--wht);
-}
-
-.miperfil-container > p {
-    color: var(--wht);
-}
-
 .miperfil-status {
     color: var(--wht);
-}
-
-.miperfil-card {
-    background: var(--grn);
-    border-radius: 16px;
-    padding: 40px;
-    text-align: left;
-}
-
-.miperfil-card > .player-avatar,
-.miperfil-card > .player-avatar-fallback {
-    display: block;
-    margin: 0 auto 16px;
-}
-
-.miperfil-card h2 {
-    color: var(--yel);
-    font-family: var(--font-title);
-}
-
-.miperfil-role {
-    color: var(--wht);
-}
-
-.miperfil-since {
-    color: var(--wht);
-    font-style: italic;
-    margin-bottom: 20px;
-}
-
-.miperfil-card h3 {
-    font-family: var(--font-title);
-    color: var(--wht);
-    font-size: 14px;
-    text-transform: uppercase;
-}
-
-.miperfil-badges {
-    display: flex;
-    gap: 20px;
-    margin: 15px 0 25px;
-}
-
-.miperfil-badge {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    color: var(--null);
-    font-size: 12px;
-}
-
-.miperfil-badge.earned {
-    color: var(--yel);
+    padding: 100px 20px;
 }

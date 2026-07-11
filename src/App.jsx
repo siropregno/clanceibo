@@ -8,6 +8,7 @@ import About from './pages/about/About';
 // import Armory from './pages/armory/Armory'; // Oculto temporalmente
 import Orbat from './pages/orbat/Orbat';
 import Roster from './pages/roster/Roster';
+import PlayerProfile from './pages/playerprofile/PlayerProfile';
 import Auth from './pages/auth/Auth';
 import MiPerfil from './pages/miperfil/MiPerfil';
 import Admin from './pages/admin/Admin';
@@ -24,6 +25,7 @@ function App() {
               {/* <Route path="/armory" element={<Armory />} /> */}{/* Oculto temporalmente */}
               <Route path="/orbat" element={<Orbat/>} />
               <Route path="/roster" element={<Roster />} />
+              <Route path="/roster/:id" element={<PlayerProfile />} />
               <Route path="/ingresar" element={<Auth />} />
               <Route path="/mi-perfil" element={<MiPerfil />} />
               <Route path="/panel-ceibo-7f2ac9" element={<Admin />} />

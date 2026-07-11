@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import './playerform.css';
 
+export const ROLES = [
+  'Fusilero',
+  'Ametrallador',
+  'Ingeniero',
+  'Medico de combate',
+  'Tirador designado',
+  'Sniper',
+  'Piloto de helicoptero',
+  'Piloto de combate',
+  'Tanquista',
+];
+
 const FIELD_CONFIG = {
   nombre: { label: 'Nombre', type: 'text' },
-  rol_favorito: { label: 'Rol favorito', type: 'text' },
+  rol_favorito: { label: 'Rol favorito', type: 'select', options: ROLES },
   miembro_desde: { label: 'Miembro desde', type: 'date' },
   apt_tirador: { label: 'Tirador especial', type: 'checkbox' },
   apt_medico: { label: 'Medicina de combate', type: 'checkbox' },
@@ -54,6 +66,18 @@ const PlayerForm = ({ initialValues, fields, onSubmit, onCancel, submitting, err
           return (
             <label key={key} className="player-form-checkbox-label">
               <input type="checkbox" checked={values[key]} onChange={handleChange(key)} /> {cfg.label}
+            </label>
+          );
+        }
+        if (cfg.type === 'select') {
+          return (
+            <label key={key}>{cfg.label}
+              <select value={values[key]} onChange={handleChange(key)}>
+                <option value="">Sin rol favorito</option>
+                {cfg.options.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
             </label>
           );
         }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import './admin.css';
 import { supabase } from '@lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
@@ -121,6 +122,7 @@ const Admin = () => {
                   <td>{p.apt_mortero ? 'Sí' : 'No'}</td>
                   <td>{p.is_active ? 'Activo' : <span className="admin-inactive-tag">Inactivo</span>}</td>
                   <td>
+                    <Link to={`/roster/${p.id}`}><button type="button" className="btn-transparente">Ver perfil</button></Link>
                     <button className="btn-blanco" onClick={() => openEditForm(p)}>Editar</button>
                     <button className="btn-transparente" disabled={togglingId === p.id}
                       onClick={() => handleToggleActive(p)}>

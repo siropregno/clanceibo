@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import PlayerForm from './playerform';
 
-const baseValues = { id: 'u1', nombre: 'Juan Perez', rol_favorito: 'Rifleman' };
+const baseValues = { id: 'u1', nombre: 'Juan Perez', rol_favorito: 'Fusilero' };
 
 describe('PlayerForm', () => {
   it('blocks submit and shows a validation error when nombre is cleared', async () => {
@@ -28,6 +28,17 @@ describe('PlayerForm', () => {
     render(<PlayerForm initialValues={baseValues} fields={['nombre', 'rol_favorito']}
       onSubmit={onSubmit} onCancel={vi.fn()} submitting={false} error={null} />);
     await userEvent.click(screen.getByRole('button', { name: /guardar/i }));
-    expect(onSubmit).toHaveBeenCalledWith({ id: 'u1', nombre: 'Juan Perez', rol_favorito: 'Rifleman' });
+    expect(onSubmit).toHaveBeenCalledWith({ id: 'u1', nombre: 'Juan Perez', rol_favorito: 'Fusilero' });
+  });
+
+  it('renders rol_favorito as a dropdown of the fixed role list', async () => {
+    const onSubmit = vi.fn();
+    render(<PlayerForm initialValues={baseValues} fields={['nombre', 'rol_favorito']}
+      onSubmit={onSubmit} onCancel={vi.fn()} submitting={false} error={null} />);
+    const select = screen.getByLabelText(/rol favorito/i);
+    expect(select.tagName).toBe('SELECT');
+    await userEvent.selectOptions(select, 'Sniper');
+    await userEvent.click(screen.getByRole('button', { name: /guardar/i }));
+    expect(onSubmit).toHaveBeenCalledWith({ id: 'u1', nombre: 'Juan Perez', rol_favorito: 'Sniper' });
   });
 });

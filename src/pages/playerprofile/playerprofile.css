@@ -1,0 +1,156 @@
+.playerprofile-page {
+    background: var(--blk);
+    padding: 130px 20px 60px;
+}
+
+.playerprofile-page-status {
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+}
+
+.playerprofile-content {
+    width: 100%;
+    max-width: 800px;
+}
+
+.playerprofile-back {
+    display: inline-block;
+    color: var(--wht);
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-family: var(--font-body);
+    font-size: 13px;
+}
+
+.playerprofile-back:hover {
+    color: var(--yel);
+}
+
+.playerprofile-status {
+    color: var(--wht);
+    text-align: center;
+    padding: 40px 0;
+}
+
+.playerprofile-card {
+    background: var(--grn);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.playerprofile-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.playerprofile-headerinfo {
+    flex: 1;
+    min-width: 200px;
+}
+
+.playerprofile-name {
+    font-family: var(--font-title);
+    color: var(--yel);
+    font-size: 26px;
+    margin: 0 0 6px 0;
+}
+
+.playerprofile-role {
+    font-family: var(--font-body);
+    color: var(--wht);
+    font-size: 15px;
+    margin: 0 0 6px 0;
+}
+
+.playerprofile-since {
+    font-family: var(--font-body);
+    color: var(--wht);
+    font-size: 13px;
+    font-style: italic;
+    opacity: 0.8;
+    margin: 0;
+}
+
+.playerprofile-edit-btn {
+    flex-shrink: 0;
+}
+
+.playerprofile-editpanel {
+    margin: 20px 0;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.playerprofile-card h3 {
+    font-family: var(--font-title);
+    color: var(--wht);
+    font-size: 14px;
+    margin: 20px 0 15px 0;
+    text-transform: uppercase;
+}
+
+.playerprofile-badges {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.playerprofile-badges-empty {
+    color: var(--wht);
+    opacity: 0.6;
+    font-size: 13px;
+    font-style: italic;
+    margin: 0;
+}
+
+.playerprofile-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--wht);
+    font-size: 12px;
+    max-width: 90px;
+    text-align: center;
+}
+
+.playerprofile-screenshots {
+    background: var(--grn);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: left;
+}
+
+.playerprofile-screenshots-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.playerprofile-screenshots-header h3 {
+    font-family: var(--font-title);
+    color: var(--wht);
+    font-size: 14px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+@media screen and (max-width: 600px) {
+    .playerprofile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .playerprofile-headerinfo {
+        text-align: center;
+    }
+}

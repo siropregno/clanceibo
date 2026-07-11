@@ -126,13 +126,16 @@ button {
     color: var(--wht);
 }
 
-input {
+input,
+select {
     font-family: var(--font-body);
     font-size: var(--texto-1);
     padding: 10px;
     border: 1px solid var(--null);
     border-radius: 25px;
     box-sizing: border-box;
+    background-color: var(--wht);
+    color: var(--blk);
 }
 
 button:hover {
@@ -164,6 +167,28 @@ button:hover {
     border-color: var(--yel);
     background: var(--yel);
     color: var(--blk);
+}
+
+.badge-chip.sm {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+}
+
+/*
+ * Shared "fills the page" container: content-driven height that never
+ * leaves a gap before the footer on short content, but never caps growth
+ * on long content either. Unlike the hero-style min-height:100vh +
+ * justify-content:center pattern used on Inicio/About/Orbat (which
+ * vertically centers a fixed content block), this one top-aligns content
+ * so lists/profiles start right below the navbar and grow downward.
+ */
+.page-container {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 @media screen and (max-width: 768px) {

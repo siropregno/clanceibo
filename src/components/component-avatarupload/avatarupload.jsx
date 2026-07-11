@@ -53,7 +53,7 @@ const AvatarUploader = ({ userId, currentUrl, onUploaded }) => {
 
   return (
     <div className="avatar-uploader">
-      <PlayerAvatar url={currentUrl} size={80} />
+      <PlayerAvatar url={currentUrl} size={72} />
       <label className="btn-blanco avatar-uploader-label">
         {uploading ? 'Subiendo...' : 'Cambiar foto'}
         <input
