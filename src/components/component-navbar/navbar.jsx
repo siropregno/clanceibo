@@ -91,11 +91,11 @@ const Navbar = () => {
           </div>
           <ul className={menuOpen ? 'active' : ''}>
             <li>
-              <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvd7Ihf_6Y4rFKhjS_HiYJhiJP4CBkZTG-TxurcNSoevpQ2g/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">
+              <NavLink to="/about" onClick={() => setMenuOpen(false)}>
                   <button className='btn-green'>
                     ¡Quiero unirme!
                   </button>
-              </a>
+              </NavLink>
             </li>
             <li>
               <NavLink className="nav-link" to="/" onClick={() => setMenuOpen(false)}>Inicio</NavLink>
