@@ -78,10 +78,10 @@ const Auth = () => {
         </div>
         <div className="auth-card">
           <div className="auth-toggle">
-            <button type="button" className={mode === 'login' ? 'btn-amarillo' : 'btn-transparente'}
-              onClick={() => switchMode('login')}>Iniciar sesión</button>
             <button type="button" className={mode === 'signup' ? 'btn-amarillo' : 'btn-transparente'}
               onClick={() => switchMode('signup')}>Registrarse</button>
+            <button type="button" className={mode === 'login' ? 'btn-amarillo' : 'btn-transparente'}
+              onClick={() => switchMode('login')}>Iniciar sesión</button>
           </div>
 
           {mode === 'login' ? (
