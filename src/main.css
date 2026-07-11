@@ -70,8 +70,6 @@ p {
     font-family: var(--font-body);
     font-size: var(--texto-1);
     font-weight: var(--light);
-    margin-block: 1em;
-    margin-block: 1lh;
 }
 
 b {

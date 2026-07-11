@@ -46,7 +46,8 @@ const Banner = () => {
           <h1>CEIBO TE ESTA BUSCANDO</h1>
           <h1 style={{ color: 'var(--cel)' }}>ENLISTATE HOY</h1>
           <p>
-            Operaciones dinámicas y una forma de jugar que mezcla táctica con diversión. <br />
+            Una forma de jugar que mezcla táctica con diversión. <br />
+            Misiones todos los viernes desde las 21:00 hs.<br />
             Conocé mas sobre quienes somos y como unirte a nosotros.
           </p>
           <div className="botones-div">

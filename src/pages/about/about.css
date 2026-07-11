@@ -44,6 +44,24 @@
     text-align: center;
 }
 
+.about-features {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.about-features p {
+    width: 40%;
+    height: auto;
+    text-align: center;
+    font-weight: var(--bold);
+    color: var(--yel);
+    font-size: var(--texto-1);
+    margin: 10px;
+}
+
 @media (max-width: 900px) {
     .about-header p {
         width: 80%;
