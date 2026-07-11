@@ -88,18 +88,18 @@ const Navbar = () => {
               <NavLink className="nav-link" to="/" onClick={() => setMenuOpen(false)}>Inicio</NavLink>
             </li>
             <li>
-              <NavLink className="nav-link" to="/About" onClick={() => setMenuOpen(false)}>Sobre nosotros</NavLink>
+              <NavLink className="nav-link" to="/about" onClick={() => setMenuOpen(false)}>Sobre nosotros</NavLink>
             </li>
             {/* Loadouts - Oculto temporalmente
             <li>
-              <NavLink className="nav-link" to="/Armory" onClick={() => setMenuOpen(false)}>Loadouts</NavLink>
+              <NavLink className="nav-link" to="/armory" onClick={() => setMenuOpen(false)}>Loadouts</NavLink>
             </li>
             */}
             <li>
-              <NavLink className="nav-link" to="/Orbat" onClick={() => setMenuOpen(false)}>Orbat</NavLink>
+              <NavLink className="nav-link" to="/orbat" onClick={() => setMenuOpen(false)}>Orbat</NavLink>
             </li>
             <li>
-              <NavLink className="nav-link" to="/Roster" onClick={() => setMenuOpen(false)}>Roster</NavLink>
+              <NavLink className="nav-link" to="/roster" onClick={() => setMenuOpen(false)}>Roster</NavLink>
             </li>
             {session ? (
               <li className="navbar-profile-menu" ref={profileMenuRef}>
