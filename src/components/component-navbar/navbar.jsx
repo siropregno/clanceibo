@@ -8,8 +8,6 @@ import { supabase } from '@lib/supabaseClient';
 import PlayerAvatar from '@components/component-playeravatar/playeravatar';
 
 const Navbar = () => {
-  const [hideOnScroll, setHideOnScroll] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false); // State for hamburger menu
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null);
@@ -40,20 +38,6 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > lastScrollY) {
-        setHideOnScroll(true); // scrolling down
-      } else {
-        setHideOnScroll(false); // scrolling up
-      }
-      setLastScrollY(window.scrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
-
-  useEffect(() => {
-    const handleScroll = () => {
       const nav = document.querySelector('.nav-container');
       if (window.scrollY > 10) {
         nav.classList.add('scrolled');
@@ -72,11 +56,6 @@ const Navbar = () => {
   return (
     <>
       <nav className="nav-container">
-        <div className={`nav-text-container${hideOnScroll ? ' hide' : ''}`}>
-          <div className='whstripe' style={{ height: '100%', width: '33%' }}>
-            <p className='nav-text'>Comunidad de Arma 3 - Soft milsim argentino papa!</p>
-          </div>
-        </div>
         <div className='nav-content'>
           <div className='logo-container'>
             <NavLink to="/">
