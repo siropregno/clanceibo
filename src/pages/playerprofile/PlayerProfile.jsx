@@ -9,6 +9,7 @@ import PlayerAvatar from '@components/component-playeravatar/playeravatar';
 import AvatarUploader from '@components/component-avatarupload/avatarupload';
 import ScreenshotGallery from '@components/component-screenshotgallery/screenshotgallery';
 import ScreenshotUpload from '@components/component-screenshotupload/screenshotupload';
+import Tooltip from '@components/component-tooltip/tooltip';
 import { APTITUDES } from '@lib/aptitudes';
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
@@ -152,10 +153,10 @@ const PlayerProfile = () => {
             ) : (
               <div className="playerprofile-badges">
                 {earnedBadges.map(({ key, label, image, description }) => (
-                  <div key={key} className="playerprofile-badge" title={description}>
+                  <Tooltip key={key} text={description} className="playerprofile-badge">
                     <img src={image} alt={label} className="playerprofile-badge-img" />
                     <span>{label}</span>
-                  </div>
+                  </Tooltip>
                 ))}
               </div>
             )}

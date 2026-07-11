@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect } from 'vitest';
 import PlayerRow from './playerrow';
@@ -19,16 +20,16 @@ describe('PlayerRow', () => {
 
   it('renders no badges when none are earned', () => {
     renderRow(basePlayer);
-    expect(screen.queryByTitle(/^Tirador especial:/)).not.toBeInTheDocument();
-    expect(screen.queryByTitle(/^Medico especialista:/)).not.toBeInTheDocument();
-    expect(screen.queryByTitle(/^Game master:/)).not.toBeInTheDocument();
+    expect(screen.queryByAltText('Tirador especial')).not.toBeInTheDocument();
+    expect(screen.queryByAltText('Medico especialista')).not.toBeInTheDocument();
+    expect(screen.queryByAltText('Game master')).not.toBeInTheDocument();
   });
 
   it('renders only earned badges', () => {
     renderRow({ ...basePlayer, apt_tirador: true, apt_medico: false, apt_game_master: true });
-    expect(screen.getByTitle(/^Tirador especial:/)).toBeInTheDocument();
-    expect(screen.queryByTitle(/^Medico especialista:/)).not.toBeInTheDocument();
-    expect(screen.getByTitle(/^Game master:/)).toBeInTheDocument();
+    expect(screen.getByAltText('Tirador especial')).toBeInTheDocument();
+    expect(screen.queryByAltText('Medico especialista')).not.toBeInTheDocument();
+    expect(screen.getByAltText('Game master')).toBeInTheDocument();
   });
 
   it('links to the player profile page', () => {
@@ -36,8 +37,14 @@ describe('PlayerRow', () => {
     expect(screen.getByRole('link')).toHaveAttribute('href', '/roster/1');
   });
 
-  it('shows the aptitude description in the badge tooltip', () => {
+  it('shows the aptitude description in a tooltip on hover, hidden otherwise', async () => {
     renderRow({ ...basePlayer, apt_tirador: true });
-    expect(screen.getByTitle(/Completo desafios de tiro avanzados/)).toBeInTheDocument();
+    expect(screen.queryByText(/Completo desafios de tiro avanzados/)).not.toBeInTheDocument();
+
+    await userEvent.hover(screen.getByAltText('Tirador especial'));
+    expect(screen.getByText(/Tirador especial: Completo desafios de tiro avanzados/)).toBeInTheDocument();
+
+    await userEvent.unhover(screen.getByAltText('Tirador especial'));
+    expect(screen.queryByText(/Completo desafios de tiro avanzados/)).not.toBeInTheDocument();
   });
 });

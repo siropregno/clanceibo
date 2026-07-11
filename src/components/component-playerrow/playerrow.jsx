@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import './playerrow.css';
 import { APTITUDES } from '@lib/aptitudes';
 import PlayerAvatar from '@components/component-playeravatar/playeravatar';
+import Tooltip from '@components/component-tooltip/tooltip';
 
 const PlayerRow = ({ player }) => {
   const { id, nombre, rol_favorito, avatar_url } = player;
@@ -17,13 +18,9 @@ const PlayerRow = ({ player }) => {
       {earnedBadges.length > 0 && (
         <div className="player-row-badges">
           {earnedBadges.map(({ key, label, image, description }) => (
-            <img
-              key={key}
-              src={image}
-              alt={label}
-              title={`${label}: ${description}`}
-              className="player-row-badge-img"
-            />
+            <Tooltip key={key} text={`${label}: ${description}`}>
+              <img src={image} alt={label} className="player-row-badge-img" />
+            </Tooltip>
           ))}
         </div>
       )}

@@ -1,0 +1,23 @@
+.tooltip-trigger {
+    display: inline-flex;
+    align-items: center;
+}
+
+.tooltip-bubble {
+    position: fixed;
+    transform: translate(-50%, calc(-100% - 10px));
+    width: max-content;
+    max-width: 220px;
+    background: var(--blk);
+    color: var(--wht);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: var(--regular);
+    line-height: 1.4;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    z-index: 1000;
+}

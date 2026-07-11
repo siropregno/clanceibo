@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -88,13 +89,19 @@ describe('PlayerProfile', () => {
     expect(screen.queryByText('Game master')).not.toBeInTheDocument();
   });
 
-  it('shows the aptitude description as a hover tooltip', async () => {
+  it('shows the aptitude description in a tooltip on hover, hidden otherwise', async () => {
     mockAuthValue = { session: null, refreshProfile: vi.fn() };
     mockPlayerSingle.mockResolvedValue({ data: basePlayer, error: null });
     mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
     renderAt('/roster/u1');
     await waitFor(() => expect(screen.getByText('Tirador especial')).toBeInTheDocument());
-    expect(screen.getByTitle(/Completo desafios de tiro avanzados/)).toBeInTheDocument();
+    expect(screen.queryByText(/Completo desafios de tiro avanzados/)).not.toBeInTheDocument();
+
+    await userEvent.hover(screen.getByAltText('Tirador especial'));
+    expect(screen.getByText(/Completo desafios de tiro avanzados/)).toBeInTheDocument();
+
+    await userEvent.unhover(screen.getByAltText('Tirador especial'));
+    expect(screen.queryByText(/Completo desafios de tiro avanzados/)).not.toBeInTheDocument();
   });
 
   it('shows an empty-state message when no aptitudes are earned', async () => {
