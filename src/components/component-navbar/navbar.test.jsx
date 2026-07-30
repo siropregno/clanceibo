@@ -12,6 +12,7 @@ let mockAuthValue = { session: null, profile: null };
 vi.mock('../../context/AuthContext', () => ({ useAuth: () => mockAuthValue }));
 
 import Navbar from './navbar';
+import { ADMIN_PATH } from '@lib/routes';
 
 const renderNavbar = () => render(<MemoryRouter><Navbar /></MemoryRouter>);
 
@@ -79,6 +80,46 @@ describe('Navbar', () => {
     expect(screen.getByText('Mi perfil')).toBeInTheDocument();
     await userEvent.click(document.body);
     await waitFor(() => expect(screen.queryByText('Mi perfil')).not.toBeInTheDocument());
+  });
+
+  it('does not show the admin panel link for a non-admin user', async () => {
+    mockAuthValue = {
+      session: { user: { id: 'u1' } },
+      profile: { nombre: 'Juan Perez', avatar_url: null, is_admin: false },
+    };
+    renderNavbar();
+    await userEvent.click(screen.getByText('Juan Perez'));
+    expect(screen.getByText('Mi perfil')).toBeInTheDocument();
+    expect(screen.queryByText(/panel de administración/i)).not.toBeInTheDocument();
+  });
+
+  it('does not show the admin panel link when the profile has not loaded yet', async () => {
+    mockAuthValue = { session: { user: { id: 'u1' } }, profile: null };
+    renderNavbar();
+    await userEvent.click(screen.getByText('Mi cuenta'));
+    expect(screen.queryByText(/panel de administración/i)).not.toBeInTheDocument();
+  });
+
+  it('shows the admin panel link pointing at ADMIN_PATH for an admin user', async () => {
+    mockAuthValue = {
+      session: { user: { id: 'u1' } },
+      profile: { nombre: 'Juan Perez', avatar_url: null, is_admin: true },
+    };
+    renderNavbar();
+    await userEvent.click(screen.getByText('Juan Perez'));
+    const link = screen.getByRole('link', { name: /panel de administración/i });
+    expect(link).toHaveAttribute('href', ADMIN_PATH);
+  });
+
+  it('closes the dropdown after navigating to the admin panel', async () => {
+    mockAuthValue = {
+      session: { user: { id: 'u1' } },
+      profile: { nombre: 'Juan Perez', avatar_url: null, is_admin: true },
+    };
+    renderNavbar();
+    await userEvent.click(screen.getByText('Juan Perez'));
+    await userEvent.click(screen.getByRole('link', { name: /panel de administración/i }));
+    await waitFor(() => expect(screen.queryByText(/panel de administración/i)).not.toBeInTheDocument());
   });
 
   it('signs out and closes the dropdown when Cerrar sesión is clicked', async () => {

@@ -148,6 +148,7 @@
     min-width: 160px;
     overflow: hidden;
     z-index: 200;
+    white-space: nowrap;
 }
 
 .navbar-profile-dropdown-link {
@@ -165,6 +166,17 @@
 .navbar-profile-dropdown-link:hover {
     background: var(--yel);
     color: var(--blk);
+}
+
+/* Admin-only entry: separated and accented so it reads as a privileged
+   destination rather than another account link. */
+.navbar-profile-dropdown-admin {
+    color: var(--yel);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-profile-dropdown-admin.active {
+    font-weight: var(--semibold);
 }
 
 h2:hover {

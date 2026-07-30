@@ -6,12 +6,14 @@ import logo from '@assets/images/logo.png';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '@lib/supabaseClient';
 import PlayerAvatar from '@components/component-playeravatar/playeravatar';
+import { ADMIN_PATH } from '@lib/routes';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false); // State for hamburger menu
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null);
   const { session, profile } = useAuth();
+  const isAdmin = Boolean(profile?.is_admin);
   const navigate = useNavigate();
 
   const goToAuth = (mode) => {
@@ -106,6 +108,15 @@ const Navbar = () => {
                     >
                       Mi perfil
                     </NavLink>
+                    {isAdmin && (
+                      <NavLink
+                        className="navbar-profile-dropdown-link navbar-profile-dropdown-admin"
+                        to={ADMIN_PATH}
+                        onClick={() => { setProfileMenuOpen(false); setMenuOpen(false); }}
+                      >
+                        Panel de administración
+                      </NavLink>
+                    )}
                     <button className="navbar-profile-dropdown-link" onClick={handleSignOut}>
                       Cerrar sesión
                     </button>

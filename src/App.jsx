@@ -13,6 +13,7 @@ import PlayerProfile from './pages/playerprofile/PlayerProfile';
 import Auth from './pages/auth/Auth';
 import MiPerfil from './pages/miperfil/MiPerfil';
 import Admin from './pages/admin/Admin';
+import { ADMIN_PATH } from '@lib/routes';
 
 function App() {
   return (
@@ -30,7 +31,7 @@ function App() {
                 <Route path="/roster/:id" element={<PlayerProfile />} />
                 <Route path="/ingresar" element={<Auth />} />
                 <Route path="/mi-perfil" element={<MiPerfil />} />
-                <Route path="/panel-ceibo-7f2ac9" element={<Admin />} />
+                <Route path={ADMIN_PATH} element={<Admin />} />
               </Routes>
             </main>
             <Footer />
