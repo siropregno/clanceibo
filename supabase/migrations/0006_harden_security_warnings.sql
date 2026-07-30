@@ -43,8 +43,12 @@ drop policy if exists "screenshots_bucket_public_read" on storage.objects;
 -- "permission denied for function is_admin" on every profile save.
 -- Relocating keeps EXECUTE intact while removing the HTTP surface.
 
+-- NOTE: the `revoke all on schema private` that was here broke every
+-- profile save with "permission denied for schema private" - calling a
+-- function needs USAGE on its schema as well as EXECUTE on the function.
+-- Fixed in 0007_fix_private_schema_usage.sql; left visible here rather
+-- than silently rewritten, since this file was already applied.
 create schema if not exists private;
-revoke all on schema private from anon, authenticated;
 grant usage on schema private to postgres;
 
 -- private.is_admin(): same body as public.is_admin(). Still SECURITY
