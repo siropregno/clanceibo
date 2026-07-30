@@ -1,0 +1,286 @@
+/* Campaign management section of the admin panel. Reuses the panel's
+   existing .admin-action / .admin-message / .admin-status classes and only
+   adds what the campaign/mission/badge layout needs on top. */
+
+.admin-campaigns {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-campaigns-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.admin-campaigns-header h2 {
+    color: var(--wht);
+    margin: 0;
+}
+
+/* ---------- Forms ---------- */
+
+.admin-campaign-form,
+.admin-mission-form {
+    background: var(--grn);
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Nested inside an expanded campaign card, which already has the darker
+   card background, so the mission form steps up rather than down. */
+.admin-mission-form {
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: none;
+}
+
+.admin-form-heading {
+    color: var(--yel);
+    font-family: var(--font-title);
+    font-size: var(--seccion-1);
+    margin: 0;
+}
+
+.admin-campaign-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.admin-campaign-fields label,
+.admin-campaign-textarea {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--wht);
+    font-size: var(--texto-mini);
+    text-transform: uppercase;
+    letter-spacing: var(--track-label);
+}
+
+.admin-campaign-fields input,
+.admin-campaign-textarea textarea {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--wht);
+    font-family: var(--font-body);
+    font-size: var(--texto-2);
+    text-transform: none;
+    letter-spacing: normal;
+    width: 100%;
+}
+
+.admin-campaign-textarea textarea {
+    resize: vertical;
+}
+
+.admin-campaign-fields input:focus,
+.admin-campaign-textarea textarea:focus {
+    outline: none;
+    border-color: var(--yel);
+}
+
+.admin-campaign-badge-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-field-label {
+    color: var(--wht);
+    font-size: var(--texto-mini);
+    text-transform: uppercase;
+    letter-spacing: var(--track-label);
+}
+
+.admin-campaign-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* ---------- Campaign cards ---------- */
+
+.admin-campaign-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.admin-campaign-card {
+    background: var(--grn);
+    border-radius: 16px;
+    padding: 20px 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.admin-campaign-card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.admin-campaign-badge {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.admin-campaign-card-info {
+    flex: 1;
+    min-width: 180px;
+}
+
+.admin-campaign-titulo {
+    color: var(--wht);
+    font-family: var(--font-title);
+    font-size: var(--texto-1);
+    margin: 0 0 4px 0;
+}
+
+.admin-campaign-meta {
+    color: var(--null);
+    font-size: var(--texto-mini);
+    margin: 0;
+}
+
+.admin-campaign-card-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.admin-campaign-body {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-campaign-subheader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.admin-subheading {
+    color: var(--yel);
+    font-family: var(--font-title);
+    font-size: var(--texto-btn);
+    text-transform: uppercase;
+    letter-spacing: var(--track-label);
+    margin: 24px 0 10px 0;
+}
+
+.admin-campaign-subheader .admin-subheading {
+    margin: 0;
+}
+
+.admin-small-btn {
+    padding: 8px 16px;
+    font-size: var(--texto-mini);
+    border-radius: 20px;
+}
+
+.admin-help-note,
+.admin-empty-note {
+    color: var(--null);
+    font-size: var(--texto-3);
+    margin: 0 0 12px 0;
+}
+
+/* ---------- Missions ---------- */
+
+.admin-mission-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-mission-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-mission-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.admin-mission-titulo {
+    color: var(--wht);
+    font-size: var(--texto-2);
+}
+
+.admin-mission-meta {
+    color: var(--null);
+    font-size: var(--texto-mini);
+}
+
+/* ---------- Badge granting ---------- */
+
+.admin-title-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.admin-title-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--wht);
+    font-size: var(--texto-3);
+    cursor: pointer;
+}
+
+.admin-title-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.admin-title-option input {
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+@media screen and (max-width: 600px) {
+    .admin-campaign-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .admin-mission-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

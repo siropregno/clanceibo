@@ -1,0 +1,50 @@
+/*
+ * Campaign badge pill. Deliberately matches .playerprofile-badge (the
+ * aptitude treatment) in shape and rhythm so the two blocks on a profile
+ * read as one family of awards, while staying its own stylesheet: the
+ * campaign badge has to survive a missing image, which aptitudes never do.
+ */
+
+.campaign-badge {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    color: var(--wht);
+    font-size: var(--texto-mini);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+}
+
+.campaign-badge-img {
+    width: 38px;
+    height: 38px;
+    padding: 5px;
+    object-fit: contain;
+}
+
+/*
+ * Shown when a campaign has no artwork yet. Sized to match the image box
+ * exactly (38px including the 5px padding) so a mixed row of badges keeps
+ * one baseline instead of jumping.
+ */
+.campaign-badge-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--grn2);
+    color: var(--wht);
+    font-family: var(--font-title);
+    font-size: var(--texto-mini);
+    font-weight: var(--bold);
+    flex-shrink: 0;
+}
+
+.campaign-badge-label {
+    padding-right: 20px;
+    font-family: var(--font-body);
+}

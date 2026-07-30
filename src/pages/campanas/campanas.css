@@ -1,0 +1,169 @@
+/* Matches the Roster page treatment: fixed darkened photo background, a
+   centered header, and a max-width column of cards. */
+
+.campanas-container {
+    background:
+        linear-gradient(rgba(11, 11, 11, 0.8), rgba(11, 11, 11, 0.8)),
+        url(/src/assets/images/box/img5.png);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+}
+
+.campanas-header {
+    color: var(--wht);
+    margin: var(--titulo-margin);
+    padding-top: 100px;
+    text-align: center;
+}
+
+.campanas-subtitle {
+    color: var(--wht);
+}
+
+.campanas-content {
+    padding: 0 30px 60px;
+    width: 100%;
+    text-align: center;
+}
+
+.campanas-status {
+    color: var(--wht);
+    font-size: var(--texto-1);
+}
+
+.campanas-error {
+    color: #ff6b6b;
+}
+
+.campanas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.campana-card {
+    background: var(--grn);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: left;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.campana-card-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.campana-badge {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.campana-card-headerinfo {
+    flex: 1;
+    min-width: 200px;
+}
+
+.campana-titulo {
+    color: var(--yel);
+    font-family: var(--font-title);
+    margin: 0 0 6px 0;
+}
+
+.campana-fechas {
+    color: var(--wht);
+    font-size: var(--texto-3);
+    opacity: 0.8;
+    margin: 0 0 4px 0;
+}
+
+.campana-count {
+    color: var(--wht);
+    font-size: var(--texto-mini);
+    text-transform: uppercase;
+    letter-spacing: var(--track-label);
+    opacity: 0.6;
+    margin: 0;
+}
+
+.campana-descripcion {
+    color: var(--wht);
+    font-size: var(--texto-2);
+    margin: 20px 0 0 0;
+}
+
+.campana-misiones {
+    list-style: none;
+    margin: 24px 0 0 0;
+    padding: 20px 0 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.campana-mision {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.campana-mision-img {
+    width: 96px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.campana-mision-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.campana-mision-titulo {
+    color: var(--wht);
+    font-family: var(--font-title);
+    font-size: var(--texto-1);
+    margin: 0 0 4px 0;
+}
+
+.campana-mision-meta {
+    color: var(--yel);
+    font-size: var(--texto-mini);
+    margin: 0 0 6px 0;
+}
+
+.campana-mision-desc {
+    color: var(--wht);
+    font-size: var(--texto-3);
+    opacity: 0.85;
+    margin: 0;
+}
+
+@media screen and (max-width: 600px) {
+    .campana-card-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .campana-card-headerinfo {
+        text-align: center;
+    }
+
+    .campana-mision {
+        flex-direction: column;
+    }
+
+    .campana-mision-img {
+        width: 100%;
+        height: 140px;
+    }
+}

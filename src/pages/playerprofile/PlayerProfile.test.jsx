@@ -27,6 +27,11 @@ vi.mock('@lib/supabaseClient', () => ({
   },
 }));
 
+const mockPlayerCampaigns = vi.fn();
+vi.mock('@lib/campaigns', () => ({
+  fetchPlayerCampaigns: (...a) => mockPlayerCampaigns(...a),
+}));
+
 let mockAuthValue = { session: null, refreshProfile: vi.fn() };
 vi.mock('../../context/AuthContext', () => ({ useAuth: () => mockAuthValue }));
 
@@ -49,6 +54,8 @@ describe('PlayerProfile', () => {
   beforeEach(() => {
     mockPlayerSingle.mockReset();
     mockScreenshotsOrder.mockReset();
+    mockPlayerCampaigns.mockReset();
+    mockPlayerCampaigns.mockResolvedValue({ data: [], error: null });
   });
 
   it('shows the player info without edit controls when viewing someone else', async () => {
@@ -123,5 +130,65 @@ describe('PlayerProfile', () => {
     });
     renderAt('/roster/u1');
     await waitFor(() => expect(screen.getAllByRole('img').some((img) => img.src.includes('shot.png'))).toBe(true));
+  });
+
+  describe('campaigns block', () => {
+    it('lists the campaign badges the player was granted', async () => {
+      mockAuthValue = { session: null, refreshProfile: vi.fn() };
+      mockPlayerSingle.mockResolvedValue({ data: basePlayer, error: null });
+      mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
+      mockPlayerCampaigns.mockResolvedValue({
+        data: [
+          { id: 'c1', titulo: 'Tormenta del Sur', descripcion: 'Seis noches.', badge_url: 'https://cdn.test/b.png' },
+          { id: 'c2', titulo: 'Relámpago', descripcion: null, badge_url: null },
+        ],
+        error: null,
+      });
+      renderAt('/roster/u1');
+      await waitFor(() => expect(screen.getByText('Tormenta del Sur')).toBeInTheDocument());
+      expect(screen.getByText('Relámpago')).toBeInTheDocument();
+    });
+
+    it('queries the campaigns of the profile being viewed', async () => {
+      mockAuthValue = { session: null, refreshProfile: vi.fn() };
+      mockPlayerSingle.mockResolvedValue({ data: basePlayer, error: null });
+      mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
+      renderAt('/roster/u1');
+      await waitFor(() => expect(mockPlayerCampaigns).toHaveBeenCalledWith('u1'));
+    });
+
+    it('shows an empty state when the player has no campaigns', async () => {
+      mockAuthValue = { session: null, refreshProfile: vi.fn() };
+      mockPlayerSingle.mockResolvedValue({ data: basePlayer, error: null });
+      mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
+      mockPlayerCampaigns.mockResolvedValue({ data: [], error: null });
+      renderAt('/roster/u1');
+      await waitFor(() => expect(screen.getByText(/no participó en campañas aún/i)).toBeInTheDocument());
+    });
+
+    // A failed campaign fetch must not take the whole profile down: the
+    // block falls back to the empty state and the rest still renders.
+    it('keeps rendering the profile when the campaign fetch fails', async () => {
+      mockAuthValue = { session: null, refreshProfile: vi.fn() };
+      mockPlayerSingle.mockResolvedValue({ data: basePlayer, error: null });
+      mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
+      mockPlayerCampaigns.mockResolvedValue({ data: null, error: 'No se pudieron cargar las campañas del jugador.' });
+      renderAt('/roster/u1');
+      await waitFor(() => expect(screen.getByText('Juan Perez')).toBeInTheDocument());
+      expect(screen.getByText(/no participó en campañas aún/i)).toBeInTheDocument();
+    });
+
+    it('keeps aptitudes and campaigns as separate blocks', async () => {
+      mockAuthValue = { session: null, refreshProfile: vi.fn() };
+      mockPlayerSingle.mockResolvedValue({ data: basePlayer, error: null });
+      mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
+      mockPlayerCampaigns.mockResolvedValue({
+        data: [{ id: 'c1', titulo: 'Tormenta', descripcion: null, badge_url: null }], error: null,
+      });
+      renderAt('/roster/u1');
+      await waitFor(() => expect(screen.getByText('Tormenta')).toBeInTheDocument());
+      expect(screen.getByRole('heading', { name: /^aptitudes$/i })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /^campañas$/i })).toBeInTheDocument();
+    });
   });
 });

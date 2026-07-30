@@ -1,0 +1,48 @@
+/* Follows the screenshot uploader's label-as-button pattern: a hidden file
+   input inside a styled <label>, since a bare file input cannot be themed. */
+
+.campaign-image-upload {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.campaign-image-preview {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
+}
+
+.campaign-image-label {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-button);
+    font-size: var(--texto-btn);
+    font-weight: var(--semibold);
+    padding: 10px 20px;
+    border-radius: 25px;
+}
+
+.campaign-image-label:hover {
+    filter: brightness(1.1);
+}
+
+.campaign-image-label.uploading {
+    cursor: default;
+    opacity: 0.75;
+}
+
+.campaign-image-spinner {
+    animation: campaign-image-spin 0.8s linear infinite;
+}
+
+@keyframes campaign-image-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

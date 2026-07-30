@@ -107,7 +107,10 @@ describe('Admin', () => {
     mockPlayers = [player()];
     renderAdmin();
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Eliminar' }));
+    // Scoped to the player's row: the campaigns section below the table has
+    // its own Eliminar buttons, so an unscoped query matches more than one.
+    const row = await screen.findByRole('row', { name: /ceibo uno/i });
+    await userEvent.click(within(row).getByRole('button', { name: 'Eliminar' }));
     await waitFor(() => expect(mockUpdate).toHaveBeenCalledWith({ is_active: false }, 'p1'));
     expect(await screen.findByText('Jugador desactivado.')).toBeInTheDocument();
   });
@@ -117,7 +120,8 @@ describe('Admin', () => {
     mockPlayers = [player()];
     renderAdmin();
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Editar' }));
+    const row = await screen.findByRole('row', { name: /ceibo uno/i });
+    await userEvent.click(within(row).getByRole('button', { name: 'Editar' }));
     expect(screen.getByRole('heading', { name: /editando a ceibo uno/i })).toBeInTheDocument();
   });
 

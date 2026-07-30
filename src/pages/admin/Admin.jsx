@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import AdminLoginForm from './AdminLoginForm';
 import PlayerForm from '@components/component-playerform/playerform';
 import PlayerAvatar from '@components/component-playeravatar/playeravatar';
+import AdminCampaigns from './AdminCampaigns';
 import { APTITUDES } from '@lib/aptitudes';
 
 const EDIT_FIELDS = ['nombre', 'rol_favorito', 'miembro_desde', ...APTITUDES.map(({ key }) => key)];
@@ -176,6 +177,11 @@ const Admin = () => {
               </table>
             </div>
           )}
+
+          {/* Campaigns are managed below the roster rather than on their own
+              route: granting a badge needs the player list this page has
+              already fetched, so the two belong on one screen. */}
+          <AdminCampaigns players={players} />
         </div>
       </div>
     </>

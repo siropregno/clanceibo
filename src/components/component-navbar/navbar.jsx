@@ -86,6 +86,9 @@ const Navbar = () => {
               <NavLink className="nav-link" to="/orbat" onClick={() => setMenuOpen(false)}>Orbat</NavLink>
             </li>
             <li>
+              <NavLink className="nav-link" to="/campanas" onClick={() => setMenuOpen(false)}>Campañas</NavLink>
+            </li>
+            <li>
               <NavLink className="nav-link" to="/roster" onClick={() => setMenuOpen(false)}>Roster</NavLink>
             </li>
             {session ? (

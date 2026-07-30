@@ -10,7 +10,9 @@ import AvatarUploader from '@components/component-avatarupload/avatarupload';
 import ScreenshotGallery from '@components/component-screenshotgallery/screenshotgallery';
 import ScreenshotUpload from '@components/component-screenshotupload/screenshotupload';
 import Tooltip from '@components/component-tooltip/tooltip';
+import CampaignBadge from '@components/component-campaignbadge/campaignbadge';
 import { APTITUDES } from '@lib/aptitudes';
+import { fetchPlayerCampaigns } from '@lib/campaigns';
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
   'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -37,6 +39,9 @@ const PlayerProfile = () => {
   const [screenshotsLoading, setScreenshotsLoading] = useState(true);
   const [screenshotError, setScreenshotError] = useState(null);
 
+  const [campaigns, setCampaigns] = useState([]);
+  const [campaignsLoading, setCampaignsLoading] = useState(true);
+
   const fetchPlayer = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -58,8 +63,19 @@ const PlayerProfile = () => {
     setScreenshotsLoading(false);
   }, [id]);
 
+  // Campaign badges are read-only here: they are granted from the admin
+  // panel, so unlike the profile itself there is nothing on this page that
+  // can invalidate them and no refetch callback to expose.
+  const loadCampaigns = useCallback(async () => {
+    setCampaignsLoading(true);
+    const { data } = await fetchPlayerCampaigns(id);
+    setCampaigns(data || []);
+    setCampaignsLoading(false);
+  }, [id]);
+
   useEffect(() => { fetchPlayer(); }, [fetchPlayer]);
   useEffect(() => { fetchScreenshots(); }, [fetchScreenshots]);
+  useEffect(() => { loadCampaigns(); }, [loadCampaigns]);
 
   const handleProfileSaved = async (values) => {
     setFormSubmitting(true);
@@ -157,6 +173,23 @@ const PlayerProfile = () => {
                     <img src={image} alt={label} className="playerprofile-badge-img" />
                     <span>{label}</span>
                   </Tooltip>
+                ))}
+              </div>
+            )}
+
+            {/* Campaigns get their own block rather than joining the
+                aptitude row: an aptitude is training the player completed,
+                a campaign is a series they fought through. Same visual
+                family, different meaning. */}
+            <h3>Campañas</h3>
+            {campaignsLoading ? (
+              <p className="playerprofile-badges-empty">Cargando campañas...</p>
+            ) : campaigns.length === 0 ? (
+              <p className="playerprofile-badges-empty">No participó en campañas aún.</p>
+            ) : (
+              <div className="playerprofile-badges">
+                {campaigns.map((campaign) => (
+                  <CampaignBadge key={campaign.id} campaign={campaign} />
                 ))}
               </div>
             )}
