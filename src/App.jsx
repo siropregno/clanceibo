@@ -9,6 +9,7 @@ import About from './pages/about/About';
 // import Armory from './pages/armory/Armory'; // Oculto temporalmente
 import Orbat from './pages/orbat/orbat';
 import Campanas from './pages/campanas/Campanas';
+import CampanaDetalle from './pages/campanas/CampanaDetalle';
 import Roster from './pages/roster/Roster';
 import PlayerProfile from './pages/playerprofile/PlayerProfile';
 import Auth from './pages/auth/Auth';
@@ -29,6 +30,7 @@ function App() {
                 {/* <Route path="/armory" element={<Armory />} /> */}{/* Oculto temporalmente */}
                 <Route path="/orbat" element={<Orbat/>} />
                 <Route path="/campanas" element={<Campanas />} />
+                <Route path="/campanas/:id" element={<CampanaDetalle />} />
                 <Route path="/roster" element={<Roster />} />
                 <Route path="/roster/:id" element={<PlayerProfile />} />
                 <Route path="/ingresar" element={<Auth />} />

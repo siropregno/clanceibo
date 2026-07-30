@@ -1,5 +1,7 @@
-/* Matches the Roster page treatment: fixed darkened photo background, a
-   centered header, and a max-width column of cards. */
+/* Campaign list. Cards mirror the roster's PlayerRow interaction (whole row
+   is the link, yellow hover, arrow slides in) but keep card spacing instead
+   of the roster's flush divided rows, since a campaign carries a
+   description and the roster row does not. */
 
 .campanas-container {
     background:
@@ -39,52 +41,93 @@
 .campanas-list {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 16px;
     max-width: 800px;
     margin: 0 auto;
 }
 
-.campana-card {
-    background: var(--grn);
-    border-radius: 16px;
-    padding: 30px;
-    text-align: left;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
+/* ---------- Card ---------- */
 
-.campana-card-header {
+.campana-card {
     display: flex;
     align-items: center;
     gap: 20px;
-    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--grn);
+    border-radius: 16px;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: left;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.campana-badge {
-    width: 64px;
-    height: 64px;
-    object-fit: contain;
+.campana-card:hover {
+    background: var(--yel);
+    transform: translateY(-2px);
+}
+
+.campana-card-badge {
     flex-shrink: 0;
 }
 
-.campana-card-headerinfo {
+.campana-badge {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    display: block;
+}
+
+.campana-badge-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--grn2);
+    color: var(--wht);
+    font-family: var(--font-title);
+    font-size: var(--subtitulo-1);
+    font-weight: var(--bold);
+}
+
+.campana-card-info {
     flex: 1;
-    min-width: 200px;
+    min-width: 0;
 }
 
 .campana-titulo {
-    color: var(--yel);
     font-family: var(--font-title);
-    margin: 0 0 6px 0;
-}
-
-.campana-fechas {
-    color: var(--wht);
-    font-size: var(--texto-3);
-    opacity: 0.8;
+    color: var(--yel);
+    font-size: var(--subtitulo-3);
     margin: 0 0 4px 0;
 }
 
+.campana-fechas {
+    font-family: var(--font-body);
+    color: var(--wht);
+    font-size: var(--texto-3);
+    opacity: 0.8;
+    margin: 0 0 6px 0;
+}
+
+/* Two lines max: the card is a teaser, the full text lives on the detail
+   page. Without the clamp a long description makes one card dwarf the rest. */
+.campana-descripcion {
+    font-family: var(--font-body);
+    color: var(--wht);
+    font-size: var(--texto-2);
+    margin: 0 0 6px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
 .campana-count {
+    font-family: var(--font-body);
     color: var(--wht);
     font-size: var(--texto-mini);
     text-transform: uppercase;
@@ -93,77 +136,47 @@
     margin: 0;
 }
 
-.campana-descripcion {
-    color: var(--wht);
-    font-size: var(--texto-2);
-    margin: 20px 0 0 0;
+/* Hover inverts the card, so every text colour has to flip with it or the
+   yellow-on-yellow title disappears. */
+.campana-card:hover .campana-titulo,
+.campana-card:hover .campana-fechas,
+.campana-card:hover .campana-descripcion,
+.campana-card:hover .campana-count {
+    color: var(--blk);
 }
 
-.campana-misiones {
-    list-style: none;
-    margin: 24px 0 0 0;
-    padding: 20px 0 0 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+.campana-card:hover .campana-fechas,
+.campana-card:hover .campana-count {
+    opacity: 0.75;
 }
 
-.campana-mision {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-}
-
-.campana-mision-img {
-    width: 96px;
-    height: 64px;
-    object-fit: cover;
-    border-radius: 8px;
+.campana-card-arrow {
+    color: var(--null);
+    font-size: var(--texto-1);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
     flex-shrink: 0;
 }
 
-.campana-mision-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.campana-mision-titulo {
-    color: var(--wht);
-    font-family: var(--font-title);
-    font-size: var(--texto-1);
-    margin: 0 0 4px 0;
-}
-
-.campana-mision-meta {
-    color: var(--yel);
-    font-size: var(--texto-mini);
-    margin: 0 0 6px 0;
-}
-
-.campana-mision-desc {
-    color: var(--wht);
-    font-size: var(--texto-3);
-    opacity: 0.85;
-    margin: 0;
+.campana-card:hover .campana-card-arrow {
+    color: var(--blk);
+    opacity: 1;
+    transform: translateX(0);
 }
 
 @media screen and (max-width: 600px) {
-    .campana-card-header {
+    .campana-card {
         flex-direction: column;
         text-align: center;
     }
 
-    .campana-card-headerinfo {
+    .campana-card-info {
         text-align: center;
     }
 
-    .campana-mision {
-        flex-direction: column;
-    }
-
-    .campana-mision-img {
-        width: 100%;
-        height: 140px;
+    /* The arrow reads as a horizontal affordance; stacked, it points nowhere. */
+    .campana-card-arrow {
+        display: none;
     }
 }

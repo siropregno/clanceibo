@@ -21,6 +21,7 @@ vi.mock('@lib/supabaseClient', () => ({
 
 import {
   sortMissions,
+  withMissionCount,
   fetchCampaigns,
   fetchCampaignWithMissions,
   fetchCampaignsWithMissions,
@@ -75,12 +76,47 @@ describe('sortMissions', () => {
   });
 });
 
+describe('withMissionCount', () => {
+  // PostgREST returns an embedded count as missions: [{ count: n }]. Callers
+  // want a number, and they must not receive a half-populated `missions` key
+  // that looks like the real mission rows.
+  it('flattens the embedded count into a number', () => {
+    expect(withMissionCount({ id: 'c1', missions: [{ count: 3 }] }))
+      .toEqual({ id: 'c1', mission_count: 3 });
+  });
+
+  it('reports zero when the campaign has no missions', () => {
+    expect(withMissionCount({ id: 'c1', missions: [] }).mission_count).toBe(0);
+  });
+
+  it('reports zero when the embed is missing entirely', () => {
+    expect(withMissionCount({ id: 'c1' }).mission_count).toBe(0);
+  });
+
+  it('drops the raw missions key so it cannot be mistaken for mission rows', () => {
+    expect(withMissionCount({ id: 'c1', missions: [{ count: 2 }] })).not.toHaveProperty('missions');
+  });
+
+  it('keeps the rest of the campaign intact', () => {
+    const out = withMissionCount({ id: 'c1', titulo: 'Tormenta', badge_url: 'x', missions: [{ count: 1 }] });
+    expect(out).toMatchObject({ id: 'c1', titulo: 'Tormenta', badge_url: 'x', mission_count: 1 });
+  });
+});
+
 describe('fetchCampaigns', () => {
-  it('returns the rows on success', async () => {
-    result = { data: [{ id: 'c1', titulo: 'Tormenta' }], error: null };
+  it('returns the rows on success, with the count flattened', async () => {
+    result = { data: [{ id: 'c1', titulo: 'Tormenta', missions: [{ count: 4 }] }], error: null };
     const { data, error } = await fetchCampaigns();
     expect(error).toBeNull();
-    expect(data).toEqual([{ id: 'c1', titulo: 'Tormenta' }]);
+    expect(data).toEqual([{ id: 'c1', titulo: 'Tormenta', mission_count: 4 }]);
+  });
+
+  // Asking for missions(count) instead of missions(*) keeps the list page
+  // from downloading every mission row it never renders.
+  it('asks for a mission count, not the mission rows', async () => {
+    result = { data: [], error: null };
+    await fetchCampaigns();
+    expect(calls).toContainEqual(['select', '*, missions(count)']);
   });
 
   it('orders by start date, newest first, undated last', async () => {

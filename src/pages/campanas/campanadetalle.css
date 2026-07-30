@@ -1,0 +1,223 @@
+/* Campaign detail. Mirrors the PlayerProfile layout: a back link, a header
+   card, then a panel below it - so arriving here from the campaign list
+   feels like arriving at a profile from the roster. */
+
+.campanadetalle-page {
+    background: var(--blk);
+    padding: 130px 20px 60px;
+}
+
+.campanadetalle-page-status {
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+}
+
+.campanadetalle-content {
+    width: 100%;
+    max-width: 800px;
+}
+
+.campanadetalle-back {
+    display: inline-block;
+    color: var(--wht);
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-family: var(--font-body);
+    font-size: var(--texto-3);
+}
+
+.campanadetalle-back:hover {
+    color: var(--yel);
+}
+
+.campanadetalle-status {
+    color: var(--wht);
+    text-align: center;
+    padding: 40px 0;
+}
+
+.campanadetalle-card {
+    background: var(--grn);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.campanadetalle-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.campanadetalle-badge {
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.campanadetalle-badge-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--grn2);
+    color: var(--wht);
+    font-family: var(--font-title);
+    font-size: var(--titulo-1);
+    font-weight: var(--bold);
+    flex-shrink: 0;
+}
+
+.campanadetalle-headerinfo {
+    flex: 1;
+    min-width: 200px;
+}
+
+.campanadetalle-titulo {
+    font-family: var(--font-title);
+    color: var(--yel);
+    font-size: var(--subtitulo-1);
+    margin: 0 0 6px 0;
+}
+
+.campanadetalle-fechas {
+    font-family: var(--font-body);
+    color: var(--wht);
+    font-size: var(--texto-3);
+    font-style: italic;
+    opacity: 0.8;
+    margin: 0 0 6px 0;
+}
+
+.campanadetalle-count {
+    font-family: var(--font-body);
+    color: var(--wht);
+    font-size: var(--texto-mini);
+    text-transform: uppercase;
+    letter-spacing: var(--track-label);
+    opacity: 0.6;
+    margin: 0;
+}
+
+.campanadetalle-descripcion {
+    font-family: var(--font-body);
+    color: var(--wht);
+    font-size: var(--texto-2);
+    margin: 24px 0 0 0;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ---------- Missions ---------- */
+
+.campanadetalle-misiones-panel {
+    background: var(--grn);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: left;
+}
+
+.campanadetalle-subtitulo {
+    font-family: var(--font-title);
+    color: var(--wht);
+    font-size: var(--texto-btn);
+    text-transform: uppercase;
+    letter-spacing: var(--track-label);
+    margin: 0 0 20px 0;
+}
+
+.campanadetalle-empty {
+    color: var(--wht);
+    font-size: var(--texto-3);
+    font-style: italic;
+    opacity: 0.6;
+    margin: 0;
+}
+
+.campanadetalle-misiones {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.campanadetalle-mision {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.campanadetalle-mision:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.campanadetalle-mision-img {
+    width: 120px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.campanadetalle-mision-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.campanadetalle-mision-titulo {
+    font-family: var(--font-title);
+    color: var(--wht);
+    font-size: var(--texto-1);
+    margin: 0 0 4px 0;
+}
+
+.campanadetalle-mision-meta {
+    font-family: var(--font-body);
+    color: var(--yel);
+    font-size: var(--texto-mini);
+    margin: 0 0 6px 0;
+}
+
+.campanadetalle-mision-desc {
+    font-family: var(--font-body);
+    color: var(--wht);
+    font-size: var(--texto-3);
+    opacity: 0.85;
+    margin: 0;
+}
+
+@media screen and (max-width: 600px) {
+    .campanadetalle-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .campanadetalle-headerinfo {
+        text-align: center;
+    }
+
+    .campanadetalle-card,
+    .campanadetalle-misiones-panel {
+        padding: 25px;
+    }
+
+    .campanadetalle-mision {
+        flex-direction: column;
+    }
+
+    .campanadetalle-mision-img {
+        width: 100%;
+        height: 160px;
+    }
+}

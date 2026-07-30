@@ -26,13 +26,24 @@ export const sortMissions = (campaign) => {
   return { ...campaign, missions };
 };
 
+// The campaign list. Asks for a mission COUNT rather than the mission rows:
+// the list card only shows "N misiones", so embedding every mission would
+// pull the whole tree down for a page that renders none of it.
+//
+// PostgREST returns that count as missions: [{ count: n }], which is awkward
+// for callers, so it is flattened to a plain mission_count number here.
 export const fetchCampaigns = async () => {
   const { data, error } = await supabase
     .from('campaigns')
-    .select('*')
+    .select('*, missions(count)')
     .order(CAMPAIGN_ORDER.column, CAMPAIGN_ORDER);
   if (error) return { data: null, error: ERR_CAMPAIGNS };
-  return { data: data || [], error: null };
+  return { data: (data || []).map(withMissionCount), error: null };
+};
+
+export const withMissionCount = (campaign) => {
+  const { missions, ...rest } = campaign;
+  return { ...rest, mission_count: missions?.[0]?.count ?? 0 };
 };
 
 // One campaign plus its missions, for the campaign detail view. The embedded
