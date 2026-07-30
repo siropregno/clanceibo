@@ -22,12 +22,17 @@
 -- which the detail page already renders as "Campaña no encontrada".
 --
 -- This also decides the badge question. campaign_titles rows for a hidden
--- campaign survive, but the embedded campaigns(*) that PlayerProfile reads
--- comes back NULL for a non-admin, and fetchPlayerCampaigns already drops
--- rows with no embedded campaign (that .filter(Boolean) was written for the
--- FK-cascade case and covers this one exactly). So hiding a campaign also
--- hides its badge from every profile, with no client change. Un-hiding puts
--- every badge back, because nothing was deleted.
+-- campaign survive, but the policy below stops serving them to non-admins, so
+-- the badge disappears from every profile. Un-hiding puts them all back,
+-- because nothing was deleted.
+--
+-- For an ADMIN the row is still served - the admin branch below is what keeps
+-- the panel working - so the badge would still show on profiles for whoever
+-- hid the campaign. That is not wanted: hidden means gone from the site for
+-- everyone, and the admin panel is the only place a hidden campaign should
+-- appear. src/lib/campaigns.js drops it from the three public read paths for
+-- that reason. That client filter is a product rule on top of this security
+-- rule, never a substitute for it.
 --
 -- ── Why the gate is repeated on missions and campaign_titles ──────────
 --
@@ -146,7 +151,14 @@ create index if not exists campaigns_visible_orden_idx
 --
 --    update public.campaigns set visible = true where id = '<hidden-id>';
 --
--- 4. End-to-end: hide a campaign in the admin panel. It disappears from
---    /campanas, its /campanas/<id> shows "Campaña no encontrada" in a private
---    window, and its badge disappears from the profiles that had it. Un-hide
---    it and all three come back.
+-- 4. End-to-end, and note this must hold WHILE SIGNED IN AS AN ADMIN, not
+--    only in a private window: hide a campaign in the admin panel. It
+--    disappears from /campanas, its /campanas/<id> shows "Campaña no
+--    encontrada", and its badge disappears from the profiles that had it. The
+--    admin panel still lists it, marked "Oculta". Un-hide it and all of it
+--    comes back.
+--
+--    The database still serves the row to an admin - that is what keeps the
+--    panel working - so this last check is passing because of the filter in
+--    src/lib/campaigns.js. Checking it only in a private window would test
+--    the policy and miss that filter entirely.

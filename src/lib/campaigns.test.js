@@ -375,25 +375,117 @@ describe('setCampaignVisibility', () => {
   });
 });
 
-// Hiding is enforced by RLS (0011), not by the client. A `.eq('visible',
-// true)` added to any read here would be worse than redundant: it would look
-// like the gate, so the real one could be relaxed without anyone noticing the
-// site still appeared correct - while PostgREST served the hidden campaign to
-// anyone using the anon key directly. It would also break the admin panel,
-// which must see hidden campaigns to un-hide them.
-describe('visibility is never filtered client-side', () => {
+// Hidden campaigns are gated twice, and the two layers answer different
+// questions.
+//
+// RLS (0011) is the security floor: a non-admin cannot select the row at all,
+// so it is unreachable through PostgREST with the publishable key. That layer
+// cannot be tested from here - it lives in the database - and nothing in this
+// file may be mistaken for it.
+//
+// RLS keeps an admin branch so the panel can un-hide a campaign, which means
+// an admin browsing the public pages WOULD still be served hidden campaigns.
+// These tests pin the product rule that removes them: hidden means gone from
+// the site for everyone, admins included.
+describe('hidden campaigns are dropped from the public read paths', () => {
+  const hidden = { id: 'c1', titulo: 'Oculta', visible: false };
+  const shown = { id: 'c2', titulo: 'Visible', visible: true };
+
+  it('fetchCampaigns drops hidden campaigns from the list', async () => {
+    result = { data: [hidden, shown], error: null };
+    const { data } = await fetchCampaigns();
+    expect(data.map((c) => c.id)).toEqual(['c2']);
+  });
+
+  it('fetchCampaigns returns an empty list when every campaign is hidden', async () => {
+    result = { data: [hidden], error: null };
+    const { data, error } = await fetchCampaigns();
+    expect(error).toBeNull();
+    expect(data).toEqual([]);
+  });
+
+  // The detail page renders a null campaign as "Campaña no encontrada", so a
+  // hidden campaign reached by typing its URL has to produce exactly that -
+  // for an admin too, whom RLS does serve the row to.
+  it('fetchCampaignWithMissions reports a hidden campaign as not found', async () => {
+    result = { data: { id: 'c1', titulo: 'Oculta', visible: false, missions: [] }, error: null };
+    const { data, error } = await fetchCampaignWithMissions('c1');
+    expect(data).toBeNull();
+    expect(error).toMatch(/no se pudo cargar la campaña/i);
+  });
+
+  it('fetchCampaignWithMissions still returns a visible campaign', async () => {
+    result = { data: { id: 'c2', titulo: 'Visible', visible: true, missions: [] }, error: null };
+    const { data, error } = await fetchCampaignWithMissions('c2');
+    expect(error).toBeNull();
+    expect(data.id).toBe('c2');
+  });
+
+  // The reported bug: an admin viewing a profile still saw the medal of a
+  // campaign they had hidden, because RLS served them the embedded row.
+  it('fetchPlayerCampaigns drops the badge of a hidden campaign', async () => {
+    result = {
+      data: [
+        { campaign_id: 'c1', campaigns: hidden },
+        { campaign_id: 'c2', campaigns: shown },
+      ],
+      error: null,
+    };
+    const { data } = await fetchPlayerCampaigns('p1');
+    expect(data.map((c) => c.id)).toEqual(['c2']);
+  });
+
+  it('fetchPlayerCampaigns returns nothing when every badge is hidden', async () => {
+    result = { data: [{ campaign_id: 'c1', campaigns: hidden }], error: null };
+    const { data, error } = await fetchPlayerCampaigns('p1');
+    expect(error).toBeNull();
+    expect(data).toEqual([]);
+  });
+
+  // The admin panel is the one place a hidden campaign must still appear -
+  // it is where it gets un-hidden. Filtering here would make hiding a
+  // one-way door.
+  it('fetchCampaignsWithMissions keeps hidden campaigns for the admin panel', async () => {
+    result = { data: [{ ...hidden, missions: [] }, { ...shown, missions: [] }], error: null };
+    const { data } = await fetchCampaignsWithMissions();
+    expect(data.map((c) => c.id)).toEqual(['c1', 'c2']);
+  });
+
+  // A row from before 0011, or a select that did not ask for the column,
+  // arrives with `visible` undefined. That must read as visible - treating it
+  // as hidden would blank the public site.
+  it.each([
+    ['fetchCampaigns', async () => {
+      result = { data: [{ id: 'c1', titulo: 'Sin columna' }], error: null };
+      return (await fetchCampaigns()).data.length;
+    }],
+    ['fetchPlayerCampaigns', async () => {
+      result = { data: [{ campaign_id: 'c1', campaigns: { id: 'c1', titulo: 'Sin columna' } }], error: null };
+      return (await fetchPlayerCampaigns('p1')).data.length;
+    }],
+  ])('%s treats a campaign with no visible column as visible', async (_label, run) => {
+    expect(await run()).toBe(1);
+  });
+
+  it('fetchCampaignWithMissions treats a campaign with no visible column as visible', async () => {
+    result = { data: { id: 'c1', titulo: 'Sin columna', missions: [] }, error: null };
+    const { data, error } = await fetchCampaignWithMissions('c1');
+    expect(error).toBeNull();
+    expect(data.id).toBe('c1');
+  });
+
+  // The client filter is a product rule layered on RLS, never a replacement.
+  // Adding `.eq('visible', true)` to the query would look like the gate and
+  // let someone relax the real one without the site appearing to change.
   it.each([
     ['fetchCampaigns', () => fetchCampaigns()],
-    ['fetchCampaignsWithMissions', () => fetchCampaignsWithMissions()],
     ['fetchCampaignWithMissions', () => fetchCampaignWithMissions('c1')],
     ['fetchPlayerCampaigns', () => fetchPlayerCampaigns('p1')],
-  ])('%s does not filter on the visible column', async (_label, run) => {
+  ])('%s filters in JS, not with a query predicate', async (_label, run) => {
     result = { data: [], error: null };
     await run();
     expect(calls.filter(([method]) => method === 'eq')
       .some(([, column]) => column === 'visible')).toBe(false);
-    expect(calls.filter(([method]) => method === 'select')
-      .some(([, columns]) => String(columns).includes('visible'))).toBe(false);
   });
 });
 

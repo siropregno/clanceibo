@@ -13,6 +13,34 @@ const ERR_TITLES = 'No se pudieron cargar las campañas del jugador.';
 const ERR_REORDER = 'No se pudo cambiar el orden de las campañas.';
 const ERR_VISIBILITY = 'No se pudo cambiar la visibilidad de la campaña.';
 
+// ── Two layers of hiding, and why both exist ───────────────────────────
+//
+// RLS (0011) is the security floor: a hidden campaign is not selectable at
+// all by anon or by a non-admin member, so it cannot be read out of PostgREST
+// with the publishable key no matter what this file does. That layer is not
+// negotiable and is not duplicated here.
+//
+// RLS deliberately keeps an admin branch (`visible or is_admin(...)`) so the
+// admin panel can list, edit and un-hide a hidden campaign. Without it,
+// hiding one would remove it from the very panel needed to bring it back.
+//
+// The consequence is that an admin browsing the *public* pages would still
+// see hidden campaigns and their badges, because the database is happy to
+// serve them. That is not wanted: hidden means gone from the site for
+// everyone, admins included, and the admin panel is the only place a hidden
+// campaign should appear. So the public read paths filter on `visible`
+// themselves - the filter below is a product rule layered on top of the
+// security rule, not a substitute for it.
+//
+// The split is by caller, not by table: fetchCampaignsWithMissions is the
+// admin panel's query and is the one function here that must NOT filter.
+const isVisible = (campaign) => campaign?.visible !== false;
+
+// `!== false` rather than truthiness: a row that predates the column (or a
+// select that did not ask for it) has `visible` undefined, and that must read
+// as visible. Treating undefined as hidden would blank the public site the
+// moment a query stopped requesting the column.
+
 // Campaigns are ordered by campaigns.orden ascending: an explicit position an
 // admin sets in the panel (0010). created_at desc is the tiebreaker, not a
 // cosmetic touch - orden is deliberately not unique (see 0010), so without a
@@ -49,12 +77,14 @@ export const sortMissions = (campaign) => {
 //
 // PostgREST returns that count as missions: [{ count: n }], which is awkward
 // for callers, so it is flattened to a plain mission_count number here.
+// Public list: hidden campaigns are dropped even for an admin, so /campanas
+// shows exactly what the clan sees.
 export const fetchCampaigns = async () => {
   const { data, error } = await applyCampaignOrder(
     supabase.from('campaigns').select('*, missions(count)'),
   );
   if (error) return { data: null, error: ERR_CAMPAIGNS };
-  return { data: (data || []).map(withMissionCount), error: null };
+  return { data: (data || []).filter(isVisible).map(withMissionCount), error: null };
 };
 
 export const withMissionCount = (campaign) => {
@@ -66,13 +96,18 @@ export const withMissionCount = (campaign) => {
 // select relies on the missions.campaign_id foreign key: PostgREST resolves
 // `missions(*)` into a nested array on each campaign row, which is one round
 // trip instead of two.
+// A hidden campaign is reported as if the row did not exist, which is what the
+// page already renders as "Campaña no encontrada". For a non-admin RLS has
+// made that literally true; for an admin the row does come back, and returning
+// it would leave a hidden campaign reachable by typing its URL - so the same
+// answer is produced here rather than special-casing the page.
 export const fetchCampaignWithMissions = async (campaignId) => {
   const { data, error } = await supabase
     .from('campaigns')
     .select('*, missions(*)')
     .eq('id', campaignId)
     .single();
-  if (error) return { data: null, error: ERR_CAMPAIGN };
+  if (error || !isVisible(data)) return { data: null, error: ERR_CAMPAIGN };
   return { data: sortMissions(data), error: null };
 };
 
@@ -170,6 +205,10 @@ export const setCampaignVisibility = async (campaignId, visible) => {
 // Embeds the campaign so the caller gets titulo/badge_url without a second
 // query. Rows whose campaign was deleted cannot exist (FK cascade), so the
 // embedded object is always present.
+// filter(Boolean) drops rows whose embedded campaign came back NULL; the
+// isVisible filter then drops a hidden campaign that RLS *did* serve because
+// the viewer is an admin. Both are needed: the first covers the non-admin
+// case, the second makes the badge disappear for admins too.
 export const fetchPlayerCampaigns = async (playerId) => {
   const { data, error } = await supabase
     .from('campaign_titles')
@@ -177,7 +216,10 @@ export const fetchPlayerCampaigns = async (playerId) => {
     .eq('player_id', playerId)
     .order('granted_at', { ascending: false });
   if (error) return { data: null, error: ERR_TITLES };
-  return { data: (data || []).map((row) => row.campaigns).filter(Boolean), error: null };
+  return {
+    data: (data || []).map((row) => row.campaigns).filter(Boolean).filter(isVisible),
+    error: null,
+  };
 };
 
 // Every granted title, keyed for the admin panel: campaign_id -> Set of
