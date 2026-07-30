@@ -1,13 +1,9 @@
+/* Layout comes from .page-container: the brigade grid grows downward, so the
+   header top-aligns under the navbar like Roster's instead of being pushed up
+   by the vertical centering this used to do. */
 .orbat-container {
-    width: 100vw;
-    min-height: 100vh;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     text-align: center;
-    background: 
+    background:
         linear-gradient(rgba(11,11,11,0.8), rgba(11,11,11,0.8)),
         url(/src/assets/images/box/img7.png);
     background-attachment: fixed;
@@ -19,6 +15,7 @@
     color: var(--wht);
     margin: var(--titulo-margin);
     padding-top: 100px;
+    text-align: center;
 }
 
 .orbat-subtitle {

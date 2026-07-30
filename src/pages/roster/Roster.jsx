@@ -34,7 +34,7 @@ const Roster = () => {
       </Helmet>
       <div className="roster-container page-container">
         <div className="roster-header">
-          <h1>Roster</h1>
+          <h1 className="titulo-pagina">Roster</h1>
           <p className="subtitulo-pagina roster-subtitle">Los miembros de nuestra comunidad.</p>
         </div>
         <div className="roster-content">

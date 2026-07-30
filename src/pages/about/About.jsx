@@ -11,7 +11,7 @@ const About = () => {
       </Helmet>
       <div className="about-container">
           <div className="about-header">
-          <h1>¿Quienes somos?</h1>
+          <h1 className="titulo-pagina">¿Quienes somos?</h1>
           <p>
             Somos un grupo chico, con pasión por Arma 3. Jugamos a nuestra manera. No hacemos roleplay ni nos vestimos de general en el living, pero nos tomamos en serio lo que importa: el trabajo en equipo, el uso realista del equipo argentino y <span style={{ color: 'var(--yel)', fontWeight: 'bold' }}>pasarla bien entre amigos</span>.
             Nos gusta que las cosas tengan sentido, sin perder la onda. Si te cabe la idea de sumarte a un grupo que encara las misiones con seriedad pero sin perder el humor, este es tu lugar.

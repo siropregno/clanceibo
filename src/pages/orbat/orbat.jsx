@@ -173,9 +173,9 @@ const Orbat = () => {
       <Helmet>
         <title>CLAN CEIBO | Orbat</title>
       </Helmet>
-      <div className="orbat-container">
+      <div className="orbat-container page-container">
         <div className="orbat-header">
-          <h1>Orbat</h1>
+          <h1 className="titulo-pagina">Orbat</h1>
           <p className="subtitulo-pagina orbat-subtitle">
             Elegi la brigada que más se adapte a tu estilo de juego y formá parte de nuestro grupo.
           </p>
