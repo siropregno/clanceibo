@@ -10,12 +10,26 @@ import { supabase } from '@lib/supabaseClient';
 const ERR_CAMPAIGNS = 'No se pudieron cargar las campañas.';
 const ERR_CAMPAIGN = 'No se pudo cargar la campaña.';
 const ERR_TITLES = 'No se pudieron cargar las campañas del jugador.';
+const ERR_REORDER = 'No se pudo cambiar el orden de las campañas.';
 
-// Campaigns are ordered newest-first. This was fecha_inicio until 0009
-// dropped the date columns; created_at is the closest honest substitute,
-// being the order campaigns were added. It is NOT NULL, so unlike
-// fecha_inicio there is no null-ordering case to handle.
-const CAMPAIGN_ORDER = { column: 'created_at', ascending: false };
+// Campaigns are ordered by campaigns.orden ascending: an explicit position an
+// admin sets in the panel (0010). created_at desc is the tiebreaker, not a
+// cosmetic touch - orden is deliberately not unique (see 0010), so without a
+// second key two campaigns sharing a position would come back in whatever
+// order Postgres felt like, and could swap places between two page loads.
+// Newest-first as the tiebreaker matches how the list was ordered before
+// orden existed, so a fresh campaign left at the default 0 lands on top.
+const CAMPAIGN_ORDER = [
+  { column: 'orden', ascending: true },
+  { column: 'created_at', ascending: false },
+];
+
+// Applies CAMPAIGN_ORDER to a PostgREST query builder. Both list queries need
+// the identical two-key ordering, and an `.order()` dropped from one of them
+// is the kind of bug that only shows up as "the public page disagrees with
+// the admin panel", so neither spells it out by hand.
+const applyCampaignOrder = (query) =>
+  CAMPAIGN_ORDER.reduce((q, { column, ascending }) => q.order(column, { ascending }), query);
 
 // PostgREST does not order embedded rows the way `.order()` orders the
 // parent, so missions come back in an unspecified order. Sorting here keeps
@@ -35,10 +49,9 @@ export const sortMissions = (campaign) => {
 // PostgREST returns that count as missions: [{ count: n }], which is awkward
 // for callers, so it is flattened to a plain mission_count number here.
 export const fetchCampaigns = async () => {
-  const { data, error } = await supabase
-    .from('campaigns')
-    .select('*, missions(count)')
-    .order(CAMPAIGN_ORDER.column, CAMPAIGN_ORDER);
+  const { data, error } = await applyCampaignOrder(
+    supabase.from('campaigns').select('*, missions(count)'),
+  );
   if (error) return { data: null, error: ERR_CAMPAIGNS };
   return { data: (data || []).map(withMissionCount), error: null };
 };
@@ -64,12 +77,68 @@ export const fetchCampaignWithMissions = async (campaignId) => {
 
 // All campaigns with their missions, for the public /campanas list.
 export const fetchCampaignsWithMissions = async () => {
-  const { data, error } = await supabase
-    .from('campaigns')
-    .select('*, missions(*)')
-    .order(CAMPAIGN_ORDER.column, CAMPAIGN_ORDER);
+  const { data, error } = await applyCampaignOrder(
+    supabase.from('campaigns').select('*, missions(*)'),
+  );
   if (error) return { data: null, error: ERR_CAMPAIGNS };
   return { data: (data || []).map(sortMissions), error: null };
+};
+
+// ── Reordering ─────────────────────────────────────────────────────────
+
+// Given the campaign list as currently displayed, returns the pair of rows a
+// move at `index` would exchange positions, or null if the move runs off the
+// end of the list. Pure and exported so the arithmetic is testable without a
+// database: the off-by-one at the list edges is the whole risk here.
+//
+// direction is -1 (up, toward the top) or 1 (down).
+export const neighborSwap = (campaigns, index, direction) => {
+  if (!Array.isArray(campaigns)) return null;
+  const target = index + direction;
+  if (index < 0 || index >= campaigns.length) return null;
+  if (target < 0 || target >= campaigns.length) return null;
+  return { a: campaigns[index], b: campaigns[target] };
+};
+
+// Returns the list with `index` moved one step in `direction`, without
+// mutating the input. This is what the panel renders immediately: waiting for
+// two round trips before the row visibly moves makes the button feel broken,
+// and a failed swap re-fetches anyway.
+export const reorderLocally = (campaigns, index, direction) => {
+  const pair = neighborSwap(campaigns, index, direction);
+  if (!pair) return campaigns;
+  const next = [...campaigns];
+  const target = index + direction;
+  [next[index], next[target]] = [next[target], next[index]];
+  return next;
+};
+
+// Exchanges the `orden` of two campaigns.
+//
+// Two campaigns can share an `orden` value (every row starts at the default 0
+// before an admin ever reorders, and 0010 does not make the column unique).
+// A blind value swap between two rows that both sit at 0 is a no-op, and the
+// pair would never separate. So the positions are normalised first: whatever
+// the stored values are, the pair ends up with the two distinct positions
+// they should occupy, derived from their current place in the list.
+//
+// The two UPDATEs are not a transaction - PostgREST has no client-side
+// transaction, and adding an RPC for a two-row swap on a table this small is
+// not worth the extra migration surface. If the second fails, both rows may
+// hold the same orden; the created_at tiebreaker keeps the list stable and
+// deterministic rather than flickering, and the admin's next move fixes it.
+// The caller reloads on error so the panel never shows a state the database
+// does not have.
+// ordenA/ordenB are the positions the two rows should end up holding, which
+// the caller takes from their index in the displayed list - not from the rows'
+// stored `orden`, for the duplicate-value reason above.
+export const swapCampaignOrder = async (a, b, ordenA, ordenB) => {
+  const [resA, resB] = await Promise.all([
+    supabase.from('campaigns').update({ orden: ordenA }).eq('id', a.id),
+    supabase.from('campaigns').update({ orden: ordenB }).eq('id', b.id),
+  ]);
+  if (resA.error || resB.error) return { error: ERR_REORDER };
+  return { error: null };
 };
 
 // The campaign badges a single player has been granted, for their profile.

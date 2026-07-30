@@ -9,15 +9,27 @@ vi.mock('../../context/AuthContext', () => ({ useAuth: () => mockAuthValue }));
 
 let mockPlayers = [];
 const mockUpdate = vi.fn();
-vi.mock('@lib/supabaseClient', () => ({
-  supabase: {
-    auth: { signOut: vi.fn().mockResolvedValue({ error: null }) },
-    from: () => ({
-      select: () => ({ order: () => Promise.resolve({ data: mockPlayers, error: null }) }),
-      update: (payload) => ({ eq: (_col, id) => mockUpdate(payload, id) }),
-    }),
-  },
-}));
+
+// `order` is chainable AND thenable rather than returning a bare promise:
+// the campaign list orders by two columns (orden, then created_at), so a
+// query here can call .order() more than once. Returning a promise from the
+// first call would make the second throw. Awaiting at any point in the chain
+// resolves to the player rows.
+vi.mock('@lib/supabaseClient', () => {
+  const query = {
+    order: () => query,
+    then: (resolve) => Promise.resolve({ data: mockPlayers, error: null }).then(resolve),
+  };
+  return {
+    supabase: {
+      auth: { signOut: vi.fn().mockResolvedValue({ error: null }) },
+      from: () => ({
+        select: () => query,
+        update: (payload) => ({ eq: (_col, id) => mockUpdate(payload, id) }),
+      }),
+    },
+  };
+});
 
 import Admin from './Admin';
 

@@ -6,13 +6,23 @@ const mockFetchCampaigns = vi.fn();
 const mockFetchTitles = vi.fn();
 const mockGrant = vi.fn();
 const mockRevoke = vi.fn();
+const mockSwapOrder = vi.fn();
 
-vi.mock('@lib/campaigns', () => ({
-  fetchCampaignsWithMissions: (...a) => mockFetchCampaigns(...a),
-  fetchTitlesByCampaign: (...a) => mockFetchTitles(...a),
-  grantTitle: (...a) => mockGrant(...a),
-  revokeTitle: (...a) => mockRevoke(...a),
-}));
+// neighborSwap and reorderLocally are pure and covered directly in
+// campaigns.test.js, so the real implementations are used here - mocking them
+// would leave these tests asserting against a reimplementation of the very
+// arithmetic that decides what the admin sees. Only the network call is a mock.
+vi.mock('@lib/campaigns', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    fetchCampaignsWithMissions: (...a) => mockFetchCampaigns(...a),
+    fetchTitlesByCampaign: (...a) => mockFetchTitles(...a),
+    grantTitle: (...a) => mockGrant(...a),
+    revokeTitle: (...a) => mockRevoke(...a),
+    swapCampaignOrder: (...a) => mockSwapOrder(...a),
+  };
+});
 
 const mockInsert = vi.fn();
 const mockUpdate = vi.fn();
@@ -52,6 +62,7 @@ beforeEach(() => {
   mockDelete.mockResolvedValue({ error: null });
   mockGrant.mockResolvedValue({ error: null });
   mockRevoke.mockResolvedValue({ error: null });
+  mockSwapOrder.mockResolvedValue({ error: null });
 });
 
 describe('AdminCampaigns loading and empty states', () => {
@@ -225,6 +236,136 @@ describe('missions', () => {
     renderAdmin();
     await expand(user);
     expect(screen.getByText(/esta campaña no tiene misiones/i)).toBeInTheDocument();
+  });
+});
+
+describe('reordering campaigns', () => {
+  const THREE = [
+    campaign({ id: 'c1', titulo: 'Primera' }),
+    campaign({ id: 'c2', titulo: 'Segunda' }),
+    campaign({ id: 'c3', titulo: 'Tercera' }),
+  ];
+
+  // The rendered order of the campaign cards, which is what an admin judges
+  // the feature by.
+  const titlesInOrder = () =>
+    [...document.querySelectorAll('.admin-campaign-titulo')].map((el) => el.textContent);
+
+  const renderThree = async () => {
+    mockFetchCampaigns.mockResolvedValue({ data: THREE, error: null });
+    renderAdmin();
+    await waitFor(() => screen.getByText('Primera'));
+  };
+
+  it('renders the campaigns in the order they arrive', async () => {
+    await renderThree();
+    expect(titlesInOrder()).toEqual(['Primera', 'Segunda', 'Tercera']);
+  });
+
+  it('moves a campaign up when its up arrow is clicked', async () => {
+    const user = userEvent.setup();
+    await renderThree();
+    await user.click(screen.getByRole('button', { name: /subir segunda/i }));
+    await waitFor(() => expect(titlesInOrder()).toEqual(['Segunda', 'Primera', 'Tercera']));
+  });
+
+  it('moves a campaign down when its down arrow is clicked', async () => {
+    const user = userEvent.setup();
+    await renderThree();
+    await user.click(screen.getByRole('button', { name: /bajar segunda/i }));
+    await waitFor(() => expect(titlesInOrder()).toEqual(['Primera', 'Tercera', 'Segunda']));
+  });
+
+  // The positions written are the destination indices, not the rows' stored
+  // orden. Moving "Segunda" (index 1) up means it takes position 0 and the row
+  // it displaced takes position 1.
+  it('writes the destination positions of both campaigns', async () => {
+    const user = userEvent.setup();
+    await renderThree();
+    await user.click(screen.getByRole('button', { name: /subir segunda/i }));
+    await waitFor(() => expect(mockSwapOrder).toHaveBeenCalled());
+    const [moved, displaced, ordenMoved, ordenDisplaced] = mockSwapOrder.mock.calls[0];
+    expect(moved.id).toBe('c2');
+    expect(displaced.id).toBe('c1');
+    expect(ordenMoved).toBe(0);
+    expect(ordenDisplaced).toBe(1);
+  });
+
+  it('disables the up arrow on the first campaign', async () => {
+    await renderThree();
+    expect(screen.getByRole('button', { name: /subir primera/i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /bajar primera/i })).toBeEnabled();
+  });
+
+  it('disables the down arrow on the last campaign', async () => {
+    await renderThree();
+    expect(screen.getByRole('button', { name: /bajar tercera/i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /subir tercera/i })).toBeEnabled();
+  });
+
+  it('disables both arrows when there is only one campaign', async () => {
+    mockFetchCampaigns.mockResolvedValue({ data: [campaign({ titulo: 'Sola' })], error: null });
+    renderAdmin();
+    await waitFor(() => screen.getByText('Sola'));
+    expect(screen.getByRole('button', { name: /subir sola/i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /bajar sola/i })).toBeDisabled();
+  });
+
+  // The row moves before the write resolves, so the buttons feel immediate.
+  it('moves the row before the write resolves', async () => {
+    const user = userEvent.setup();
+    let release;
+    mockSwapOrder.mockReturnValue(new Promise((resolve) => { release = () => resolve({ error: null }); }));
+    await renderThree();
+    await user.click(screen.getByRole('button', { name: /subir segunda/i }));
+    await waitFor(() => expect(titlesInOrder()).toEqual(['Segunda', 'Primera', 'Tercera']));
+    release();
+  });
+
+  // A failed swap must not leave the panel showing an order the database does
+  // not have, so the component refetches.
+  it('reports the error and refetches when the swap fails', async () => {
+    const user = userEvent.setup();
+    mockSwapOrder.mockResolvedValue({ error: 'No se pudo cambiar el orden de las campañas.' });
+    await renderThree();
+    expect(mockFetchCampaigns).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByRole('button', { name: /subir segunda/i }));
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(/no se pudo cambiar el orden/i));
+    await waitFor(() => expect(mockFetchCampaigns).toHaveBeenCalledTimes(2));
+  });
+
+  // The refetch returns the unchanged server order, which must win over the
+  // optimistic move that failed.
+  it('restores the server order after a failed swap', async () => {
+    const user = userEvent.setup();
+    mockSwapOrder.mockResolvedValue({ error: 'No se pudo cambiar el orden de las campañas.' });
+    await renderThree();
+    await user.click(screen.getByRole('button', { name: /subir segunda/i }));
+    await waitFor(() => expect(titlesInOrder()).toEqual(['Primera', 'Segunda', 'Tercera']));
+  });
+
+  // Two clicks landing before the first write resolves would compute their
+  // positions from the same starting list and write conflicting values.
+  it('ignores a second move while one is still in flight', async () => {
+    const user = userEvent.setup();
+    let release;
+    mockSwapOrder.mockReturnValue(new Promise((resolve) => { release = () => resolve({ error: null }); }));
+    await renderThree();
+    await user.click(screen.getByRole('button', { name: /subir segunda/i }));
+    await waitFor(() => expect(titlesInOrder()).toEqual(['Segunda', 'Primera', 'Tercera']));
+    await user.click(screen.getByRole('button', { name: /bajar segunda/i }));
+    expect(mockSwapOrder).toHaveBeenCalledTimes(1);
+    release();
+  });
+
+  it('allows a second move once the first has finished', async () => {
+    const user = userEvent.setup();
+    await renderThree();
+    await user.click(screen.getByRole('button', { name: /subir segunda/i }));
+    await waitFor(() => expect(mockSwapOrder).toHaveBeenCalledTimes(1));
+    await user.click(screen.getByRole('button', { name: /bajar segunda/i }));
+    await waitFor(() => expect(mockSwapOrder).toHaveBeenCalledTimes(2));
+    expect(titlesInOrder()).toEqual(['Primera', 'Segunda', 'Tercera']);
   });
 });
 

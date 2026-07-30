@@ -1,7 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import './admincampaigns.css';
 import { supabase } from '@lib/supabaseClient';
-import { fetchCampaignsWithMissions, fetchTitlesByCampaign, grantTitle, revokeTitle } from '@lib/campaigns';
+import {
+  fetchCampaignsWithMissions,
+  fetchTitlesByCampaign,
+  grantTitle,
+  revokeTitle,
+  neighborSwap,
+  reorderLocally,
+  swapCampaignOrder,
+} from '@lib/campaigns';
 import CampaignImageUpload from '@components/component-campaignimageupload/campaignimageupload';
 import PlayerAvatar from '@components/component-playeravatar/playeravatar';
 
@@ -23,18 +31,24 @@ const AdminCampaigns = ({ players }) => {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [moving, setMoving] = useState(false);
 
   const [campaignForm, setCampaignForm] = useState(null); // null | EMPTY | existing row
   const [missionForm, setMissionForm] = useState(null);   // null | { campaign_id, ...mission }
   const [expandedId, setExpandedId] = useState(null);
 
-  const load = useCallback(async () => {
+  // `keepError` is for reloads that exist *because* something failed - a
+  // rejected reorder resyncs the list, and a successful resync must not wipe
+  // the message explaining why the row snapped back. A fetch error still
+  // wins, since that is the more immediate problem.
+  const load = useCallback(async ({ keepError = false } = {}) => {
     setLoading(true);
     const [campaignsRes, titlesRes] = await Promise.all([
       fetchCampaignsWithMissions(),
       fetchTitlesByCampaign(),
     ]);
-    setError(campaignsRes.error || titlesRes.error);
+    const fetchError = campaignsRes.error || titlesRes.error;
+    setError((prev) => fetchError || (keepError ? prev : null));
     setCampaigns(campaignsRes.data || []);
     setTitles(titlesRes.data || new Map());
     setLoading(false);
@@ -76,6 +90,36 @@ const AdminCampaigns = ({ players }) => {
     if (deleteError) { setError('No se pudo eliminar la campaña.'); return; }
     setMessage('Campaña eliminada.');
     load();
+  };
+
+  // ── ordering ─────────────────────────────────────────────────────────
+
+  // Moves a campaign one position up (-1) or down (1). The row moves in the
+  // UI first and the write follows, because an admin reordering a list clicks
+  // several times in a row and a round trip between each click makes the
+  // buttons feel unresponsive.
+  //
+  // `moving` guards against overlapping swaps: two fast clicks would compute
+  // their positions from the same starting list and write conflicting orden
+  // values, leaving the list in an order the admin never asked for.
+  const moveCampaign = async (index, direction) => {
+    if (moving) return;
+    const pair = neighborSwap(campaigns, index, direction);
+    if (!pair) return; // already at the top or bottom
+    const target = index + direction;
+    setMoving(true);
+    setError(null);
+    setCampaigns(reorderLocally(campaigns, index, direction));
+    // The moved row takes its destination index as its position, the row it
+    // displaced takes the vacated one.
+    const { error: swapError } = await swapCampaignOrder(pair.a, pair.b, target, index);
+    setMoving(false);
+    if (swapError) {
+      setError(swapError);
+      // The optimistic move is not what the database has; resync, keeping the
+      // message that explains why the row is about to snap back.
+      load({ keepError: true });
+    }
   };
 
   // ── missions ─────────────────────────────────────────────────────────
@@ -160,8 +204,11 @@ const AdminCampaigns = ({ players }) => {
                 onChange={(e) => setCampaignForm({ ...campaignForm, autor: e.target.value })} />
             </label>
           </div>
+          {/* 10 rows, not 3: a campaign description is a multi-paragraph
+              briefing, and editing one through a 3-line window means the
+              admin cannot see the paragraph they are writing. */}
           <label className="admin-campaign-textarea">Descripción
-            <textarea rows={3} value={campaignForm.descripcion || ''}
+            <textarea rows={10} value={campaignForm.descripcion || ''}
               onChange={(e) => setCampaignForm({ ...campaignForm, descripcion: e.target.value })} />
           </label>
           <div className="admin-campaign-badge-field">
@@ -186,12 +233,26 @@ const AdminCampaigns = ({ players }) => {
         <p className="admin-status">Todavía no hay campañas.</p>
       ) : (
         <div className="admin-campaign-list">
-          {campaigns.map((campaign) => {
+          {campaigns.map((campaign, index) => {
             const granted = titles.get(campaign.id) || new Set();
             const isExpanded = expandedId === campaign.id;
             return (
               <article key={campaign.id} className="admin-campaign-card">
                 <header className="admin-campaign-card-header">
+                  {/* Reordering lives in the card header, next to the badge,
+                      so the control sits where the row it moves is. Disabled
+                      at the ends of the list rather than hidden: a button that
+                      disappears shifts the two beside it under the cursor. */}
+                  <div className="admin-campaign-order">
+                    <button type="button" className="admin-order-btn"
+                      aria-label={`Subir ${campaign.titulo}`}
+                      disabled={index === 0 || moving}
+                      onClick={() => moveCampaign(index, -1)}>↑</button>
+                    <button type="button" className="admin-order-btn"
+                      aria-label={`Bajar ${campaign.titulo}`}
+                      disabled={index === campaigns.length - 1 || moving}
+                      onClick={() => moveCampaign(index, 1)}>↓</button>
+                  </div>
                   {campaign.badge_url && <img src={campaign.badge_url} alt="" className="admin-campaign-badge" />}
                   <div className="admin-campaign-card-info">
                     <h3 className="admin-campaign-titulo">{campaign.titulo}</h3>
@@ -235,7 +296,7 @@ const AdminCampaigns = ({ players }) => {
                           </label>
                         </div>
                         <label className="admin-campaign-textarea">Descripción
-                          <textarea rows={2} value={missionForm.descripcion || ''}
+                          <textarea rows={6} value={missionForm.descripcion || ''}
                             onChange={(e) => setMissionForm({ ...missionForm, descripcion: e.target.value })} />
                         </label>
                         <div className="admin-campaign-badge-field">

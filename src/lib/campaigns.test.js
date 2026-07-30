@@ -10,6 +10,7 @@ const builder = {
   eq: (...a) => { calls.push(['eq', ...a]); return builder; },
   order: (...a) => { calls.push(['order', ...a]); return builder; },
   insert: (...a) => { calls.push(['insert', ...a]); return builder; },
+  update: (...a) => { calls.push(['update', ...a]); return builder; },
   delete: (...a) => { calls.push(['delete', ...a]); return builder; },
   single: (...a) => { calls.push(['single', ...a]); return builder; },
   then: (resolve) => Promise.resolve(result).then(resolve),
@@ -29,6 +30,9 @@ import {
   fetchTitlesByCampaign,
   grantTitle,
   revokeTitle,
+  neighborSwap,
+  reorderLocally,
+  swapCampaignOrder,
 } from './campaigns';
 
 beforeEach(() => { calls.length = 0; result = { data: null, error: null }; });
@@ -119,14 +123,19 @@ describe('fetchCampaigns', () => {
     expect(calls).toContainEqual(['select', '*, missions(count)']);
   });
 
-  // 0009 dropped the date columns, so the list orders by creation time -
-  // the order campaigns were added, newest first.
-  it('orders by creation time, newest first', async () => {
+  // 0010 made the display order an admin-editable column. `orden` leads;
+  // created_at desc is the tiebreaker, and both keys must be present in that
+  // sequence - PostgREST applies .order() calls in the order they are made,
+  // so a swapped pair here would sort by date and ignore the admin's order.
+  it('orders by orden first, then newest created_at', async () => {
     result = { data: [], error: null };
     await fetchCampaigns();
-    const order = calls.find(([m]) => m === 'order');
-    expect(order[1]).toBe('created_at');
-    expect(order[2]).toMatchObject({ ascending: false });
+    const orders = calls.filter(([m]) => m === 'order');
+    expect(orders).toHaveLength(2);
+    expect(orders[0][1]).toBe('orden');
+    expect(orders[0][2]).toMatchObject({ ascending: true });
+    expect(orders[1][1]).toBe('created_at');
+    expect(orders[1][2]).toMatchObject({ ascending: false });
   });
 
   it('returns an empty array, not null, when there are no campaigns', async () => {
@@ -189,6 +198,147 @@ describe('fetchCampaignsWithMissions', () => {
     result = { data: null, error: { message: 'network' } };
     const { error } = await fetchCampaignsWithMissions();
     expect(error).toMatch(/no se pudieron cargar las campañas/i);
+  });
+
+  // The admin panel reads this one and the public page reads fetchCampaigns.
+  // If their orderings drift, an admin reorders the list and the public page
+  // shows something else - a bug that is invisible in either page alone.
+  it('orders identically to the public campaign list', async () => {
+    result = { data: [], error: null };
+    await fetchCampaignsWithMissions();
+    const withMissions = calls.filter(([m]) => m === 'order');
+    calls.length = 0;
+    await fetchCampaigns();
+    const list = calls.filter(([m]) => m === 'order');
+    expect(withMissions).toEqual(list);
+  });
+});
+
+describe('neighborSwap', () => {
+  const list = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
+
+  it('pairs a row with the one above it when moving up', () => {
+    expect(neighborSwap(list, 1, -1)).toEqual({ a: { id: 'b' }, b: { id: 'a' } });
+  });
+
+  it('pairs a row with the one below it when moving down', () => {
+    expect(neighborSwap(list, 1, 1)).toEqual({ a: { id: 'b' }, b: { id: 'c' } });
+  });
+
+  // The list edges are where an off-by-one would show up as a swap with
+  // undefined, so both ends are pinned explicitly.
+  it('refuses to move the first row up', () => {
+    expect(neighborSwap(list, 0, -1)).toBeNull();
+  });
+
+  it('refuses to move the last row down', () => {
+    expect(neighborSwap(list, 2, 1)).toBeNull();
+  });
+
+  it('refuses an index outside the list', () => {
+    expect(neighborSwap(list, 9, -1)).toBeNull();
+    expect(neighborSwap(list, -1, 1)).toBeNull();
+  });
+
+  it('returns null for a single-item list in either direction', () => {
+    expect(neighborSwap([{ id: 'only' }], 0, -1)).toBeNull();
+    expect(neighborSwap([{ id: 'only' }], 0, 1)).toBeNull();
+  });
+
+  it('returns null for an empty or missing list', () => {
+    expect(neighborSwap([], 0, 1)).toBeNull();
+    expect(neighborSwap(undefined, 0, 1)).toBeNull();
+  });
+});
+
+describe('reorderLocally', () => {
+  const list = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
+
+  it('moves a row up one position', () => {
+    expect(reorderLocally(list, 1, -1).map((c) => c.id)).toEqual(['b', 'a', 'c']);
+  });
+
+  it('moves a row down one position', () => {
+    expect(reorderLocally(list, 1, 1).map((c) => c.id)).toEqual(['a', 'c', 'b']);
+  });
+
+  it('moves the last row up', () => {
+    expect(reorderLocally(list, 2, -1).map((c) => c.id)).toEqual(['a', 'c', 'b']);
+  });
+
+  // React state must not be mutated in place, or the re-render can be skipped
+  // because the array identity never changed.
+  it('does not mutate the list it is given', () => {
+    reorderLocally(list, 1, -1);
+    expect(list.map((c) => c.id)).toEqual(['a', 'b', 'c']);
+  });
+
+  it('returns the list unchanged when the move is impossible', () => {
+    expect(reorderLocally(list, 0, -1)).toBe(list);
+  });
+
+  // Moving a row down and then back up is the shape of an admin correcting a
+  // misclick, and must land exactly where it started.
+  it('round-trips back to the original order', () => {
+    const down = reorderLocally(list, 0, 1);
+    expect(reorderLocally(down, 1, -1).map((c) => c.id)).toEqual(['a', 'b', 'c']);
+  });
+});
+
+describe('swapCampaignOrder', () => {
+  it('writes the given position to each campaign', async () => {
+    result = { error: null };
+    const { error } = await swapCampaignOrder({ id: 'c1' }, { id: 'c2' }, 0, 1);
+    expect(error).toBeNull();
+    expect(calls).toContainEqual(['update', { orden: 0 }]);
+    expect(calls).toContainEqual(['eq', 'id', 'c1']);
+    expect(calls).toContainEqual(['update', { orden: 1 }]);
+    expect(calls).toContainEqual(['eq', 'id', 'c2']);
+  });
+
+  // Positions come from the caller's list indices, never from the rows' own
+  // stored orden. Two rows both sitting at the default 0 must still end up
+  // with two different values, or they could never be separated.
+  it('separates two campaigns that share an orden value', async () => {
+    result = { error: null };
+    await swapCampaignOrder({ id: 'c1', orden: 0 }, { id: 'c2', orden: 0 }, 1, 0);
+    const written = calls.filter(([m]) => m === 'update').map(([, payload]) => payload.orden);
+    expect(new Set(written).size).toBe(2);
+    expect(written).toEqual(expect.arrayContaining([0, 1]));
+  });
+
+  it('reports a failure as a user-facing message', async () => {
+    result = { error: { message: 'rls' } };
+    const { error } = await swapCampaignOrder({ id: 'c1' }, { id: 'c2' }, 0, 1);
+    expect(error).toMatch(/no se pudo cambiar el orden/i);
+  });
+
+  // The two updates are separate requests with no transaction around them, so
+  // one can fail while the other commits. That half-applied state must be
+  // reported as an error - the caller reloads on it, and swallowing it would
+  // leave the panel showing a move the database only half made.
+  //
+  // The shared `result` cannot vary per call, so this test swaps in a builder
+  // whose terminal value is drawn from a queue, one entry per update.
+  it.each([
+    ['the first update fails', [{ error: { message: 'rls' } }, { error: null }]],
+    ['the second update fails', [{ error: null }, { error: { message: 'rls' } }]],
+  ])('reports an error when %s', async (_label, queue) => {
+    const pending = [...queue];
+    const failing = {
+      update: () => failing,
+      eq: () => failing,
+      then: (resolve) => Promise.resolve(pending.shift()).then(resolve),
+    };
+    const { supabase } = await import('@lib/supabaseClient');
+    const originalFrom = supabase.from;
+    supabase.from = () => failing;
+    try {
+      const { error } = await swapCampaignOrder({ id: 'c1' }, { id: 'c2' }, 0, 1);
+      expect(error).toMatch(/no se pudo cambiar el orden/i);
+    } finally {
+      supabase.from = originalFrom;
+    }
   });
 });
 
