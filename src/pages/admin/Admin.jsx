@@ -72,66 +72,111 @@ const Admin = () => {
     </Helmet>
   );
 
-  if (authLoading) return (<>{helmet}<p className="admin-status">Cargando...</p></>);
+  const statusScreen = (text) => (
+    <>{helmet}<div className="admin-page"><p className="admin-status">{text}</p></div></>
+  );
+
+  if (authLoading) return statusScreen('Cargando...');
   if (!session) return (<>{helmet}<div className="admin-login-container"><AdminLoginForm /></div></>);
-  if (profileLoading) return (<>{helmet}<p className="admin-status">Verificando permisos...</p></>);
-  if (!isAdmin) return (<>{helmet}<p className="admin-status">No tenés permisos de administrador.</p></>);
+  if (profileLoading) return statusScreen('Verificando permisos...');
+  if (!isAdmin) return statusScreen('No tenés permisos de administrador.');
+
+  const activeCount = players.filter((p) => p.is_active).length;
 
   return (
     <>
       {helmet}
-      <div className="admin-container">
-        <div className="admin-header">
-          <h1>Panel de administración</h1>
-          <button className="btn-blanco" onClick={handleSignOut}>Cerrar sesión</button>
+      <div className="admin-page">
+        <div className="admin-container">
+          <div className="admin-header">
+            <div>
+              <h1 className="admin-title">Panel de administración</h1>
+              {!playersLoading && players.length > 0 && (
+                <p className="admin-subtitle">
+                  {players.length} {players.length === 1 ? 'jugador' : 'jugadores'} · {activeCount} activo{activeCount === 1 ? '' : 's'}
+                </p>
+              )}
+            </div>
+            <button className="btn-blanco" onClick={handleSignOut}>Cerrar sesión</button>
+          </div>
+
+          {actionMessage && <p className="admin-message form-info">{actionMessage}</p>}
+          {playersError && <p role="alert" className="admin-message form-error">{playersError}</p>}
+
+          {editingPlayer && (
+            <div className="admin-form-panel">
+              <h2 className="admin-form-title">Editando a {editingPlayer.nombre}</h2>
+              <PlayerForm
+                initialValues={editingPlayer}
+                fields={EDIT_FIELDS}
+                onSubmit={handleFormSubmit}
+                onCancel={closeForm}
+                submitting={formSubmitting}
+                error={formError}
+              />
+            </div>
+          )}
+
+          {playersLoading ? (
+            <p className="admin-status">Cargando jugadores...</p>
+          ) : players.length === 0 ? (
+            <p className="admin-status">Todavía no hay jugadores registrados.</p>
+          ) : (
+            <div className="admin-table-wrapper">
+              <table className="admin-players-table">
+                <thead>
+                  <tr>
+                    <th className="admin-col-avatar"><span className="admin-visually-hidden">Foto</span></th>
+                    <th>Nombre</th>
+                    <th>Rol favorito</th>
+                    <th>Miembro desde</th>
+                    <th className="admin-col-aptitudes">Aptitudes</th>
+                    <th>Estado</th>
+                    <th className="admin-col-actions"><span className="admin-visually-hidden">Acciones</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {players.map((p) => (
+                    <tr key={p.id} className={p.is_active ? '' : 'admin-row-inactive'}>
+                      <td className="admin-col-avatar" data-label="Foto">
+                        <PlayerAvatar url={p.avatar_url} size={36} alt={`Foto de perfil de ${p.nombre}`} />
+                      </td>
+                      <td className="admin-cell-name" data-label="Nombre">{p.nombre}</td>
+                      <td data-label="Rol favorito">{p.rol_favorito || <span className="admin-empty">—</span>}</td>
+                      <td data-label="Miembro desde">{p.miembro_desde || <span className="admin-empty">—</span>}</td>
+                      <td className="admin-col-aptitudes" data-label="Aptitudes">
+                        <div className="admin-badges">
+                          {APTITUDES.filter(({ key }) => p[key]).map(({ key, label, image }) => (
+                            <img key={key} className="admin-badge" src={image} alt={label} title={label} />
+                          ))}
+                          {APTITUDES.every(({ key }) => !p[key]) && <span className="admin-empty">—</span>}
+                        </div>
+                      </td>
+                      <td data-label="Estado">
+                        <span className={`admin-tag ${p.is_active ? 'admin-tag-active' : 'admin-tag-inactive'}`}>
+                          {p.is_active ? 'Activo' : 'Inactivo'}
+                        </span>
+                      </td>
+                      <td className="admin-col-actions">
+                        <div className="admin-actions">
+                          <Link to={`/roster/${p.id}`} className="admin-action-link">Ver perfil</Link>
+                          <button type="button" className="admin-action admin-action-edit"
+                            onClick={() => openEditForm(p)}>Editar</button>
+                          <button type="button"
+                            className={`admin-action ${p.is_active ? 'admin-action-danger' : 'admin-action-restore'}`}
+                            disabled={togglingId === p.id}
+                            onClick={() => handleToggleActive(p)}>
+                            {togglingId === p.id ? '...' : p.is_active ? 'Eliminar' : 'Reactivar'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
-        {actionMessage && <p className="form-info">{actionMessage}</p>}
-        {playersError && <p role="alert" className="form-error">{playersError}</p>}
-        {editingPlayer && (
-          <PlayerForm
-            initialValues={editingPlayer}
-            fields={EDIT_FIELDS}
-            onSubmit={handleFormSubmit}
-            onCancel={closeForm}
-            submitting={formSubmitting}
-            error={formError}
-          />
-        )}
-        {playersLoading ? (
-          <p>Cargando jugadores...</p>
-        ) : players.length === 0 ? (
-          <p>Todavía no hay jugadores registrados.</p>
-        ) : (
-          <table className="admin-players-table">
-            <thead>
-              <tr>
-                <th></th><th>Nombre</th><th>Rol favorito</th><th>Miembro desde</th>
-                {APTITUDES.map(({ key, label }) => <th key={key}>{label}</th>)}
-                <th>Estado</th><th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {players.map((p) => (
-                <tr key={p.id} className={p.is_active ? '' : 'admin-row-inactive'}>
-                  <td><PlayerAvatar url={p.avatar_url} size={32} alt={`Foto de perfil de ${p.nombre}`} /></td>
-                  <td>{p.nombre}</td>
-                  <td>{p.rol_favorito}</td>
-                  <td>{p.miembro_desde}</td>
-                  {APTITUDES.map(({ key }) => <td key={key}>{p[key] ? 'Sí' : 'No'}</td>)}
-                  <td>{p.is_active ? 'Activo' : <span className="admin-inactive-tag">Inactivo</span>}</td>
-                  <td>
-                    <Link to={`/roster/${p.id}`}><button type="button" className="btn-transparente">Ver perfil</button></Link>
-                    <button className="btn-blanco" onClick={() => openEditForm(p)}>Editar</button>
-                    <button className="btn-transparente" disabled={togglingId === p.id}
-                      onClick={() => handleToggleActive(p)}>
-                      {p.is_active ? 'Eliminar' : 'Reactivar'}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
       </div>
     </>
   );

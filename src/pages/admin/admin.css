@@ -1,9 +1,12 @@
+/* ---------- Login ---------- */
+
 .admin-login-container {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--blk);
+    padding: 20px;
 }
 
 .admin-login-form {
@@ -11,9 +14,11 @@
     flex-direction: column;
     gap: 15px;
     width: 320px;
+    max-width: 100%;
     background: var(--grn);
     padding: 40px;
     border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
 }
 
 .admin-login-form h2 {
@@ -21,45 +26,396 @@
     text-align: center;
 }
 
-.admin-status {
-    color: var(--blk);
-    text-align: center;
-    padding: 100px 20px;
+/* ---------- Page shell ---------- */
+
+.admin-page {
+    width: 100vw;
+    min-height: 100vh;
+    background: var(--blk);
+    display: flex;
+    justify-content: center;
 }
 
 .admin-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 100px 20px 60px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 120px 20px 60px;
 }
+
+.admin-status {
+    color: var(--wht);
+    text-align: center;
+    padding: 100px 20px;
+    width: 100%;
+}
+
+/* ---------- Header ---------- */
 
 .admin-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
     margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-title {
+    font-family: var(--font-title);
+    color: var(--wht);
+    font-size: 32px;
+}
+
+.admin-subtitle {
+    font-family: var(--font-body);
+    color: var(--null);
+    font-size: 13px;
+    margin: 6px 0 0 0;
+}
+
+.admin-message {
+    font-family: var(--font-body);
+    font-size: 14px;
+    margin: 0 0 20px 0;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid currentColor;
+}
+
+/* ---------- Edit form panel ---------- */
+
+.admin-form-panel {
+    background: var(--grn);
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.admin-form-title {
+    font-family: var(--font-title);
+    color: var(--yel);
+    font-size: 18px;
+    margin-bottom: 18px;
+}
+
+/* The form already carries its own padding/background; inside the panel it
+   only needs to lose them so the two cards don't nest visually. */
+.admin-form-panel .player-form {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 0;
+    max-width: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.admin-form-panel .player-form-actions {
+    grid-column: 1 / -1;
+}
+
+.admin-form-panel .form-error {
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+/* ---------- Table ---------- */
+
+.admin-table-wrapper {
+    background: var(--grn);
+    border-radius: 16px;
+    overflow-x: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .admin-players-table {
     width: 100%;
     border-collapse: collapse;
-    color: var(--blk);
-    background: var(--wht);
+    color: var(--wht);
+    font-family: var(--font-body);
 }
 
-.admin-players-table th,
-.admin-players-table td {
-    padding: 10px;
-    border-bottom: 1px solid var(--null);
+.admin-players-table thead th {
+    position: sticky;
+    top: 0;
+    background: var(--blk);
+    color: var(--null);
+    font-size: 11px;
+    font-weight: var(--semibold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     text-align: left;
+    padding: 14px 16px;
+    white-space: nowrap;
+}
+
+.admin-players-table td {
+    padding: 12px 16px;
     font-size: 14px;
+    font-weight: var(--light);
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    vertical-align: middle;
+}
+
+.admin-players-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-players-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.admin-players-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-cell-name {
+    font-family: var(--font-title);
+    font-weight: var(--medium);
+    white-space: nowrap;
+}
+
+.admin-col-avatar {
+    width: 1%;
+    padding-right: 0 !important;
+}
+
+.admin-col-actions {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.admin-empty {
+    color: var(--null);
 }
 
 .admin-row-inactive {
-    opacity: 0.5;
+    opacity: 0.45;
 }
 
-.admin-inactive-tag {
+.admin-row-inactive:hover {
+    opacity: 0.8;
+}
+
+/* ---------- Aptitude badges ---------- */
+
+.admin-badges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 22px;
+}
+
+.admin-badge {
+    height: 22px;
+    width: auto;
+}
+
+/* ---------- Status tag ---------- */
+
+.admin-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: var(--semibold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.admin-tag-active {
+    color: #7bd88f;
+    background: rgba(123, 216, 143, 0.12);
+    border: 1px solid rgba(123, 216, 143, 0.35);
+}
+
+.admin-tag-inactive {
     color: #ff6b6b;
-    font-weight: bold;
+    background: rgba(255, 107, 107, 0.12);
+    border: 1px solid rgba(255, 107, 107, 0.35);
+}
+
+/* ---------- Row actions ---------- */
+
+.admin-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* Compact row-level controls: the global button rule (28px padding, 25px
+   radius) is sized for page CTAs and blows the row height out. */
+.admin-action,
+.admin-action-link {
+    font-family: var(--font-button);
+    font-size: 12px;
+    font-weight: var(--semibold);
+    padding: 7px 14px;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    cursor: pointer;
+    background: transparent;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.admin-action-link {
+    color: var(--null);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.admin-action-link:hover {
+    color: var(--wht);
+    border-color: var(--wht);
+}
+
+.admin-action-edit {
+    color: var(--yel);
+    border-color: rgba(246, 180, 14, 0.45);
+}
+
+.admin-action-edit:hover:not(:disabled) {
+    background: var(--yel);
+    color: var(--blk);
+}
+
+.admin-action-danger {
+    color: #ff6b6b;
+    border-color: rgba(255, 107, 107, 0.4);
+}
+
+.admin-action-danger:hover:not(:disabled) {
+    background: #ff6b6b;
+    color: var(--blk);
+}
+
+.admin-action-restore {
+    color: #7bd88f;
+    border-color: rgba(123, 216, 143, 0.4);
+}
+
+.admin-action-restore:hover:not(:disabled) {
+    background: #7bd88f;
+    color: var(--blk);
+}
+
+.admin-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Neutralise the global button:hover brightness filter, which washes out the
+   transparent-background variants above. */
+.admin-action:hover {
+    filter: none;
+}
+
+.admin-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---------- Mobile: table collapses into cards ---------- */
+
+@media screen and (max-width: 860px) {
+    .admin-container {
+        padding: 100px 15px 50px;
+    }
+
+    .admin-title {
+        font-size: var(--titulo-mobile);
+    }
+
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .admin-table-wrapper {
+        background: transparent;
+        box-shadow: none;
+        overflow-x: visible;
+    }
+
+    .admin-players-table,
+    .admin-players-table tbody,
+    .admin-players-table tr,
+    .admin-players-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .admin-players-table thead {
+        display: none;
+    }
+
+    .admin-players-table tbody tr {
+        background: var(--grn);
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 14px;
+        position: relative;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .admin-players-table td {
+        border-bottom: none;
+        padding: 5px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    /* Label each value with its column name, which the hidden thead no
+       longer provides. */
+    .admin-players-table td[data-label]::before {
+        content: attr(data-label);
+        color: var(--null);
+        font-size: 11px;
+        font-weight: var(--semibold);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        flex-shrink: 0;
+    }
+
+    .admin-col-avatar {
+        padding-right: 0 !important;
+    }
+
+    .admin-players-table .admin-col-avatar::before {
+        content: none;
+    }
+
+    .admin-cell-name {
+        font-size: 16px;
+    }
+
+    .admin-players-table .admin-col-actions {
+        padding-top: 14px;
+        margin-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .admin-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
 }
