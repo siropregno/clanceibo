@@ -35,7 +35,7 @@ const Roster = () => {
       <div className="roster-container page-container">
         <div className="roster-header">
           <h1>Roster</h1>
-          <p className="roster-subtitle">Los miembros de nuestra comunidad.</p>
+          <p className="subtitulo-pagina roster-subtitle">Los miembros de nuestra comunidad.</p>
         </div>
         <div className="roster-content">
           {loading ? (

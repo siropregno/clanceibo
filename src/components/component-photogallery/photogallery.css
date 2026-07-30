@@ -31,7 +31,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 23px;
+  font-size: var(--subtitulo-2);
   border: none;
   cursor: pointer;
   border-radius: 30px;
@@ -77,7 +77,7 @@
   position: absolute;
   top: 20px;
   right: 20px;
-  font-size: 1rem;
+  font-size: var(--texto-1);
   color: #333;
 }
 
@@ -94,7 +94,7 @@
     width: 80%;
   }
   .carousel-btn {
-    font-size: 18px;
+    font-size: var(--seccion-1);
     padding: 10px 10px;
   }
   

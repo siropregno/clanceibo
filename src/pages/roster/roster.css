@@ -8,19 +8,14 @@
 }
 
 .roster-header {
-    font-family: var(--font-title);
     color: var(--wht);
-    font-size: 32px;
-    margin: 30px;
+    margin: var(--titulo-margin);
     padding-top: 100px;
     text-align: center;
 }
 
 .roster-subtitle {
-    font-family: var(--font-body);
     color: var(--wht);
-    font-size: 14px;
-    margin: 0 0 2rem 0;
 }
 
 .roster-content {
@@ -32,7 +27,7 @@
 
 .roster-status {
     color: var(--wht);
-    font-size: 16px;
+    font-size: var(--texto-1);
 }
 
 .roster-error {

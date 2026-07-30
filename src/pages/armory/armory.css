@@ -32,7 +32,6 @@ main {
 
 .authorized-content h1 {
     padding-top: 150px;
-    font-size: 2rem;
     text-align: center;
     color: var(--wht);
 }
@@ -61,7 +60,7 @@ main {
 
 .select-unit-message p {
     color: rgba(255, 255, 255, 0.6);
-    font-size: 1.2rem;
+    font-size: var(--subtitulo-3);
     text-align: center;
 }
 
@@ -92,7 +91,7 @@ main {
 
 .filter-container select::after {
   content: '▼';
-  font-size: 12px;
+  font-size: var(--texto-mini);
   color: var(--blk);
   position: absolute;
   right: 15px;
@@ -110,7 +109,7 @@ main {
   padding: 0 20px;
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  font-size: 14px;
+  font-size: var(--texto-btn);
   z-index: 1000;
   animation: fadeInOut 3s ease-in-out;
 }

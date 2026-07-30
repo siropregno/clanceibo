@@ -22,14 +22,33 @@
     --yel: #F6B40E;
     --null: #9999AA;
 
-    --titulo-1: 35px;
+    /*
+     * Type scale. Every font-size in the app resolves to one of these; no
+     * stylesheet outside this file declares a raw px/rem size (enforced by
+     * main.css.test.js). --titulo-1 is 32px because that is what roster,
+     * orbat, about and admin had each hardcoded independently - the old 35px
+     * was declared here but used by nothing.
+     */
+    --titulo-1: 32px;
     --subtitulo-1: 25px;
     --subtitulo-2: 22px;
     --subtitulo-3: 20px;
+    --seccion-1: 18px;
     --texto-1: 16px;
+    --texto-2: 15px;
     --texto-btn: 14px;
+    --texto-3: 13px;
+    --texto-mini: 12px;
+    --texto-micro: 11px;
     --titulo-mobile: 30px;
     --texto-mobile: 13px;
+
+    /* Heading rhythm: one spacing value per role, not a per-page margin. */
+    --titulo-margin: 30px;
+    --subtitulo-margin: 2rem;
+
+    /* Uppercase eyebrow/label tracking. */
+    --track-label: 0.06em;
 
     --thin: 100;
     --extralight: 200;
@@ -225,9 +244,45 @@ button:hover {
     align-items: center;
 }
 
+/*
+ * Shared heading roles. Pages used to each hardcode their own title size and
+ * margin (32px/28px/26px, margin 30px vs 0 0 12px 0), so the same visual role
+ * drifted per page and none of them scaled on mobile except admin, which
+ * patched it by hand. These three classes are the only place a heading size
+ * is decided; page stylesheets add colour and layout, never font-size.
+ */
+.titulo-pagina {
+    font-family: var(--font-title);
+    font-size: var(--titulo-1);
+    margin-block: 0;
+}
+
+.subtitulo-pagina {
+    font-family: var(--font-body);
+    font-size: var(--texto-btn);
+    font-weight: var(--light);
+    margin: 0 0 var(--subtitulo-margin) 0;
+}
+
+.titulo-seccion {
+    font-family: var(--font-title);
+    font-size: var(--seccion-1);
+    margin-block: 0;
+}
+
+/* Uppercase eyebrow label: table headers, tags, field legends, role headings. */
+.label-eyebrow {
+    font-family: var(--font-body);
+    font-size: var(--texto-micro);
+    font-weight: var(--semibold);
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+}
+
 
 @media screen and (max-width: 768px) {
-    h1 {
+    h1,
+    .titulo-pagina {
         font-size: var(--titulo-mobile);
     }
 
@@ -238,5 +293,5 @@ button:hover {
     li {
         font-size: var(--texto-mobile);
     }
-    
+
 }

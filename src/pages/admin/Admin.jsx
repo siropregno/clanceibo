@@ -90,7 +90,7 @@ const Admin = () => {
         <div className="admin-container">
           <div className="admin-header">
             <div>
-              <h1 className="admin-title">Panel de administración</h1>
+              <h1 className="titulo-pagina admin-title">Panel de administración</h1>
               {!playersLoading && players.length > 0 && (
                 <p className="admin-subtitle">
                   {players.length} {players.length === 1 ? 'jugador' : 'jugadores'} · {activeCount} activo{activeCount === 1 ? '' : 's'}
@@ -105,7 +105,7 @@ const Admin = () => {
 
           {editingPlayer && (
             <div className="admin-form-panel">
-              <h2 className="admin-form-title">Editando a {editingPlayer.nombre}</h2>
+              <h2 className="titulo-seccion admin-form-title">Editando a {editingPlayer.nombre}</h2>
               <PlayerForm
                 initialValues={editingPlayer}
                 fields={EDIT_FIELDS}

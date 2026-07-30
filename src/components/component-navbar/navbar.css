@@ -60,7 +60,7 @@
     list-style: none;
     text-decoration: none;
     color: var(--wht);
-    font-weight: 300;
+    font-weight: var(--light);
 }
 
 .nav-link.active {

@@ -73,12 +73,97 @@ describe('main.css font baseline', () => {
   });
 });
 
+describe('type scale', () => {
+  const rootBlock = stripComments(mainCss).match(/:root\s*\{([^}]*)\}/)[1];
+
+  // The heading roles every page shares. Each one owns its size in exactly one
+  // place so a page cannot fork it.
+  it.each([
+    ['.titulo-pagina', 'var(--titulo-1)'],
+    ['.subtitulo-pagina', 'var(--texto-btn)'],
+    ['.titulo-seccion', 'var(--seccion-1)'],
+  ])('%s sizes itself from a token', (selector, expected) => {
+    expect(declaration(ruleBody(mainCss, selector), 'font-size')).toBe(expected);
+  });
+
+  it('scales the page title on mobile', () => {
+    const mobile = stripComments(mainCss).match(
+      /@media screen and \(max-width: 768px\)\s*\{([\s\S]*)\}/,
+    )[1];
+    // Both the bare tag and the class, since pages use either.
+    expect(mobile).toMatch(/\.titulo-pagina/);
+    expect(declaration(ruleBody(mobile, '.titulo-pagina'), 'font-size')).toBe(
+      'var(--titulo-mobile)',
+    );
+  });
+
+  it('declares every size token the app references', () => {
+    const declared = new Set(
+      [...rootBlock.matchAll(/(--(?:titulo|subtitulo|seccion|texto|track)[\w-]*)\s*:/g)].map(
+        (m) => m[1],
+      ),
+    );
+    const used = new Set(
+      listCssFiles(srcDir).flatMap((f) =>
+        [
+          ...stripComments(readFileSync(f, 'utf8')).matchAll(
+            /var\((--(?:titulo|subtitulo|seccion|texto|track)[\w-]*)\)/g,
+          ),
+        ].map((m) => m[1]),
+      ),
+    );
+    for (const name of used) expect(declared).toContain(name);
+  });
+});
+
 describe('component stylesheets', () => {
   const cssFiles = listCssFiles(srcDir).filter((f) => !f.endsWith('main.css'));
 
   it('finds the component stylesheets', () => {
     expect(cssFiles.length).toBeGreaterThan(5);
   });
+
+  /*
+   * The bug this guards: the same visual role was sized independently per page
+   * (page titles at 32/28/26px/2rem, subtitles at 13/14/15px, eyebrow labels at
+   * 11px vs 12px with 0.06em vs 0.04em tracking). Nothing outside main.css may
+   * declare a raw font-size, so a new page cannot fork the scale by hand.
+   */
+  it.each(cssFiles.map((f) => [path.relative(srcDir, f), f]))(
+    '%s sizes text from tokens, not raw units',
+    (_name, file) => {
+      const sizes = [
+        ...stripComments(readFileSync(file, 'utf8')).matchAll(/font-size\s*:\s*([^;}]+)/g),
+      ].map((m) => m[1].trim());
+      for (const size of sizes) {
+        expect(size).toMatch(/^(inherit|var\(--[\w-]+\))$/);
+      }
+    },
+  );
+
+  // em compounds off the parent, so the same declaration renders at a
+  // different size depending on where the element is mounted.
+  it.each(cssFiles.map((f) => [path.relative(srcDir, f), f]))(
+    '%s uses no compounding em sizes',
+    (_name, file) => {
+      expect(stripComments(readFileSync(file, 'utf8'))).not.toMatch(
+        /font-size\s*:\s*[\d.]+em\b/,
+      );
+    },
+  );
+
+  // Numeric weights bypass the --thin..--black tokens.
+  it.each(cssFiles.map((f) => [path.relative(srcDir, f), f]))(
+    '%s sets font-weight from tokens',
+    (_name, file) => {
+      const weights = [
+        ...stripComments(readFileSync(file, 'utf8')).matchAll(/font-weight\s*:\s*([^;}]+)/g),
+      ].map((m) => m[1].trim());
+      for (const weight of weights) {
+        expect(weight).toMatch(/^(inherit|normal|var\(--[\w-]+\))$/);
+      }
+    },
+  );
 
   // Catches a hardcoded stack like "Arial, sans-serif" bypassing the tokens.
   it.each(cssFiles.map((f) => [path.relative(srcDir, f), f]))(

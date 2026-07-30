@@ -22,14 +22,13 @@
 
 .auth-intro h1 {
     color: var(--wht);
-    font-size: 28px;
     margin: 0 0 12px 0;
 }
 
 .auth-intro p {
     color: var(--wht);
     opacity: 0.85;
-    font-size: 14px;
+    font-size: var(--texto-btn);
     margin: 0;
 }
 
@@ -73,7 +72,7 @@
 .auth-input-group input {
     width: 100%;
     padding-left: 40px;
-    font-size: 14px;
+    font-size: var(--texto-btn);
 }
 
 .auth-input-group.has-toggle input {
@@ -84,7 +83,7 @@
     position: absolute;
     left: 14px;
     color: var(--null);
-    font-size: 15px;
+    font-size: var(--texto-2);
     pointer-events: none;
 }
 

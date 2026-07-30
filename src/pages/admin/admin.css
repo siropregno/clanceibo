@@ -63,21 +63,19 @@
 }
 
 .admin-title {
-    font-family: var(--font-title);
     color: var(--wht);
-    font-size: 32px;
 }
 
 .admin-subtitle {
     font-family: var(--font-body);
     color: var(--null);
-    font-size: 13px;
+    font-size: var(--texto-3);
     margin: 6px 0 0 0;
 }
 
 .admin-message {
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: var(--texto-btn);
     margin: 0 0 20px 0;
     padding: 12px 16px;
     border-radius: 10px;
@@ -96,9 +94,7 @@
 }
 
 .admin-form-title {
-    font-family: var(--font-title);
     color: var(--yel);
-    font-size: 18px;
     margin-bottom: 18px;
 }
 
@@ -128,7 +124,7 @@
 }
 
 .admin-form-panel .player-form-checkboxes legend {
-    font-size: 12px;
+    font-size: var(--texto-mini);
 }
 
 .admin-form-panel .form-error {
@@ -156,9 +152,9 @@
     top: 0;
     background: var(--blk);
     color: var(--null);
-    font-size: 11px;
+    font-size: var(--texto-micro);
     font-weight: var(--semibold);
-    letter-spacing: 0.06em;
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
     text-align: left;
     padding: 14px 16px;
@@ -167,7 +163,7 @@
 
 .admin-players-table td {
     padding: 12px 16px;
-    font-size: 14px;
+    font-size: var(--texto-btn);
     font-weight: var(--light);
     text-align: left;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -232,9 +228,9 @@
 
 .admin-tag {
     display: inline-block;
-    font-size: 11px;
+    font-size: var(--texto-micro);
     font-weight: var(--semibold);
-    letter-spacing: 0.04em;
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
     padding: 4px 10px;
     border-radius: 20px;
@@ -267,7 +263,7 @@
 .admin-action,
 .admin-action-link {
     font-family: var(--font-button);
-    font-size: 12px;
+    font-size: var(--texto-mini);
     font-weight: var(--semibold);
     padding: 7px 14px;
     border: 1px solid transparent;
@@ -342,15 +338,15 @@
     border: 0;
 }
 
-/* ---------- Mobile: table collapses into cards ---------- */
+/* ---------- Mobile: table collapses into cards ----------
+
+   860px, not the global 768px, because the table needs to collapse earlier
+   than the type scales. The title keeps its desktop size between 860 and
+   768px, where there is still room for it. */
 
 @media screen and (max-width: 860px) {
     .admin-container {
         padding: 100px 15px 50px;
-    }
-
-    .admin-title {
-        font-size: var(--titulo-mobile);
     }
 
     .admin-header {
@@ -399,9 +395,9 @@
     .admin-players-table td[data-label]::before {
         content: attr(data-label);
         color: var(--null);
-        font-size: 11px;
+        font-size: var(--texto-micro);
         font-weight: var(--semibold);
-        letter-spacing: 0.06em;
+        letter-spacing: var(--track-label);
         text-transform: uppercase;
         flex-shrink: 0;
     }
@@ -415,7 +411,7 @@
     }
 
     .admin-cell-name {
-        font-size: 16px;
+        font-size: var(--texto-1);
     }
 
     .admin-players-table .admin-col-actions {

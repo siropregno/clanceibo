@@ -27,11 +27,10 @@
     font-family: var(--font-body);
     font-size: var(--texto-1);
 }
+/* Layout wrapper only: the h1 inside carries .titulo-pagina for its type. */
 .about-header {
-    font-family: var(--font-title);
     color: var(--wht);
-    font-size: 32px;
-    margin: 30px;
+    margin: var(--titulo-margin);
     padding-top: 100px;
     display: flex;
     flex-direction: column;

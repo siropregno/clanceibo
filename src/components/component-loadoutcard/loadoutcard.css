@@ -42,7 +42,7 @@
 .loadout-card-details h3 {
     font-family: var(--font-title);
     margin: 0;
-    font-size: 16px;
+    font-size: var(--texto-1);
     color: var(--wht);
 }
 
@@ -197,8 +197,8 @@
 
 .coming-soon-overlay span {
   color: var(--wht);
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: var(--subtitulo-3);
+  font-weight: var(--bold);
   text-transform: uppercase;
   background-color: rgba(0, 0, 0, 0.7);
   padding: 10px 20px;
@@ -214,15 +214,15 @@
   color: var(--blk);
   padding: 5px 10px;
   border-radius: 5px;
-  font-size: 12px;
-  font-weight: bold;
+  font-size: var(--texto-mini);
+  font-weight: var(--bold);
   text-transform: uppercase;
   z-index: 5;
 }
 
 /* Multi-unit note */
 .multi-unit-note {
-  font-size: 12px;
+  font-size: var(--texto-mini);
   color: rgba(255, 255, 255, 0.7);
   margin: 5px 0 0 0;
   font-style: italic;

@@ -20,7 +20,7 @@
     flex-direction: column;
     gap: 5px;
     color: var(--wht);
-    font-size: 13px;
+    font-size: var(--texto-3);
 }
 
 .player-form-checkboxes {
@@ -37,9 +37,9 @@
 .player-form-checkboxes legend {
     color: var(--null);
     font-family: var(--font-body);
-    font-size: 11px;
+    font-size: var(--texto-micro);
     font-weight: var(--semibold);
-    letter-spacing: 0.06em;
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
     padding: 0 6px;
 }

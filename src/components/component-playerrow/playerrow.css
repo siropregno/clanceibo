@@ -26,7 +26,7 @@
 .player-row-name {
     font-family: var(--font-title);
     color: var(--wht);
-    font-size: 15px;
+    font-size: var(--texto-2);
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -36,7 +36,7 @@
 .player-row-role {
     font-family: var(--font-body);
     color: var(--yel);
-    font-size: 12px;
+    font-size: var(--texto-mini);
     margin: 2px 0 0 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -65,7 +65,7 @@
 
 .player-row-arrow {
     color: var(--null);
-    font-size: 16px;
+    font-size: var(--texto-1);
     opacity: 0;
     transform: translateX(-4px);
     transition: opacity 0.2s ease, transform 0.2s ease;

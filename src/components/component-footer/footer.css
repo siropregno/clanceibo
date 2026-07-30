@@ -20,9 +20,9 @@
 #footer div a{
     color: var(--yel);
     text-decoration: none;
-    font-weight: 700;
+    font-weight: var(--bold);
     text-transform: uppercase;
-    font-size: 12px;
+    font-size: var(--texto-mini);
 }
 
 #footer div a:hover {
@@ -33,7 +33,7 @@
 #footer p {
     margin-right: 10px;
     color: var(--wht);
-    font-size: 12px;
+    font-size: var(--texto-mini);
 }
 
 .social-icons {

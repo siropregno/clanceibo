@@ -25,7 +25,7 @@
     border: 2px solid var(--grn);
     background: var(--yel);
     color: var(--blk);
-    font-size: 12px;
+    font-size: var(--texto-mini);
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
     transition: transform 0.15s ease, filter 0.15s ease;
