@@ -109,18 +109,29 @@
     padding: 0;
     margin-bottom: 0;
     max-width: none;
+    gap: 20px;
+}
+
+/* Wide panel: the three text/date/select fields sit on one row. Checkboxes
+   are excluded from this track so they don't inherit input-sized columns. */
+.admin-form-panel .player-form-fields {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
     align-items: start;
 }
 
-.admin-form-panel .player-form-actions {
-    grid-column: 1 / -1;
+.admin-form-panel .player-form-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px 16px;
+}
+
+.admin-form-panel .player-form-checkboxes legend {
+    font-size: 12px;
 }
 
 .admin-form-panel .form-error {
-    grid-column: 1 / -1;
     margin: 0;
 }
 

@@ -82,6 +82,13 @@ describe('Admin', () => {
     expect(screen.getByAltText('Médico especialista')).toBeInTheDocument();
     expect(screen.getByAltText('Tirador especial')).toBeInTheDocument();
     expect(screen.queryByAltText('Game master')).not.toBeInTheDocument();
+
+    // Guards against a badge rendering with an empty/undefined src, which in
+    // the browser shows the alt text next to a broken-image glyph.
+    badges.forEach((img) => {
+      expect(img.getAttribute('src')).toBeTruthy();
+      expect(img.getAttribute('src')).toMatch(/aptitud\./);
+    });
   });
 
   it('marks the row inactive and offers Reactivar for a deactivated player', async () => {

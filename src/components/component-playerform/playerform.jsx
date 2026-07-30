@@ -57,35 +57,45 @@ const PlayerForm = ({ initialValues, fields, onSubmit, onCancel, submitting, err
     onSubmit(values);
   };
 
+  const inputFields = fields.filter((key) => FIELD_CONFIG[key].type !== 'checkbox');
+  const checkboxFields = fields.filter((key) => FIELD_CONFIG[key].type === 'checkbox');
+
   return (
     <form className="player-form" onSubmit={handleSubmit}>
-      {fields.map((key) => {
-        const cfg = FIELD_CONFIG[key];
-        if (cfg.type === 'checkbox') {
-          return (
-            <label key={key} className="player-form-checkbox-label">
-              <input type="checkbox" checked={values[key]} onChange={handleChange(key)} /> {cfg.label}
-            </label>
-          );
-        }
-        if (cfg.type === 'select') {
+      <div className="player-form-fields">
+        {inputFields.map((key) => {
+          const cfg = FIELD_CONFIG[key];
+          if (cfg.type === 'select') {
+            return (
+              <label key={key}>{cfg.label}
+                <select value={values[key]} onChange={handleChange(key)}>
+                  <option value="">Sin rol favorito</option>
+                  {cfg.options.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </label>
+            );
+          }
           return (
             <label key={key}>{cfg.label}
-              <select value={values[key]} onChange={handleChange(key)}>
-                <option value="">Sin rol favorito</option>
-                {cfg.options.map((option) => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
+              <input type={cfg.type} value={values[key]} onChange={handleChange(key)} />
             </label>
           );
-        }
-        return (
-          <label key={key}>{cfg.label}
-            <input type={cfg.type} value={values[key]} onChange={handleChange(key)} />
-          </label>
-        );
-      })}
+        })}
+      </div>
+      {/* Checkboxes get their own group so they lay out on a grid of their
+          own instead of sharing column tracks sized for text inputs. */}
+      {checkboxFields.length > 0 && (
+        <fieldset className="player-form-checkboxes">
+          <legend>Aptitudes</legend>
+          {checkboxFields.map((key) => (
+            <label key={key} className="player-form-checkbox-label">
+              <input type="checkbox" checked={values[key]} onChange={handleChange(key)} /> {FIELD_CONFIG[key].label}
+            </label>
+          ))}
+        </fieldset>
+      )}
       {(validationError || error) && <p role="alert" className="form-error">{validationError || error}</p>}
       <div className="player-form-actions">
         <button type="submit" className="btn-amarillo" disabled={submitting}>

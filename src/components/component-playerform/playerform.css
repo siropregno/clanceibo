@@ -9,6 +9,12 @@
     max-width: 400px;
 }
 
+.player-form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .player-form label {
     display: flex;
     flex-direction: column;
@@ -17,10 +23,44 @@
     font-size: 13px;
 }
 
+.player-form-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 14px 16px 16px;
+    margin: 0;
+    min-width: 0;
+}
+
+.player-form-checkboxes legend {
+    color: var(--null);
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: var(--semibold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0 6px;
+}
+
 .player-form-checkbox-label {
     flex-direction: row !important;
     align-items: center;
     gap: 8px !important;
+}
+
+/* The global input rule in main.css gives every input a 25px pill radius
+   and 10px padding, which renders a checkbox as an oversized oval. */
+.player-form-checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    border-radius: 4px;
+    accent-color: var(--yel);
+    cursor: pointer;
 }
 
 .player-form-actions {
