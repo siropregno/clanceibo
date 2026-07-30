@@ -107,6 +107,12 @@
     margin: 0;
 }
 
+/* pre-line, not normal: the description is a plain textarea, so the only
+   paragraph breaks an admin can express are literal newlines. HTML collapses
+   those into spaces by default, which turned a five-paragraph briefing into
+   one unreadable block. pre-line honours the newlines while still collapsing
+   runs of spaces and wrapping normally, so pasted text that carries stray
+   indentation does not render ragged (which `pre` or `pre-wrap` would). */
 .campanadetalle-descripcion {
     font-family: var(--font-body);
     color: var(--wht);
@@ -114,6 +120,7 @@
     margin: 24px 0 0 0;
     padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    white-space: pre-line;
 }
 
 /* ---------- Missions ---------- */
@@ -193,12 +200,15 @@
     margin: 0 0 6px 0;
 }
 
+/* Same reasoning as .campanadetalle-descripcion: a mission briefing is
+   written in the same textarea and breaks the same way without this. */
 .campanadetalle-mision-desc {
     font-family: var(--font-body);
     color: var(--wht);
     font-size: var(--texto-3);
     opacity: 0.85;
     margin: 0;
+    white-space: pre-line;
 }
 
 @media screen and (max-width: 600px) {
