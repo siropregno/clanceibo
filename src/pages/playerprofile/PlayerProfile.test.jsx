@@ -139,14 +139,16 @@ describe('PlayerProfile', () => {
       mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
       mockPlayerCampaigns.mockResolvedValue({
         data: [
-          { id: 'c1', titulo: 'Tormenta del Sur', descripcion: 'Seis noches.', badge_url: 'https://cdn.test/b.png' },
-          { id: 'c2', titulo: 'Relámpago', descripcion: null, badge_url: null },
+          { id: 'c1', titulo: 'Tormenta del Sur', badge_url: 'https://cdn.test/b.png' },
+          { id: 'c2', titulo: 'Relámpago', badge_url: null },
         ],
         error: null,
       });
       renderAt('/roster/u1');
-      await waitFor(() => expect(screen.getByText('Tormenta del Sur')).toBeInTheDocument());
-      expect(screen.getByText('Relámpago')).toBeInTheDocument();
+      // One link per campaign, named by the campaign. The title is not
+      // visible text any more - it lives in the tooltip and the aria-label.
+      await waitFor(() => expect(screen.getByRole('link', { name: 'Tormenta del Sur' })).toBeInTheDocument());
+      expect(screen.getByRole('link', { name: 'Relámpago' })).toBeInTheDocument();
     });
 
     it('queries the campaigns of the profile being viewed', async () => {
@@ -178,15 +180,45 @@ describe('PlayerProfile', () => {
       expect(screen.getByText(/no participó en campañas aún/i)).toBeInTheDocument();
     });
 
+    // Campaigns live in their own card, not inside the profile card with the
+    // aptitudes: the two are different kinds of award and the campaign badges
+    // link out.
+    it('renders campaigns in their own card, outside the profile card', async () => {
+      mockAuthValue = { session: null, refreshProfile: vi.fn() };
+      mockPlayerSingle.mockResolvedValue({ data: basePlayer, error: null });
+      mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
+      mockPlayerCampaigns.mockResolvedValue({
+        data: [{ id: 'c1', titulo: 'Tormenta', badge_url: null }], error: null,
+      });
+      renderAt('/roster/u1');
+      await waitFor(() => expect(document.querySelector('.playerprofile-campaigns')).not.toBeNull());
+      const profileCard = document.querySelector('.playerprofile-card');
+      expect(profileCard.querySelector('.playerprofile-campaigns')).toBeNull();
+    });
+
+    it('links each campaign badge to its campaign in a new tab', async () => {
+      mockAuthValue = { session: null, refreshProfile: vi.fn() };
+      mockPlayerSingle.mockResolvedValue({ data: basePlayer, error: null });
+      mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
+      mockPlayerCampaigns.mockResolvedValue({
+        data: [{ id: 'c1', titulo: 'Tormenta', badge_url: null }], error: null,
+      });
+      renderAt('/roster/u1');
+      await waitFor(() => expect(document.querySelector('.playerprofile-campaigns')).not.toBeNull());
+      const link = screen.getByRole('link', { name: 'Tormenta' });
+      expect(link).toHaveAttribute('href', '/campanas/c1');
+      expect(link).toHaveAttribute('target', '_blank');
+    });
+
     it('keeps aptitudes and campaigns as separate blocks', async () => {
       mockAuthValue = { session: null, refreshProfile: vi.fn() };
       mockPlayerSingle.mockResolvedValue({ data: basePlayer, error: null });
       mockScreenshotsOrder.mockResolvedValue({ data: [], error: null });
       mockPlayerCampaigns.mockResolvedValue({
-        data: [{ id: 'c1', titulo: 'Tormenta', descripcion: null, badge_url: null }], error: null,
+        data: [{ id: 'c1', titulo: 'Tormenta', badge_url: null }], error: null,
       });
       renderAt('/roster/u1');
-      await waitFor(() => expect(screen.getByText('Tormenta')).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByRole('link', { name: 'Tormenta' })).toBeInTheDocument());
       expect(screen.getByRole('heading', { name: /^aptitudes$/i })).toBeInTheDocument();
       expect(screen.getByRole('heading', { name: /^campañas$/i })).toBeInTheDocument();
     });

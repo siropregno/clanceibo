@@ -177,17 +177,20 @@ const PlayerProfile = () => {
               </div>
             )}
 
-            {/* Campaigns get their own block rather than joining the
-                aptitude row: an aptitude is training the player completed,
-                a campaign is a series they fought through. Same visual
-                family, different meaning. */}
+          </div>
+
+          {/* Campaigns get their own card rather than sitting inside the
+              profile card with the aptitudes: an aptitude is training the
+              player completed, a campaign is a series they fought through,
+              and each badge links out to its campaign. */}
+          <div className="playerprofile-campaigns">
             <h3>Campañas</h3>
             {campaignsLoading ? (
               <p className="playerprofile-badges-empty">Cargando campañas...</p>
             ) : campaigns.length === 0 ? (
               <p className="playerprofile-badges-empty">No participó en campañas aún.</p>
             ) : (
-              <div className="playerprofile-badges">
+              <div className="playerprofile-campaign-badges">
                 {campaigns.map((campaign) => (
                   <CampaignBadge key={campaign.id} campaign={campaign} />
                 ))}
