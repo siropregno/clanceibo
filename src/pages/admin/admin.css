@@ -259,20 +259,38 @@
 }
 
 /* Compact row-level controls: the global button rule (28px padding, 25px
-   radius) is sized for page CTAs and blows the row height out. */
+   radius) is sized for page CTAs and blows the row height out.
+
+   The base rule carries its own colour and border, so a plain .admin-action
+   with no -edit/-danger/-restore modifier is a legible neutral button. It
+   used to set only `background: transparent` and a transparent border and
+   leave `color` to the modifiers, which made an unmodified .admin-action
+   dark-on-dark and effectively invisible - the "Gestionar" control was
+   unreadable for exactly that reason. */
 .admin-action,
 .admin-action-link {
     font-family: var(--font-button);
     font-size: var(--texto-mini);
     font-weight: var(--semibold);
     padding: 7px 14px;
-    border: 1px solid transparent;
+    color: var(--null);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 20px;
     cursor: pointer;
     background: transparent;
     text-decoration: none;
     white-space: nowrap;
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* The neutral variant is the only one with no modifier to define its hover,
+   so the base class provides it. The :not() chain is what keeps it off the
+   coloured variants - it raises this rule's specificity above their hover
+   rules, so excluding them by match is the only thing stopping it from
+   greying out every Editar and Eliminar on hover. */
+.admin-action:not(.admin-action-edit):not(.admin-action-danger):not(.admin-action-restore):hover:not(:disabled) {
+    color: var(--wht);
+    border-color: var(--wht);
 }
 
 .admin-action-link {
