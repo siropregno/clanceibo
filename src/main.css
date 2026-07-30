@@ -42,12 +42,31 @@
     --black: 900;
 }
 
+/*
+ * Font baseline. main.css used to style a hand-picked list of tags (h1, h2, p,
+ * a, li, button, input, select) and every other text-bearing element - label,
+ * legend, span, h3, td, th, textarea - fell back to the UA default, which is
+ * why unstyled Times New Roman showed up in places like the aptitude checkbox
+ * labels. Setting the font on body and letting it inherit means new markup is
+ * styled by default instead of needing a per-component font-family patch.
+ */
 body {
     margin: 0;
     background-color: var(--wht);
     overflow-x: hidden;
     width: 100%;
     max-width: 100vw;
+    font-family: var(--font-body);
+    font-size: var(--texto-1);
+}
+
+/* Form controls do not inherit fonts from their ancestors per spec, so they
+   have to be opted in explicitly. option/optgroup are styled here because the
+   native dropdown list does not inherit from the select in every browser. */
+textarea,
+optgroup,
+option {
+    font-family: inherit;
 }
 
 main {
@@ -64,6 +83,40 @@ h2 {
     font-family: var(--font-title2);
     font-size: var(--subtitulo-1);
     margin-block: 0;
+}
+
+h3 {
+    font-family: var(--font-title);
+    font-size: var(--subtitulo-2);
+    margin-block: 0;
+}
+
+h4 {
+    font-family: var(--font-title);
+    font-size: var(--subtitulo-3);
+    margin-block: 0;
+}
+
+h5,
+h6 {
+    font-family: var(--font-title);
+    font-size: var(--texto-1);
+    margin-block: 0;
+}
+
+label,
+legend {
+    font-family: var(--font-body);
+    font-size: var(--texto-1);
+}
+
+th {
+    font-family: var(--font-body);
+}
+
+td {
+    font-family: var(--font-body);
+    font-weight: var(--light);
 }
 
 p {
