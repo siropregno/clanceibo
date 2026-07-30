@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import './campanadetalle.css';
 import { fetchCampaignWithMissions } from '@lib/campaigns';
-import { formatFecha, formatRango } from '@lib/fechas';
 
 const CampanaDetalle = () => {
   const { id } = useParams();
@@ -43,8 +42,7 @@ const CampanaDetalle = () => {
     );
   }
 
-  const { titulo, descripcion, badge_url, fecha_inicio, fecha_fin, missions = [] } = campaign;
-  const rango = formatRango(fecha_inicio, fecha_fin);
+  const { titulo, autor, descripcion, badge_url, missions = [] } = campaign;
 
   return (
     <>
@@ -68,7 +66,7 @@ const CampanaDetalle = () => {
               )}
               <div className="campanadetalle-headerinfo">
                 <h1 className="campanadetalle-titulo">{titulo}</h1>
-                {rango && <p className="campanadetalle-fechas">{rango}</p>}
+                {autor && <p className="campanadetalle-autor">por {autor}</p>}
                 <p className="campanadetalle-count">
                   {missions.length} {missions.length === 1 ? 'misión' : 'misiones'}
                 </p>
@@ -96,15 +94,16 @@ const CampanaDetalle = () => {
 };
 
 const MissionItem = ({ mission }) => {
-  const { titulo, descripcion, fecha, mapa, imagen_url } = mission;
+  const { titulo, descripcion, mapa, imagen_url } = mission;
   return (
     <li className="campanadetalle-mision">
       {imagen_url && <img src={imagen_url} alt="" className="campanadetalle-mision-img" />}
       <div className="campanadetalle-mision-info">
         <h3 className="campanadetalle-mision-titulo">{titulo}</h3>
-        <p className="campanadetalle-mision-meta">
-          {formatFecha(fecha)}{mapa ? ` · ${mapa}` : ''}
-        </p>
+        {/* The meta line used to be date · map. With dates dropped the map
+            is all that is left, so the line disappears entirely when a
+            mission has no map rather than rendering an empty element. */}
+        {mapa && <p className="campanadetalle-mision-meta">{mapa}</p>}
         {descripcion && <p className="campanadetalle-mision-desc">{descripcion}</p>}
       </div>
     </li>

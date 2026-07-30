@@ -19,13 +19,13 @@ const renderAt = (path = '/campanas/c1') => render(
 );
 
 const campaign = (over = {}) => ({
-  id: 'c1', titulo: 'Tormenta del Sur', descripcion: 'Seis noches en Altis.',
-  badge_url: null, fecha_inicio: '2026-03-01', fecha_fin: '2026-04-15',
+  id: 'c1', titulo: 'Tormenta del Sur', autor: 'Ceibo Uno',
+  descripcion: 'Seis noches en Altis.', badge_url: null,
   missions: [], ...over,
 });
 
 const mission = (over = {}) => ({
-  id: 'm1', titulo: 'Desembarco', fecha: '2026-03-01',
+  id: 'm1', titulo: 'Desembarco',
   mapa: 'Altis', descripcion: 'Playa norte.', imagen_url: null, ...over,
 });
 
@@ -51,28 +51,38 @@ describe('CampanaDetalle', () => {
     mockFetch.mockResolvedValue({ data: campaign(), error: null });
     renderAt();
     await waitFor(() => expect(screen.getByText('Tormenta del Sur')).toBeInTheDocument());
+    expect(screen.getByText('por Ceibo Uno')).toBeInTheDocument();
     expect(screen.getByText('Seis noches en Altis.')).toBeInTheDocument();
-    expect(screen.getByText('1 de marzo de 2026 — 15 de abril de 2026')).toBeInTheDocument();
   });
 
-  it('lists the missions with their date and map', async () => {
+  it('omits the author line when the campaign has none', async () => {
+    mockFetch.mockResolvedValue({ data: campaign({ autor: null }), error: null });
+    renderAt();
+    await waitFor(() => expect(screen.getByText('Tormenta del Sur')).toBeInTheDocument());
+    expect(document.querySelector('.campanadetalle-autor')).toBeNull();
+  });
+
+  it('lists the missions with their map', async () => {
     mockFetch.mockResolvedValue({
-      data: campaign({ missions: [mission(), mission({ id: 'm2', titulo: 'Contraataque', fecha: '2026-03-08', mapa: null, descripcion: null })] }),
+      data: campaign({ missions: [mission(), mission({ id: 'm2', titulo: 'Contraataque', mapa: null, descripcion: null })] }),
       error: null,
     });
     renderAt();
     await waitFor(() => expect(screen.getByText('Desembarco')).toBeInTheDocument());
-    expect(screen.getByText('1 de marzo de 2026 · Altis')).toBeInTheDocument();
+    expect(screen.getByText('Altis')).toBeInTheDocument();
     expect(screen.getByText('Playa norte.')).toBeInTheDocument();
     expect(screen.getByText('Contraataque')).toBeInTheDocument();
   });
 
-  it('omits the map separator when a mission has no map', async () => {
+  // The meta line was date · map; with dates gone the map is all of it, so
+  // the element should not render at all rather than render empty.
+  it('omits the meta line entirely when a mission has no map', async () => {
     mockFetch.mockResolvedValue({
       data: campaign({ missions: [mission({ mapa: null })] }), error: null,
     });
     renderAt();
-    await waitFor(() => expect(screen.getByText('1 de marzo de 2026')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Desembarco')).toBeInTheDocument());
+    expect(document.querySelector('.campanadetalle-mision-meta')).toBeNull();
   });
 
   it('renders a mission cover image when there is one', async () => {
@@ -154,12 +164,4 @@ describe('CampanaDetalle', () => {
     expect(document.querySelector('.campanadetalle-descripcion')).toBeNull();
   });
 
-  it('omits the date range when the campaign has no dates', async () => {
-    mockFetch.mockResolvedValue({
-      data: campaign({ fecha_inicio: null, fecha_fin: null }), error: null,
-    });
-    renderAt();
-    await waitFor(() => expect(screen.getByText('Tormenta del Sur')).toBeInTheDocument());
-    expect(document.querySelector('.campanadetalle-fechas')).toBeNull();
-  });
 });

@@ -37,8 +37,8 @@ const PLAYERS = [
 ];
 
 const campaign = (over = {}) => ({
-  id: 'c1', titulo: 'Tormenta', descripcion: null, badge_url: null, badge_path: null,
-  fecha_inicio: '2026-03-01', fecha_fin: null, missions: [], ...over,
+  id: 'c1', titulo: 'Tormenta', autor: null, descripcion: null,
+  badge_url: null, badge_path: null, missions: [], ...over,
 });
 
 const renderAdmin = (players = PLAYERS) => render(<AdminCampaigns players={players} />);
@@ -68,7 +68,7 @@ describe('AdminCampaigns loading and empty states', () => {
 
   it('lists campaigns with their mission and badge counts', async () => {
     mockFetchCampaigns.mockResolvedValue({
-      data: [campaign({ missions: [{ id: 'm1', titulo: 'Uno', fecha: '2026-03-01' }] })],
+      data: [campaign({ missions: [{ id: 'm1', titulo: 'Uno' }] })],
       error: null,
     });
     mockFetchTitles.mockResolvedValue({ data: new Map([['c1', new Set(['p1', 'p2'])]]), error: null });
@@ -107,13 +107,36 @@ describe('creating a campaign', () => {
     renderAdmin();
     await waitFor(() => screen.getByText(/todavía no hay campañas/i));
     await user.click(screen.getByRole('button', { name: /nueva campaña/i }));
-    await user.type(screen.getByLabelText(/título/i), 'Sin fechas');
+    await user.type(screen.getByLabelText(/título/i), 'Sin extras');
     await user.click(screen.getByRole('button', { name: /^guardar$/i }));
     await waitFor(() => expect(mockInsert).toHaveBeenCalled());
     const payload = mockInsert.mock.calls[0][0];
-    expect(payload.fecha_inicio).toBeNull();
-    expect(payload.fecha_fin).toBeNull();
+    expect(payload.autor).toBeNull();
     expect(payload.descripcion).toBeNull();
+  });
+
+  it('saves the author when one is given', async () => {
+    const user = userEvent.setup();
+    renderAdmin();
+    await waitFor(() => screen.getByText(/todavía no hay campañas/i));
+    await user.click(screen.getByRole('button', { name: /nueva campaña/i }));
+    await user.type(screen.getByLabelText(/título/i), 'Tormenta');
+    await user.type(screen.getByLabelText(/autor/i), 'Ceibo Uno');
+    await user.click(screen.getByRole('button', { name: /^guardar$/i }));
+    await waitFor(() => expect(mockInsert).toHaveBeenCalled());
+    expect(mockInsert.mock.calls[0][0].autor).toBe('Ceibo Uno');
+  });
+
+  it('trims whitespace off the author', async () => {
+    const user = userEvent.setup();
+    renderAdmin();
+    await waitFor(() => screen.getByText(/todavía no hay campañas/i));
+    await user.click(screen.getByRole('button', { name: /nueva campaña/i }));
+    await user.type(screen.getByLabelText(/título/i), 'Tormenta');
+    await user.type(screen.getByLabelText(/autor/i), '   Ceibo Uno   ');
+    await user.click(screen.getByRole('button', { name: /^guardar$/i }));
+    await waitFor(() => expect(mockInsert).toHaveBeenCalled());
+    expect(mockInsert.mock.calls[0][0].autor).toBe('Ceibo Uno');
   });
 
   it('trims whitespace off the title', async () => {
@@ -145,7 +168,7 @@ describe('missions', () => {
     await user.click(screen.getByRole('button', { name: /gestionar/i }));
   };
 
-  it('requires a title and a date', async () => {
+  it('requires a title', async () => {
     const user = userEvent.setup();
     mockFetchCampaigns.mockResolvedValue({ data: [campaign()], error: null });
     renderAdmin();
@@ -153,38 +176,47 @@ describe('missions', () => {
     await user.click(screen.getByRole('button', { name: /nueva misión/i }));
     await user.click(screen.getByRole('button', { name: /guardar misión/i }));
     expect(screen.getByRole('alert')).toHaveTextContent(/título de la misión es obligatorio/i);
-
-    await user.type(screen.getByLabelText(/título/i), 'Desembarco');
-    await user.click(screen.getByRole('button', { name: /guardar misión/i }));
-    expect(screen.getByRole('alert')).toHaveTextContent(/fecha de la misión es obligatoria/i);
     expect(mockInsert).not.toHaveBeenCalled();
   });
 
-  it('inserts a mission tied to its campaign', async () => {
+  // The title is now the only required field: 0009 dropped missions.fecha,
+  // so a mission with just a name is valid.
+  it('inserts a mission with only a title', async () => {
     const user = userEvent.setup();
     mockFetchCampaigns.mockResolvedValue({ data: [campaign()], error: null });
     renderAdmin();
     await expand(user);
     await user.click(screen.getByRole('button', { name: /nueva misión/i }));
     await user.type(screen.getByLabelText(/título/i), 'Desembarco');
-    await user.type(screen.getByLabelText(/fecha/i), '2026-03-08');
     await user.click(screen.getByRole('button', { name: /guardar misión/i }));
     await waitFor(() => expect(mockInsert).toHaveBeenCalled());
     expect(mockInsert.mock.calls[0][0]).toMatchObject({
-      campaign_id: 'c1', titulo: 'Desembarco', fecha: '2026-03-08',
+      campaign_id: 'c1', titulo: 'Desembarco',
     });
+  });
+
+  it('does not send a fecha field at all', async () => {
+    const user = userEvent.setup();
+    mockFetchCampaigns.mockResolvedValue({ data: [campaign()], error: null });
+    renderAdmin();
+    await expand(user);
+    await user.click(screen.getByRole('button', { name: /nueva misión/i }));
+    await user.type(screen.getByLabelText(/título/i), 'Desembarco');
+    await user.click(screen.getByRole('button', { name: /guardar misión/i }));
+    await waitFor(() => expect(mockInsert).toHaveBeenCalled());
+    expect(mockInsert.mock.calls[0][0]).not.toHaveProperty('fecha');
   });
 
   it('lists existing missions of the expanded campaign', async () => {
     const user = userEvent.setup();
     mockFetchCampaigns.mockResolvedValue({
-      data: [campaign({ missions: [{ id: 'm1', titulo: 'Desembarco', fecha: '2026-03-01', mapa: 'Altis' }] })],
+      data: [campaign({ missions: [{ id: 'm1', titulo: 'Desembarco', mapa: 'Altis' }] })],
       error: null,
     });
     renderAdmin();
     await expand(user);
     expect(screen.getByText('Desembarco')).toBeInTheDocument();
-    expect(screen.getByText('2026-03-01 · Altis')).toBeInTheDocument();
+    expect(screen.getByText('Altis')).toBeInTheDocument();
   });
 
   it('says so when a campaign has no missions', async () => {

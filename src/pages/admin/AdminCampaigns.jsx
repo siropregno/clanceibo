@@ -5,9 +5,8 @@ import { fetchCampaignsWithMissions, fetchTitlesByCampaign, grantTitle, revokeTi
 import CampaignImageUpload from '@components/component-campaignimageupload/campaignimageupload';
 import PlayerAvatar from '@components/component-playeravatar/playeravatar';
 
-const EMPTY_CAMPAIGN = { titulo: '', descripcion: '', badge_url: null, badge_path: null,
-  fecha_inicio: '', fecha_fin: '' };
-const EMPTY_MISSION = { titulo: '', fecha: '', descripcion: '', mapa: '',
+const EMPTY_CAMPAIGN = { titulo: '', autor: '', descripcion: '', badge_url: null, badge_path: null };
+const EMPTY_MISSION = { titulo: '', descripcion: '', mapa: '',
   imagen_url: null, imagen_path: null };
 
 // Empty date inputs come back as '', which Postgres rejects for a date
@@ -52,11 +51,10 @@ const AdminCampaigns = ({ players }) => {
     setError(null);
     const payload = {
       titulo: campaignForm.titulo.trim(),
+      autor: nullIfBlank(campaignForm.autor),
       descripcion: nullIfBlank(campaignForm.descripcion),
       badge_url: campaignForm.badge_url,
       badge_path: campaignForm.badge_path,
-      fecha_inicio: nullIfBlank(campaignForm.fecha_inicio),
-      fecha_fin: nullIfBlank(campaignForm.fecha_fin),
     };
     const { error: saveError } = campaignForm.id
       ? await supabase.from('campaigns').update(payload).eq('id', campaignForm.id)
@@ -85,13 +83,11 @@ const AdminCampaigns = ({ players }) => {
   const saveMission = async (e) => {
     e.preventDefault();
     if (!missionForm.titulo.trim()) { setError('El título de la misión es obligatorio.'); return; }
-    if (!missionForm.fecha) { setError('La fecha de la misión es obligatoria.'); return; }
     setSaving(true);
     setError(null);
     const payload = {
       campaign_id: missionForm.campaign_id,
       titulo: missionForm.titulo.trim(),
-      fecha: missionForm.fecha,
       descripcion: nullIfBlank(missionForm.descripcion),
       mapa: nullIfBlank(missionForm.mapa),
       imagen_url: missionForm.imagen_url,
@@ -159,13 +155,9 @@ const AdminCampaigns = ({ players }) => {
               <input type="text" value={campaignForm.titulo}
                 onChange={(e) => setCampaignForm({ ...campaignForm, titulo: e.target.value })} />
             </label>
-            <label>Inicio
-              <input type="date" value={campaignForm.fecha_inicio || ''}
-                onChange={(e) => setCampaignForm({ ...campaignForm, fecha_inicio: e.target.value })} />
-            </label>
-            <label>Fin
-              <input type="date" value={campaignForm.fecha_fin || ''}
-                onChange={(e) => setCampaignForm({ ...campaignForm, fecha_fin: e.target.value })} />
+            <label>Autor
+              <input type="text" value={campaignForm.autor || ''}
+                onChange={(e) => setCampaignForm({ ...campaignForm, autor: e.target.value })} />
             </label>
           </div>
           <label className="admin-campaign-textarea">Descripción
@@ -237,10 +229,6 @@ const AdminCampaigns = ({ players }) => {
                             <input type="text" value={missionForm.titulo}
                               onChange={(e) => setMissionForm({ ...missionForm, titulo: e.target.value })} />
                           </label>
-                          <label>Fecha
-                            <input type="date" value={missionForm.fecha || ''}
-                              onChange={(e) => setMissionForm({ ...missionForm, fecha: e.target.value })} />
-                          </label>
                           <label>Mapa
                             <input type="text" value={missionForm.mapa || ''}
                               onChange={(e) => setMissionForm({ ...missionForm, mapa: e.target.value })} />
@@ -276,9 +264,7 @@ const AdminCampaigns = ({ players }) => {
                           <li key={mission.id} className="admin-mission-row">
                             <div className="admin-mission-info">
                               <span className="admin-mission-titulo">{mission.titulo}</span>
-                              <span className="admin-mission-meta">
-                                {mission.fecha}{mission.mapa ? ` · ${mission.mapa}` : ''}
-                              </span>
+                              {mission.mapa && <span className="admin-mission-meta">{mission.mapa}</span>}
                             </div>
                             <div className="admin-actions">
                               <button type="button" className="admin-action admin-action-edit"

@@ -15,8 +15,8 @@ const renderPage = () => render(
 );
 
 const campaign = (over = {}) => ({
-  id: 'c1', titulo: 'Tormenta del Sur', descripcion: 'Seis noches en Altis.',
-  badge_url: null, fecha_inicio: '2026-03-01', fecha_fin: '2026-04-15',
+  id: 'c1', titulo: 'Tormenta del Sur', autor: 'Ceibo Uno',
+  descripcion: 'Seis noches en Altis.', badge_url: null,
   mission_count: 0, ...over,
 });
 
@@ -44,12 +44,19 @@ describe('Campanas', () => {
     await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(/no se pudieron cargar/i));
   });
 
-  it('renders a card with the title, description and date range', async () => {
+  it('renders a card with the title, author and description', async () => {
     mockFetch.mockResolvedValue({ data: [campaign()], error: null });
     renderPage();
     await waitFor(() => expect(screen.getByText('Tormenta del Sur')).toBeInTheDocument());
+    expect(screen.getByText('por Ceibo Uno')).toBeInTheDocument();
     expect(screen.getByText('Seis noches en Altis.')).toBeInTheDocument();
-    expect(screen.getByText('1 de marzo de 2026 — 15 de abril de 2026')).toBeInTheDocument();
+  });
+
+  it('omits the author line when the campaign has none', async () => {
+    mockFetch.mockResolvedValue({ data: [campaign({ autor: null })], error: null });
+    renderPage();
+    await waitFor(() => expect(screen.getByText('Tormenta del Sur')).toBeInTheDocument());
+    expect(document.querySelector('.campana-autor')).toBeNull();
   });
 
   // The whole card is the link, matching PlayerRow: clicking anywhere on it
@@ -105,15 +112,6 @@ describe('Campanas', () => {
     renderPage();
     await waitFor(() => expect(screen.getByText('T')).toBeInTheDocument());
     expect(document.querySelector('.campana-badge')).toBeNull();
-  });
-
-  it('omits the date range when the campaign has no dates', async () => {
-    mockFetch.mockResolvedValue({
-      data: [campaign({ fecha_inicio: null, fecha_fin: null })], error: null,
-    });
-    renderPage();
-    await waitFor(() => expect(screen.getByText('Tormenta del Sur')).toBeInTheDocument());
-    expect(document.querySelector('.campana-fechas')).toBeNull();
   });
 
   it('omits the description when the campaign has none', async () => {

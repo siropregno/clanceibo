@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import './campanas.css';
 import { fetchCampaigns } from '@lib/campaigns';
-import { formatRango } from '@lib/fechas';
 
 const Campanas = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -59,8 +58,7 @@ const Campanas = () => {
 // the link (like PlayerRow), so the click target is the card rather than a
 // small "ver más" affordance inside it.
 const CampaignCard = ({ campaign }) => {
-  const { id, titulo, descripcion, badge_url, fecha_inicio, fecha_fin, mission_count = 0 } = campaign;
-  const rango = formatRango(fecha_inicio, fecha_fin);
+  const { id, titulo, autor, descripcion, badge_url, mission_count = 0 } = campaign;
   return (
     <Link className="campana-card" to={`/campanas/${id}`}>
       <div className="campana-card-badge">
@@ -76,7 +74,7 @@ const CampaignCard = ({ campaign }) => {
       </div>
       <div className="campana-card-info">
         <h2 className="campana-titulo">{titulo}</h2>
-        {rango && <p className="campana-fechas">{rango}</p>}
+        {autor && <p className="campana-autor">por {autor}</p>}
         {descripcion && <p className="campana-descripcion">{descripcion}</p>}
         <p className="campana-count">
           {mission_count} {mission_count === 1 ? 'misión' : 'misiones'}

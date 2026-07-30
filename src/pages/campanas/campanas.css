@@ -104,7 +104,7 @@
     margin: 0 0 4px 0;
 }
 
-.campana-fechas {
+.campana-autor {
     font-family: var(--font-body);
     color: var(--wht);
     font-size: var(--texto-3);
@@ -139,13 +139,13 @@
 /* Hover inverts the card, so every text colour has to flip with it or the
    yellow-on-yellow title disappears. */
 .campana-card:hover .campana-titulo,
-.campana-card:hover .campana-fechas,
+.campana-card:hover .campana-autor,
 .campana-card:hover .campana-descripcion,
 .campana-card:hover .campana-count {
     color: var(--blk);
 }
 
-.campana-card:hover .campana-fechas,
+.campana-card:hover .campana-autor,
 .campana-card:hover .campana-count {
     opacity: 0.75;
 }

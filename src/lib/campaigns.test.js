@@ -38,16 +38,16 @@ describe('sortMissions', () => {
     const out = sortMissions({
       id: 'c1',
       missions: [
-        { id: 'm2', fecha: '2026-03-10' },
-        { id: 'm1', fecha: '2026-01-05' },
-        { id: 'm3', fecha: '2026-07-22' },
+        { id: 'm2', created_at: '2026-03-10T00:00:00Z' },
+        { id: 'm1', created_at: '2026-01-05T00:00:00Z' },
+        { id: 'm3', created_at: '2026-07-22T00:00:00Z' },
       ],
     });
     expect(out.missions.map((m) => m.id)).toEqual(['m1', 'm2', 'm3']);
   });
 
   it('does not mutate the campaign it is given', () => {
-    const campaign = { id: 'c1', missions: [{ id: 'm2', fecha: '2026-03-10' }, { id: 'm1', fecha: '2026-01-05' }] };
+    const campaign = { id: 'c1', missions: [{ id: 'm2', created_at: '2026-03-10T00:00:00Z' }, { id: 'm1', created_at: '2026-01-05T00:00:00Z' }] };
     sortMissions(campaign);
     expect(campaign.missions.map((m) => m.id)).toEqual(['m2', 'm1']);
   });
@@ -64,13 +64,13 @@ describe('sortMissions', () => {
     expect(sortMissions(null)).toBeNull();
   });
 
-  // ISO dates (yyyy-mm-dd) sort correctly as plain strings, which is why
+  // ISO timestamps sort correctly as plain strings, which is why
   // localeCompare is used instead of constructing Date objects. This pins
-  // that assumption: a same-year, cross-month pair must not sort lexically
-  // wrong (e.g. '10' before '9' would break a non-padded format).
-  it('sorts ISO dates across month boundaries', () => {
+  // that assumption at a month boundary, where a non-padded format would
+  // sort '10' before '9'.
+  it('sorts ISO timestamps across month boundaries', () => {
     const out = sortMissions({
-      missions: [{ id: 'b', fecha: '2026-10-01' }, { id: 'a', fecha: '2026-09-30' }],
+      missions: [{ id: 'b', created_at: '2026-10-01T00:00:00Z' }, { id: 'a', created_at: '2026-09-30T00:00:00Z' }],
     });
     expect(out.missions.map((m) => m.id)).toEqual(['a', 'b']);
   });
@@ -119,12 +119,14 @@ describe('fetchCampaigns', () => {
     expect(calls).toContainEqual(['select', '*, missions(count)']);
   });
 
-  it('orders by start date, newest first, undated last', async () => {
+  // 0009 dropped the date columns, so the list orders by creation time -
+  // the order campaigns were added, newest first.
+  it('orders by creation time, newest first', async () => {
     result = { data: [], error: null };
     await fetchCampaigns();
     const order = calls.find(([m]) => m === 'order');
-    expect(order[1]).toBe('fecha_inicio');
-    expect(order[2]).toMatchObject({ ascending: false, nullsFirst: false });
+    expect(order[1]).toBe('created_at');
+    expect(order[2]).toMatchObject({ ascending: false });
   });
 
   it('returns an empty array, not null, when there are no campaigns', async () => {
@@ -145,7 +147,7 @@ describe('fetchCampaigns', () => {
 describe('fetchCampaignWithMissions', () => {
   it('embeds missions and sorts them oldest first', async () => {
     result = {
-      data: { id: 'c1', missions: [{ id: 'm2', fecha: '2026-05-01' }, { id: 'm1', fecha: '2026-04-01' }] },
+      data: { id: 'c1', missions: [{ id: 'm2', created_at: '2026-05-01T00:00:00Z' }, { id: 'm1', created_at: '2026-04-01T00:00:00Z' }] },
       error: null,
     };
     const { data } = await fetchCampaignWithMissions('c1');
@@ -166,8 +168,8 @@ describe('fetchCampaignsWithMissions', () => {
   it('sorts the missions of every campaign', async () => {
     result = {
       data: [
-        { id: 'c1', missions: [{ id: 'm2', fecha: '2026-02-01' }, { id: 'm1', fecha: '2026-01-01' }] },
-        { id: 'c2', missions: [{ id: 'm4', fecha: '2026-06-01' }, { id: 'm3', fecha: '2026-05-01' }] },
+        { id: 'c1', missions: [{ id: 'm2', created_at: '2026-02-01T00:00:00Z' }, { id: 'm1', created_at: '2026-01-01T00:00:00Z' }] },
+        { id: 'c2', missions: [{ id: 'm4', created_at: '2026-06-01T00:00:00Z' }, { id: 'm3', created_at: '2026-05-01T00:00:00Z' }] },
       ],
       error: null,
     };

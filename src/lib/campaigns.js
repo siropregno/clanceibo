@@ -11,18 +11,20 @@ const ERR_CAMPAIGNS = 'No se pudieron cargar las campañas.';
 const ERR_CAMPAIGN = 'No se pudo cargar la campaña.';
 const ERR_TITLES = 'No se pudieron cargar las campañas del jugador.';
 
-// Campaigns are ordered newest-first by start date. fecha_inicio is
-// nullable, so `nullsFirst: false` keeps undated campaigns at the bottom
-// instead of letting them head the list.
-const CAMPAIGN_ORDER = { column: 'fecha_inicio', ascending: false, nullsFirst: false };
+// Campaigns are ordered newest-first. This was fecha_inicio until 0009
+// dropped the date columns; created_at is the closest honest substitute,
+// being the order campaigns were added. It is NOT NULL, so unlike
+// fecha_inicio there is no null-ordering case to handle.
+const CAMPAIGN_ORDER = { column: 'created_at', ascending: false };
 
 // PostgREST does not order embedded rows the way `.order()` orders the
 // parent, so missions come back in an unspecified order. Sorting here keeps
 // every caller consistent (oldest mission first: a campaign reads as a
-// chronological story, unlike the campaign list itself which is newest-first).
+// story in the order its missions were added, unlike the campaign list
+// itself which is newest-first).
 export const sortMissions = (campaign) => {
   if (!campaign?.missions) return campaign;
-  const missions = [...campaign.missions].sort((a, b) => a.fecha.localeCompare(b.fecha));
+  const missions = [...campaign.missions].sort((a, b) => a.created_at.localeCompare(b.created_at));
   return { ...campaign, missions };
 };
 
