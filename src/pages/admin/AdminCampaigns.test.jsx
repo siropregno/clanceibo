@@ -7,6 +7,7 @@ const mockFetchTitles = vi.fn();
 const mockGrant = vi.fn();
 const mockRevoke = vi.fn();
 const mockSwapOrder = vi.fn();
+const mockSetVisibility = vi.fn();
 
 // neighborSwap and reorderLocally are pure and covered directly in
 // campaigns.test.js, so the real implementations are used here - mocking them
@@ -21,6 +22,7 @@ vi.mock('@lib/campaigns', async (importOriginal) => {
     grantTitle: (...a) => mockGrant(...a),
     revokeTitle: (...a) => mockRevoke(...a),
     swapCampaignOrder: (...a) => mockSwapOrder(...a),
+    setCampaignVisibility: (...a) => mockSetVisibility(...a),
   };
 });
 
@@ -48,7 +50,7 @@ const PLAYERS = [
 
 const campaign = (over = {}) => ({
   id: 'c1', titulo: 'Tormenta', autor: null, descripcion: null,
-  badge_url: null, badge_path: null, missions: [], ...over,
+  badge_url: null, badge_path: null, visible: true, missions: [], ...over,
 });
 
 const renderAdmin = (players = PLAYERS) => render(<AdminCampaigns players={players} />);
@@ -63,6 +65,7 @@ beforeEach(() => {
   mockGrant.mockResolvedValue({ error: null });
   mockRevoke.mockResolvedValue({ error: null });
   mockSwapOrder.mockResolvedValue({ error: null });
+  mockSetVisibility.mockResolvedValue({ error: null });
 });
 
 describe('AdminCampaigns loading and empty states', () => {
@@ -446,5 +449,200 @@ describe('granting campaign badges', () => {
     await user.click(box);
     await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(/no se pudo otorgar/i));
     expect(box).not.toBeChecked();
+  });
+});
+
+describe('hiding a campaign', () => {
+  // Hiding confirms, so every test that hides has to answer the dialog.
+  // jsdom's window.confirm throws "not implemented" if left unstubbed, which
+  // would fail as a crash rather than as the assertion under test.
+  const answerConfirm = (accept) =>
+    vi.spyOn(window, 'confirm').mockReturnValue(accept);
+
+  const card = () => document.querySelector('.admin-campaign-card');
+
+  const renderOne = async (over = {}) => {
+    mockFetchCampaigns.mockResolvedValue({ data: [campaign(over)], error: null });
+    renderAdmin();
+    await waitFor(() => screen.getByText('Tormenta'));
+  };
+
+  it('offers "Ocultar" on a visible campaign', async () => {
+    await renderOne();
+    expect(screen.getByRole('button', { name: /^ocultar$/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^mostrar$/i })).toBeNull();
+  });
+
+  it('offers "Mostrar" on a hidden campaign', async () => {
+    await renderOne({ visible: false });
+    expect(screen.getByRole('button', { name: /^mostrar$/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^ocultar$/i })).toBeNull();
+  });
+
+  it('writes visible = false when hiding is confirmed', async () => {
+    const user = userEvent.setup();
+    answerConfirm(true);
+    await renderOne();
+    await user.click(screen.getByRole('button', { name: /^ocultar$/i }));
+    await waitFor(() => expect(mockSetVisibility).toHaveBeenCalledWith('c1', false));
+  });
+
+  // Hiding pulls a campaign, its missions and its badges off the public site,
+  // so a misclick must be recoverable before it happens, not after.
+  it('writes nothing when the confirmation is dismissed', async () => {
+    const user = userEvent.setup();
+    answerConfirm(false);
+    await renderOne();
+    await user.click(screen.getByRole('button', { name: /^ocultar$/i }));
+    expect(mockSetVisibility).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: /^ocultar$/i })).toBeInTheDocument();
+  });
+
+  // Un-hiding restores something; nobody needs protecting from that.
+  it('does not confirm when showing a hidden campaign', async () => {
+    const user = userEvent.setup();
+    const confirm = answerConfirm(true);
+    await renderOne({ visible: false });
+    await user.click(screen.getByRole('button', { name: /^mostrar$/i }));
+    await waitFor(() => expect(mockSetVisibility).toHaveBeenCalledWith('c1', true));
+    expect(confirm).not.toHaveBeenCalled();
+  });
+
+  it('warns how many players lose their badge from view', async () => {
+    const user = userEvent.setup();
+    const confirm = answerConfirm(false);
+    mockFetchTitles.mockResolvedValue({ data: new Map([['c1', new Set(['p1', 'p2'])]]), error: null });
+    await renderOne();
+    await user.click(screen.getByRole('button', { name: /^ocultar$/i }));
+    expect(confirm.mock.calls[0][0]).toMatch(/insignias de 2 jugadores/i);
+  });
+
+  it('leaves the badge sentence out when nobody has been granted one', async () => {
+    const user = userEvent.setup();
+    const confirm = answerConfirm(false);
+    await renderOne();
+    await user.click(screen.getByRole('button', { name: /^ocultar$/i }));
+    expect(confirm.mock.calls[0][0]).not.toMatch(/insignias/i);
+  });
+
+  it('marks the card as hidden without waiting for the write', async () => {
+    const user = userEvent.setup();
+    answerConfirm(true);
+    let release;
+    mockSetVisibility.mockReturnValue(new Promise((resolve) => { release = () => resolve({ error: null }); }));
+    await renderOne();
+    expect(card()).not.toHaveClass('admin-campaign-card-hidden');
+    await user.click(screen.getByRole('button', { name: /^ocultar$/i }));
+    await waitFor(() => expect(card()).toHaveClass('admin-campaign-card-hidden'));
+    expect(screen.getByText(/^oculta$/i)).toBeInTheDocument();
+    release();
+  });
+
+  it('drops the hidden marking when the campaign is shown again', async () => {
+    const user = userEvent.setup();
+    await renderOne({ visible: false });
+    expect(card()).toHaveClass('admin-campaign-card-hidden');
+    await user.click(screen.getByRole('button', { name: /^mostrar$/i }));
+    await waitFor(() => expect(card()).not.toHaveClass('admin-campaign-card-hidden'));
+    expect(screen.queryByText(/^oculta$/i)).toBeNull();
+  });
+
+  it('confirms the change with a message', async () => {
+    const user = userEvent.setup();
+    answerConfirm(true);
+    await renderOne();
+    await user.click(screen.getByRole('button', { name: /^ocultar$/i }));
+    await waitFor(() => expect(screen.getByText(/campaña oculta/i)).toBeInTheDocument());
+  });
+
+  // A failed write must not leave the panel showing a state the database does
+  // not have - the same rule the reorder buttons follow.
+  it('reports the error and refetches when the write fails', async () => {
+    const user = userEvent.setup();
+    answerConfirm(true);
+    mockSetVisibility.mockResolvedValue({ error: 'No se pudo cambiar la visibilidad de la campaña.' });
+    await renderOne();
+    expect(mockFetchCampaigns).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByRole('button', { name: /^ocultar$/i }));
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(/no se pudo cambiar la visibilidad/i));
+    await waitFor(() => expect(mockFetchCampaigns).toHaveBeenCalledTimes(2));
+  });
+
+  it('restores the server state after a failed write', async () => {
+    const user = userEvent.setup();
+    answerConfirm(true);
+    mockSetVisibility.mockResolvedValue({ error: 'No se pudo cambiar la visibilidad de la campaña.' });
+    await renderOne();
+    await user.click(screen.getByRole('button', { name: /^ocultar$/i }));
+    await waitFor(() => expect(card()).not.toHaveClass('admin-campaign-card-hidden'));
+    expect(screen.getByRole('button', { name: /^ocultar$/i })).toBeInTheDocument();
+  });
+
+  // A hidden campaign is still fully editable in the panel - that is the whole
+  // point of hiding instead of deleting. Nothing may be disabled by hiding.
+  it('keeps a hidden campaign editable, reorderable and manageable', async () => {
+    const user = userEvent.setup();
+    await renderOne({ visible: false });
+    expect(screen.getByRole('button', { name: /editar/i })).toBeEnabled();
+    expect(screen.getByRole('button', { name: /eliminar/i })).toBeEnabled();
+    await user.click(screen.getByRole('button', { name: /gestionar/i }));
+    expect(screen.getByRole('button', { name: /nueva misión/i })).toBeInTheDocument();
+  });
+
+  // The panel patches the single row instead of reloading, so an admin hiding
+  // several campaigns in a row does not lose the card they have expanded.
+  it('does not refetch or collapse the expanded card on a successful toggle', async () => {
+    const user = userEvent.setup();
+    answerConfirm(true);
+    await renderOne();
+    await user.click(screen.getByRole('button', { name: /gestionar/i }));
+    expect(screen.getByRole('button', { name: /nueva misión/i })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /^ocultar$/i }));
+    await waitFor(() => expect(mockSetVisibility).toHaveBeenCalled());
+    expect(mockFetchCampaigns).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('button', { name: /nueva misión/i })).toBeInTheDocument();
+  });
+
+  // Only the toggled campaign changes. A patch keyed on the wrong id would
+  // hide the whole list, which is exactly the kind of bug a one-campaign test
+  // cannot see.
+  it('hides only the campaign whose button was clicked', async () => {
+    const user = userEvent.setup();
+    answerConfirm(true);
+    mockFetchCampaigns.mockResolvedValue({
+      data: [campaign({ id: 'c1', titulo: 'Primera' }), campaign({ id: 'c2', titulo: 'Segunda' })],
+      error: null,
+    });
+    renderAdmin();
+    await waitFor(() => screen.getByText('Primera'));
+    await user.click(screen.getAllByRole('button', { name: /^ocultar$/i })[1]);
+    await waitFor(() => expect(mockSetVisibility).toHaveBeenCalledWith('c2', false));
+    const cards = document.querySelectorAll('.admin-campaign-card');
+    expect(cards[0]).not.toHaveClass('admin-campaign-card-hidden');
+    expect(cards[1]).toHaveClass('admin-campaign-card-hidden');
+  });
+
+  // The collapse button used to read "Ocultar" too. Two buttons with the same
+  // label on one card, one cosmetic and one with public consequences, is a
+  // misclick waiting to happen - so the collapse one says "Cerrar".
+  it('does not label the collapse button "Ocultar"', async () => {
+    const user = userEvent.setup();
+    await renderOne();
+    await user.click(screen.getByRole('button', { name: /gestionar/i }));
+    expect(screen.getByRole('button', { name: /^cerrar$/i })).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /^ocultar$/i })).toHaveLength(1);
+  });
+
+  // Before 0011 is applied the column does not exist, so the row arrives with
+  // no `visible` key at all. That must read as visible, not as hidden - an
+  // undefined flag greying out every card would look like total data loss.
+  it('treats a campaign with no visible column as visible', async () => {
+    const noColumn = campaign();
+    delete noColumn.visible;
+    mockFetchCampaigns.mockResolvedValue({ data: [noColumn], error: null });
+    renderAdmin();
+    await waitFor(() => screen.getByText('Tormenta'));
+    expect(card()).not.toHaveClass('admin-campaign-card-hidden');
+    expect(screen.getByRole('button', { name: /^ocultar$/i })).toBeInTheDocument();
   });
 });

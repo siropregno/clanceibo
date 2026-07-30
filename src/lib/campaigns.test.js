@@ -33,6 +33,7 @@ import {
   neighborSwap,
   reorderLocally,
   swapCampaignOrder,
+  setCampaignVisibility,
 } from './campaigns';
 
 beforeEach(() => { calls.length = 0; result = { data: null, error: null }; });
@@ -342,6 +343,60 @@ describe('swapCampaignOrder', () => {
   });
 });
 
+describe('setCampaignVisibility', () => {
+  it('hides a campaign by writing visible = false', async () => {
+    result = { error: null };
+    const { error } = await setCampaignVisibility('c1', false);
+    expect(error).toBeNull();
+    expect(calls).toContainEqual(['update', { visible: false }]);
+    expect(calls).toContainEqual(['eq', 'id', 'c1']);
+  });
+
+  it('shows a campaign by writing visible = true', async () => {
+    result = { error: null };
+    await setCampaignVisibility('c1', true);
+    expect(calls).toContainEqual(['update', { visible: true }]);
+  });
+
+  // The caller passes the desired end state, never a toggle. Two clicks
+  // computed against a stale row would otherwise flip it back.
+  it('writes only the visible column, leaving the rest of the row alone', async () => {
+    result = { error: null };
+    await setCampaignVisibility('c1', false);
+    const updates = calls.filter(([m]) => m === 'update');
+    expect(updates).toHaveLength(1);
+    expect(Object.keys(updates[0][1])).toEqual(['visible']);
+  });
+
+  it('reports a failure as a user-facing message', async () => {
+    result = { error: { message: 'rls' } };
+    const { error } = await setCampaignVisibility('c1', false);
+    expect(error).toMatch(/no se pudo cambiar la visibilidad/i);
+  });
+});
+
+// Hiding is enforced by RLS (0011), not by the client. A `.eq('visible',
+// true)` added to any read here would be worse than redundant: it would look
+// like the gate, so the real one could be relaxed without anyone noticing the
+// site still appeared correct - while PostgREST served the hidden campaign to
+// anyone using the anon key directly. It would also break the admin panel,
+// which must see hidden campaigns to un-hide them.
+describe('visibility is never filtered client-side', () => {
+  it.each([
+    ['fetchCampaigns', () => fetchCampaigns()],
+    ['fetchCampaignsWithMissions', () => fetchCampaignsWithMissions()],
+    ['fetchCampaignWithMissions', () => fetchCampaignWithMissions('c1')],
+    ['fetchPlayerCampaigns', () => fetchPlayerCampaigns('p1')],
+  ])('%s does not filter on the visible column', async (_label, run) => {
+    result = { data: [], error: null };
+    await run();
+    expect(calls.filter(([method]) => method === 'eq')
+      .some(([, column]) => column === 'visible')).toBe(false);
+    expect(calls.filter(([method]) => method === 'select')
+      .some(([, columns]) => String(columns).includes('visible'))).toBe(false);
+  });
+});
+
 describe('fetchPlayerCampaigns', () => {
   it('unwraps the embedded campaign off each title row', async () => {
     result = {
@@ -356,10 +411,26 @@ describe('fetchPlayerCampaigns', () => {
     expect(calls).toContainEqual(['eq', 'player_id', 'p1']);
   });
 
+  // This is how a hidden campaign's badge disappears from a profile (0011).
+  // The campaign_titles row survives - nothing is deleted - but RLS returns
+  // NULL for the embedded campaign to a non-admin, and the badge must not
+  // render as an empty medal or throw on titulo.charAt(0) in CampaignBadge.
   it('drops rows whose embedded campaign is missing', async () => {
     result = { data: [{ campaign_id: 'c1', campaigns: null }], error: null };
     const { data } = await fetchPlayerCampaigns('p1');
     expect(data).toEqual([]);
+  });
+
+  it('keeps visible campaigns when a hidden one is filtered out beside them', async () => {
+    result = {
+      data: [
+        { campaign_id: 'c1', campaigns: null },
+        { campaign_id: 'c2', campaigns: { id: 'c2', titulo: 'Relámpago' } },
+      ],
+      error: null,
+    };
+    const { data } = await fetchPlayerCampaigns('p1');
+    expect(data).toEqual([{ id: 'c2', titulo: 'Relámpago' }]);
   });
 
   it('returns an empty array for a player with no campaigns', async () => {

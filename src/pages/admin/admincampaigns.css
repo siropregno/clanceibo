@@ -126,6 +126,53 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
+/* A hidden campaign reads as switched-off: a dashed border (the card is not
+   solid on the site anymore) and reduced contrast. The card stays fully
+   interactive - the admin still edits and reorders hidden campaigns - so this
+   dims the badge and text, not the buttons, and never drops opacity on the
+   whole card. */
+.admin-campaign-card-hidden {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    /* Same border-box size as a visible card, whose 1px border does not
+       exist: without this the card would grow 2px and the list would jog as
+       campaigns are hidden. */
+    padding: 19px 24px;
+}
+
+/* Dimmed with color, not opacity: the "Oculta" tag is a child of the title
+   and has to stay at full contrast. opacity establishes a group that a child
+   cannot climb back out of - a nested opacity: 1 multiplies against the
+   parent's and changes nothing - so the title fades its own text only. */
+.admin-campaign-card-hidden .admin-campaign-titulo {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.admin-campaign-card-hidden .admin-campaign-meta {
+    opacity: 0.55;
+}
+
+.admin-campaign-card-hidden .admin-campaign-badge {
+    opacity: 0.4;
+    filter: grayscale(1);
+}
+
+/* Inline with the title rather than on its own line, so the card keeps the
+   same height whether or not it is hidden. */
+.admin-campaign-hidden-tag {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--wht);
+    font-family: var(--font-text);
+    font-size: var(--texto-mini);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+
 .admin-campaign-card-header {
     display: flex;
     align-items: center;

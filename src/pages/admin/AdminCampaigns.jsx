@@ -9,6 +9,7 @@ import {
   neighborSwap,
   reorderLocally,
   swapCampaignOrder,
+  setCampaignVisibility,
 } from '@lib/campaigns';
 import CampaignImageUpload from '@components/component-campaignimageupload/campaignimageupload';
 import PlayerAvatar from '@components/component-playeravatar/playeravatar';
@@ -120,6 +121,41 @@ const AdminCampaigns = ({ players }) => {
       // message that explains why the row is about to snap back.
       load({ keepError: true });
     }
+  };
+
+  // ── visibility ───────────────────────────────────────────────────────
+
+  // Shows or hides a campaign on the public site. Like the reorder buttons the
+  // card updates first and the write follows, because the whole point of the
+  // control is to see what the public list will look like.
+  //
+  // Hiding is not destructive but it is not trivial either - it pulls the
+  // campaign, its missions and every granted badge off the public site at
+  // once - so it confirms. Un-hiding does not: putting something back is not
+  // a decision anyone regrets.
+  const toggleVisibility = async (campaign) => {
+    const next = !campaign.visible;
+    if (!next) {
+      const granted = titles.get(campaign.id)?.size || 0;
+      const consequences = granted > 0
+        ? ` También se ocultan las insignias de ${granted} ${granted === 1 ? 'jugador' : 'jugadores'}.`
+        : '';
+      if (!window.confirm(
+        `¿Ocultar "${campaign.titulo}"? Deja de verse en la web pública, con sus misiones.${consequences} No se borra nada y podés volver a mostrarla cuando quieras.`,
+      )) return;
+    }
+    setError(null);
+    // Patch the single row instead of reloading: the admin hides several
+    // campaigns in a row, and a full refetch per click would collapse the
+    // expanded card they are working in.
+    setCampaigns((prev) => prev.map((c) => (c.id === campaign.id ? { ...c, visible: next } : c)));
+    const { error: visibilityError } = await setCampaignVisibility(campaign.id, next);
+    if (visibilityError) {
+      setError(visibilityError);
+      load({ keepError: true });
+      return;
+    }
+    setMessage(next ? 'Campaña visible en la web.' : 'Campaña oculta.');
   };
 
   // ── missions ─────────────────────────────────────────────────────────
@@ -237,7 +273,8 @@ const AdminCampaigns = ({ players }) => {
             const granted = titles.get(campaign.id) || new Set();
             const isExpanded = expandedId === campaign.id;
             return (
-              <article key={campaign.id} className="admin-campaign-card">
+              <article key={campaign.id}
+                className={`admin-campaign-card${campaign.visible === false ? ' admin-campaign-card-hidden' : ''}`}>
                 <header className="admin-campaign-card-header">
                   {/* Reordering lives in the card header, next to the badge,
                       so the control sits where the row it moves is. Disabled
@@ -255,20 +292,41 @@ const AdminCampaigns = ({ players }) => {
                   </div>
                   {campaign.badge_url && <img src={campaign.badge_url} alt="" className="admin-campaign-badge" />}
                   <div className="admin-campaign-card-info">
-                    <h3 className="admin-campaign-titulo">{campaign.titulo}</h3>
+                    <h3 className="admin-campaign-titulo">
+                      {campaign.titulo}
+                      {/* The badge is a word, not just the dimmed card: an
+                          admin scanning the list needs to know why a card
+                          looks different without hovering anything. */}
+                      {campaign.visible === false && (
+                        <span className="admin-campaign-hidden-tag">Oculta</span>
+                      )}
+                    </h3>
                     <p className="admin-campaign-meta">
                       {campaign.missions?.length || 0} {(campaign.missions?.length || 0) === 1 ? 'misión' : 'misiones'}
                       {' · '}{granted.size} con insignia
                     </p>
                   </div>
                   <div className="admin-campaign-card-actions">
+                    {/* The label is the action, not the state ("Ocultar" hides
+                        it), matching Editar/Eliminar beside it. The state is
+                        carried by the tag and the dimming instead, so the
+                        button never has to be read as a status. */}
+                    <button type="button" className="admin-action"
+                      onClick={() => toggleVisibility(campaign)}>
+                      {campaign.visible === false ? 'Mostrar' : 'Ocultar'}
+                    </button>
                     <button type="button" className="admin-action admin-action-edit"
                       onClick={() => { setCampaignForm({ ...campaign }); setMissionForm(null); }}>Editar</button>
                     <button type="button" className="admin-action admin-action-danger"
                       onClick={() => deleteCampaign(campaign)}>Eliminar</button>
+                    {/* "Cerrar", not "Ocultar": this collapses the card, and
+                        the button beside it now hides the campaign from the
+                        public site. Two buttons reading "Ocultar" on the same
+                        card, one cosmetic and one with public consequences,
+                        is a misclick waiting to happen. */}
                     <button type="button" className="admin-action"
                       onClick={() => setExpandedId(isExpanded ? null : campaign.id)}>
-                      {isExpanded ? 'Ocultar' : 'Gestionar'}
+                      {isExpanded ? 'Cerrar' : 'Gestionar'}
                     </button>
                   </div>
                 </header>

@@ -11,6 +11,7 @@ const ERR_CAMPAIGNS = 'No se pudieron cargar las campañas.';
 const ERR_CAMPAIGN = 'No se pudo cargar la campaña.';
 const ERR_TITLES = 'No se pudieron cargar las campañas del jugador.';
 const ERR_REORDER = 'No se pudo cambiar el orden de las campañas.';
+const ERR_VISIBILITY = 'No se pudo cambiar la visibilidad de la campaña.';
 
 // Campaigns are ordered by campaigns.orden ascending: an explicit position an
 // admin sets in the panel (0010). created_at desc is the tiebreaker, not a
@@ -139,6 +140,30 @@ export const swapCampaignOrder = async (a, b, ordenA, ordenB) => {
   ]);
   if (resA.error || resB.error) return { error: ERR_REORDER };
   return { error: null };
+};
+
+// ── Visibility ─────────────────────────────────────────────────────────
+
+// Shows or hides a campaign on the public site (0011).
+//
+// This writes a flag and nothing else. The hiding itself happens in the
+// database: campaigns_select_public only returns rows where `visible` is true
+// (or the caller is an admin), so a hidden campaign stops being served to the
+// public list, to its own detail page, and - through the embedded campaigns(*)
+// that fetchPlayerCampaigns reads - to the badge row on every player profile.
+// There is deliberately no `.eq('visible', true)` anywhere in this file: the
+// anon key ships in the bundle, so a client-side filter would hide the
+// campaign from the page while still serving it to anyone calling PostgREST
+// directly. Nothing is deleted, so un-hiding restores all of it.
+//
+// `visible` is the value the campaign should END UP with, not a delta, so a
+// double click cannot toggle it back and forth against a stale row.
+export const setCampaignVisibility = async (campaignId, visible) => {
+  const { error } = await supabase
+    .from('campaigns')
+    .update({ visible })
+    .eq('id', campaignId);
+  return { error: error ? ERR_VISIBILITY : null };
 };
 
 // The campaign badges a single player has been granted, for their profile.
