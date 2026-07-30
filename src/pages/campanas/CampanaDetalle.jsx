@@ -53,6 +53,10 @@ const CampanaDetalle = () => {
         <div className="campanadetalle-content">
           <Link className="campanadetalle-back" to="/campanas">← Volver a Campañas</Link>
 
+          {/* Header and missions share one card: a campaign and the missions
+              that make it up are one thing, and two stacked boxes read as two
+              unrelated sections. The internal divider carries the separation
+              that the second panel's background used to. */}
           <div className="campanadetalle-card">
             <div className="campanadetalle-header">
               {badge_url ? (
@@ -71,19 +75,19 @@ const CampanaDetalle = () => {
               </div>
             </div>
             {descripcion && <p className="campanadetalle-descripcion">{descripcion}</p>}
-          </div>
 
-          <div className="campanadetalle-misiones-panel">
-            <h2 className="campanadetalle-subtitulo">Misiones</h2>
-            {missions.length === 0 ? (
-              <p className="campanadetalle-empty">Esta campaña todavía no tiene misiones cargadas.</p>
-            ) : (
-              <ol className="campanadetalle-misiones">
-                {missions.map((mission) => (
-                  <MissionItem key={mission.id} mission={mission} />
-                ))}
-              </ol>
-            )}
+            <div className="campanadetalle-misiones-seccion">
+              <h2 className="campanadetalle-subtitulo">Misiones</h2>
+              {missions.length === 0 ? (
+                <p className="campanadetalle-empty">Esta campaña todavía no tiene misiones cargadas.</p>
+              ) : (
+                <ol className="campanadetalle-misiones">
+                  {missions.map((mission) => (
+                    <MissionItem key={mission.id} mission={mission} />
+                  ))}
+                </ol>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -37,11 +37,13 @@
     padding: 40px 0;
 }
 
+/* One card holds the campaign header, its description and its missions.
+   They were two stacked panels, which read as two unrelated sections
+   rather than one campaign. */
 .campanadetalle-card {
     background: var(--grn);
     border-radius: 16px;
     padding: 40px;
-    margin-bottom: 30px;
     text-align: left;
 }
 
@@ -116,11 +118,13 @@
 
 /* ---------- Missions ---------- */
 
-.campanadetalle-misiones-panel {
-    background: var(--grn);
-    border-radius: 16px;
-    padding: 40px;
-    text-align: left;
+/* The divider that used to be the gap between two panels. It is the only
+   separator when there is no description; when there is one, that block's
+   own border-top sits above it and the two read as a normal rhythm. */
+.campanadetalle-misiones-seccion {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .campanadetalle-subtitulo {
@@ -207,8 +211,7 @@
         text-align: center;
     }
 
-    .campanadetalle-card,
-    .campanadetalle-misiones-panel {
+    .campanadetalle-card {
         padding: 25px;
     }
 

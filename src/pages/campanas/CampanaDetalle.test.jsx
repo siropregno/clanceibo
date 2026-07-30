@@ -84,6 +84,26 @@ describe('CampanaDetalle', () => {
       .toHaveAttribute('src', 'https://cdn.test/m.png'));
   });
 
+  // The header and the missions are one campaign, so they live in one card
+  // rather than two stacked panels that read as unrelated sections.
+  it('renders the missions inside the same card as the campaign header', async () => {
+    mockFetch.mockResolvedValue({ data: campaign({ missions: [mission()] }), error: null });
+    renderAt();
+    await waitFor(() => expect(screen.getByText('Desembarco')).toBeInTheDocument());
+    const card = document.querySelector('.campanadetalle-card');
+    expect(card.querySelector('.campanadetalle-titulo')).not.toBeNull();
+    expect(card.querySelector('.campanadetalle-misiones')).not.toBeNull();
+    expect(document.querySelectorAll('.campanadetalle-card')).toHaveLength(1);
+  });
+
+  it('keeps the empty missions state inside that same card', async () => {
+    mockFetch.mockResolvedValue({ data: campaign({ missions: [] }), error: null });
+    renderAt();
+    await waitFor(() => expect(screen.getByText(/todavía no tiene misiones/i)).toBeInTheDocument());
+    const card = document.querySelector('.campanadetalle-card');
+    expect(card).toContainElement(screen.getByText(/todavía no tiene misiones/i));
+  });
+
   it('says so when the campaign has no missions', async () => {
     mockFetch.mockResolvedValue({ data: campaign({ missions: [] }), error: null });
     renderAt();
